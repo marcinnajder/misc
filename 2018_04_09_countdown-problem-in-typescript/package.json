@@ -1,0 +1,20 @@
+{
+  "name": "coutdownproblem",
+  "version": "1.0.0",
+  "description": "",
+  "main": "choices.js",
+  "dependencies": {
+    "@types/node": "9.6.2",
+    "powerseq": "0.0.10",
+    "typescript": "2.8.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "tsc": "tsc",
+    "watch": "tsc -w",
+    "start": "node ./dist/tests.js",
+    "test": "node "
+  },
+  "author": "Marcin Najder",
+  "license": "ISC"
+}
