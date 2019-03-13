@@ -8,10 +8,10 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/dist/src/choices.js",
+            "program": "${workspaceFolder}/dist/src/index.js",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/dist/src/**/*.js"
+                "${workspaceFolder}/dist/**/*.js"
             ]
         }
     ]

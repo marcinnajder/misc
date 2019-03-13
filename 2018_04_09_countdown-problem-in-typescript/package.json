@@ -12,7 +12,7 @@
   "scripts": {
     "tsc": "tsc",
     "watch": "tsc -w",
-    "start": "node ./dist/tests.js",
+    "start": "node ./dist/src/tests.js",
     "test": "node "
   },
   "author": "Marcin Najder",

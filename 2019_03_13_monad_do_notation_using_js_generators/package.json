@@ -1,0 +1,16 @@
+{
+  "name": "monad_do_notation_using_js_generators",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node ./dist/src/index.js",
+    "watch": "yarn tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Marcin Najder",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "3.3.1"
+  }
+}
