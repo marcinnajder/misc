@@ -3,6 +3,8 @@ This is a toy implementation of "do" notation from Haskell language using genera
 Lets define a very simplified definition of a `Monad`  type like a type providing two following operations:
 
 ```javascript
+export interface Monad<T = {}> { }
+
 export interface MonadOperations{
 	return_<T>(value: T): Monad<T>;
 	bind<T1, T2>(m: Monad<T1>, f: (value: T1) => Monad<T2>): Monad<T2>;
