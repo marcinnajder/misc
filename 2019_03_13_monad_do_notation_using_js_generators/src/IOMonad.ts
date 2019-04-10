@@ -2,7 +2,6 @@
 import { Observable, of } from "rxjs";
 import { flatMap } from "rxjs/operators";
 import { MonadOperations } from "./monad";
-import { timingSafeEqual } from "crypto";
 
 export type IO<T> = { bind<T2>(f: (value: T) => IO<T2>): IO<T2> };
 export function return_<T>(value: T): IO<T> {
@@ -24,18 +23,6 @@ export const ioMonadOps: MonadOperations = {
     return bind(m, f);
   }
 };
-
-
-
-
-class IOObservable<T>{
-  constructor(public source$: Observable<T>) {
-  }
-  bind<T2>(f: (value: T) => IO<T2>): IO<T2> {
-    return new IOObservable(flatMap((x: T) => (f(x) as IOObservable<T2>).source$)(this.source$));
-  }
-}
-
 
 
 export function readString(): IO<string> {
@@ -62,3 +49,15 @@ export function writeString(text: string): IO<void> {
     });
   }));
 }
+
+
+class IOObservable<T>{
+  constructor(public source$: Observable<T>) {
+  }
+  bind<T2>(f: (value: T) => IO<T2>): IO<T2> {
+    return new IOObservable(flatMap((x: T) => (f(x) as IOObservable<T2>).source$)(this.source$));
+  }
+}
+
+
+
