@@ -1,0 +1,2 @@
+
+- w tescie step1_read_print.mal zakomentowane sa 2 ostatnie przypadki: ^/metadata i @/deref

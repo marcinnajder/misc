@@ -1,0 +1,20 @@
+{
+  "include": [
+    "**/src/**/*.d.ts",
+    "**/src/**/*.ts",
+    "**/tests/**/*.ts"
+  ],
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "lib": [
+      "dom",
+      "es2015"
+    ],
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strict": true,
+    "esModuleInterop": true
+  }
+}

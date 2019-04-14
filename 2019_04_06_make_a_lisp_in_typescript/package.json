@@ -1,0 +1,19 @@
+{
+  "name": "mit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node ./dist/src/index.js",
+    "test": "node ./dist/tests/runAllTests.js"
+  },
+  "author": "Marcin Najder",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "3.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^11.13.0",
+    "powerseq": "^1.0.4"
+  }
+}
