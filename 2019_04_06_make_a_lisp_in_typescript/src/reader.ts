@@ -1,6 +1,6 @@
 import { ResultS, error, ok } from "./utils/result";
 import { Option, none, some } from "./utils/option";
-import { throwHere, parseMalType } from "./utils/common";
+import { assertNever, parseMalType } from "./utils/common";
 import { MalType, ListType, list2BracketMap, bracket2ListMap } from "./types";
 
 
@@ -40,12 +40,13 @@ export function read_form(reader: Reader): ResultS<Option<MalType>> {
           switch (atomO.type) {
             case "none": return ok(none());
             case "some": return ok(some(atomO.value));
+            default: return assertNever(atomO);
           }
         }
+        default: return assertNever(atomR);
       }
     }
   }
-  return throwHere();
 }
 
 
@@ -109,12 +110,13 @@ function read_atom(reader: Reader): ResultS<Option<MalType>> {
           switch (malTypeR.type) {
             case "error": return error(malTypeR.error);
             case "ok": return ok(some(malTypeR.value));
+            default: return assertNever(malTypeR);
           }
         }
       }
     }
   }
-  return throwHere();
+
 }
 
 

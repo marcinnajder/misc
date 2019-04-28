@@ -18,8 +18,18 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "monadicFunctionsTests.js",
+      "name": "test-monadic",
       "program": "${workspaceFolder}/dist/tests/common/monadicFunctionsTests.js",
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "test-mal",
+      "program": "${workspaceFolder}/dist/tests/runMalStepsTests.js",
       "sourceMaps": true,
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"

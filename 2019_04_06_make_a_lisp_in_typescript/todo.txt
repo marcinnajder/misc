@@ -1,2 +1,104 @@
 
 - w tescie step1_read_print.mal zakomentowane sa 2 ostatnie przypadki: ^/metadata i @/deref
+
+- uruchomic testy dla step4 i pewnie zmienic podejscie do zbiearnia wynikow poniewaz sa rozne case jak nizej 
+
+(def! gen-plus5 (fn* () (fn* (b) (+ 5 b))))
+(def! plus5 (gen-plus5))
+(plus5 7)
+;=>12
+
+(do (prn 101) (prn 102) (+ 1 2))
+;/101
+;/102
+;=>3
+
+
+
+---------------------------------------------------------------------------------------------------------
+- w TS (moze sie da jako to napisc samemu)
+-- dekonstrukcje nie robia pattern matching (trzeba dodatkowy kod pisac czy jest dane ksztaltu)
+-- nie mozna zagniezdzac wielu w sobie (trzeba wiele switch/case pisac)
+-- nie mozna warunkow (if) w switch/case tak jak w mpattern matching mozna
+-- nie ma matchowania 2 na raz:   match (a, b) with | (Types.List a, Types.List b) | ... 
+
+
+
+
+
+
+
+
+
+to nie dziala w kroku 4
+
+;; Testing prn
+(prn)
+
+;=>nil
+
+(prn "")
+;/""
+;=>nil
+
+(prn "abc")
+;/"abc"
+;=>nil
+
+(prn "abc  def" "ghi jkl")
+;/"abc  def""ghi jkl"
+;=>nil
+
+(prn "\"")
+;/"\\""
+;=>nil
+
+(prn "abc\ndef\nghi")
+;/"abc\\ndef\\nghi"
+;=>nil
+
+(prn "abc\\def\\ghi")
+;/"abc\\\\def\\\\ghi"
+nil
+
+(prn (list 1 2 "abc" "\"") "def")
+;/\(1 2 "abc" "\\""\) "def"
+;=>nil
+
+
+;; Testing println
+(println)
+;/
+;=>nil
+
+(println "")
+;/
+;=>nil
+
+(println "abc")
+;/abc
+;=>nil
+
+(println "abc  def" "ghi jkl")
+;/abc  def ghi jkl
+
+(println "\"")
+;/"
+;=>nil
+
+(println "abc\ndef\nghi")
+;/abc
+;/def
+;/ghi
+;=>nil
+
+(println "abc\\def\\ghi")
+;/abc\\def\\ghi
+;=>nil
+
+(println (list 1 2 "abc" "\"") "def")
+;/\(1 2 abc "\) def
+;=>nil
+
+
+

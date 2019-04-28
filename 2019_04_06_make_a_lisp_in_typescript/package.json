@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node ./dist/src/index.js",
-    "test": "node ./dist/tests/runAllTests.js"
+    "test-mal": "node ./dist/tests/runMalStepsTests.js",
+    "test-monadic": "node ./dist/tests/common/monadicFunctionsTests.js"
   },
   "author": "Marcin Najder",
   "license": "ISC",

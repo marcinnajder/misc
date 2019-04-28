@@ -27,19 +27,27 @@ export function parseMalType(text: string): ResultS<MalType> {
   }
   if (text[0] === '"') {
     if (text[text.length - 1] === '"') {
-      return ok({ type: "string", value: text });
+      return ok({ type: "string", value: text.slice(1, text.length - 1).replace(/\\(.)/g, function (_, c) { return c === "n" ? "\n" : c }) });
     }
     return error(`String value '${text}' in not closed`);
   }
   if (text[0] === ":") {
-    return ok({ type: "keyword", name: text });
+    return ok({ type: "keyword", name: text.substr(1) });
   }
 
   return ok({ type: "symbol", name: text });
 }
 
 
+export function assertNever(x: never): never {
+  throw new Error("Unexpected object: " + x);
+}
 
-export function throwHere(): never {
-  throw "this code should never be executed";
+
+function guard<T extends { type: string }, TT extends T["type"]>(x: T, type: TT): x is Extract<T, { type: TT }> {
+  return x["type"] === type;
+}
+
+function cast<T extends { type: string }, TT extends T["type"]>(x: T, type: TT): Extract<T, { type: TT }> {
+  return x as Extract<T, { type: TT }>;
 }
