@@ -1,7 +1,7 @@
-
+import "./useDevPowerfp";
 import * as repl from "repl";
 import { Context } from "vm";
-import { ResultS } from "./utils/result";
+import { ResultS } from "powerfp";
 import { step1_read_print, step2_eval, StepFunc } from "./steps";
 import { defaultEnv, Env } from "./env";
 import { __printLine, ns } from "./core";
@@ -38,9 +38,7 @@ export function initEnv(s: StepFunc, e: Env) {
 }
 
 
-
-
-function print(result: ResultS, cb: CallbackType) {
+function print(result: ResultS<unknown>, cb: CallbackType) {
   switch (result.type) {
     case "error": {
       cb(Error(result.error));

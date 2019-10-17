@@ -27,6 +27,12 @@
 
 
 
+---
+- czy da sie zaimplementowac jakis prosty helper dla match(mal1.type,mal2.type) {"list","list} => ...
+wygodne byloby w metodzie export function malEqual(mal1: MalType, mal2: MalType): boolean { ... }
+
+
+---
 
 
 

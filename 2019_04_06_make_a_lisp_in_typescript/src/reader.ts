@@ -1,14 +1,14 @@
-import { ResultS, error, ok } from "./utils/result";
-import { Option, none, some } from "./utils/option";
+import { ResultS, error, ok, Option, none, some, matchUnion } from "powerfp";
 import { assertNever, parseMalType } from "./utils/common";
-import { MalType, ListType, list2BracketMap, bracket2ListMap } from "./types";
+import { MalType, ListType, list2BracketMap, bracket2ListMap, list } from "./types";
+
 
 
 class Reader {
   constructor(private tokens: string[], private position: number) {
   }
   next(): Option<string> {
-    return this.position === this.tokens.length ? none() : some(this.tokens[this.position++]);
+    return this.position === this.tokens.length ? none : some(this.tokens[this.position++]);
   }
   peek() {
     return this.tokens[this.position];
@@ -32,38 +32,24 @@ export function read_form(reader: Reader): ResultS<Option<MalType>> {
       return read_list(reader, bracket2ListMap[token]).bind(v => ok(some(v)));
     }
     default: {
-      const atomR = read_atom(reader);
-      switch (atomR.type) {
-        case "error": return error(atomR.error);
-        case "ok": {
-          const atomO = atomR.value;
-          switch (atomO.type) {
-            case "none": return ok(none());
-            case "some": return ok(some(atomO.value));
-            default: return assertNever(atomO);
-          }
-        }
-        default: return assertNever(atomR);
-      }
+      return read_atom(reader);
     }
   }
 }
 
-
 function read_list(reader: Reader, listType: ListType): ResultS<MalType> {
   const closingBracket = list2BracketMap[listType][1];
-  const result: MalType = { type: "list", listType, items: [] };
+  const result = list([], listType);
 
   reader.next(); // skip first char '('
 
   while (true) {
+    const malR = read_form(reader);
 
-    const malE = read_form(reader);
-
-    switch (malE.type) {
-      case "error": return error(malE.error);
+    switch (malR.type) {
+      case "error": return error(malR.error);
       case "ok": {
-        const malO = malE.value;
+        const malO = malR.value;
         switch (malO.type) {
           case "none": return error('List is not closed');
           case "some": {
@@ -89,34 +75,28 @@ const quoteMapping = {
   "'": "quote",
   "`": "quasiquote",
   "~": "unquote",
-  "~@": "splice-unquote"
+  "~@": "splice_unquote"
 };
 
 function read_atom(reader: Reader): ResultS<Option<MalType>> {
   const tokenO = reader.next();
-  switch (tokenO.type) {
-    case "none": return ok(none());
-    case "some": {
-      const token = tokenO.value;
+
+  return matchUnion(tokenO, {
+    "none": _ => ok(none),
+    "some": ({ value: token }) => {
       switch (token) {
         case "'":
         case "`":
         case "~":
         case "~@": {
-          return read_form(reader).bind(o => ok(o.bind(v => some({ type: quoteMapping[token], mal: v } as MalType))));
+          return read_form(reader).map(o => o.map(v => ({ type: quoteMapping[token], mal: v } as MalType)));
         }
         default: {
-          const malTypeR = parseMalType(tokenO.value);
-          switch (malTypeR.type) {
-            case "error": return error(malTypeR.error);
-            case "ok": return ok(some(malTypeR.value));
-            default: return assertNever(malTypeR);
-          }
+          return parseMalType(token).map(some);
         }
       }
     }
-  }
-
+  });
 }
 
 
@@ -132,7 +112,9 @@ export function tokenize(str: string): string[] {
   var results = [];
   var match;
   while ((match = re.exec(str)![1]) != '') {
-    if (match[0] === ';') { continue; }
+    if (match[0] === ';') {
+      continue;
+    }
     results.push(match);
   }
   return results;

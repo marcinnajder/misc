@@ -1,15 +1,12 @@
-import { Option, some, none } from "./utils/option";
-import { MalType, MalType_number, MalType_fn } from "./types";
-import { error, ResultS, ok } from "./utils/result";
+import { Option, some, none, error, ResultS, ok, matchUnion } from "powerfp";
+import { MalType, MalType_fn, fn } from "./types";
 import { ns, Ns } from "./core";
 
 
-
 export function defaultEnv(ns: Ns) {
-  const env = new Env(none());
-
+  const env = new Env(none);
   for (const key of Object.keys(ns)) {
-    env.set(key, { type: "fn", fn: ns[key] } as MalType_fn); // wrap into MalType_fn
+    env.set(key, fn(ns[key])); // wrap in MalType_fn    
   }
   return env;
 }
@@ -27,21 +24,19 @@ export class Env {
     this.data[key] = mal;
     return mal;
   }
-  find(key: string): Option<Env> {
+  private find(key: string): Option<Env> {
     if (key in this.data) {
       return some(this);
     };
-    switch (this.outer.type) {
-      case "none": return none();
-      case "some": return this.outer.value.find(key);
-    }
+
+    return this.outer.bind(e => e.find(key));
   }
   get(key: string): ResultS<MalType> {
     const envO = this.find(key);
-    switch (envO.type) {
-      case "none": return error(`key '${key}' not found in any env`);
-      case "some": return ok(envO.value.data[key]);
-    }
+    return matchUnion(envO, {
+      none: _ => error(`key '${key}' not found in any env`),
+      some: ({ value }) => ok(value.data[key])
+    })
   }
 }
 

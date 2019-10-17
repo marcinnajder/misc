@@ -15,6 +15,15 @@
     "outDir": "./dist",
     "rootDir": "./",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "powerfp": [
+        "/Volumes/data/github/powerfp/dist/cjs_es6/src/index.d.ts",
+      ],
+      "powerfp/*": [
+        "/Volumes/data/github/powerfp/dist/cjs_es6/src/*",
+      ]
+    }
   }
 }

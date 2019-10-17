@@ -1,9 +1,6 @@
-import { MalType, MalType_list, MalType_symbol, MalType_fn } from "./types";
-import { ResultS, error, ok } from "./utils/result";
-import { mapRS, liftRS } from "./utils/monadicFunctions";
+import { MalType, MalType_list, MalType_symbol, MalType_fn, list, nil, fn } from "./types";
+import { ResultS, error, ok, some, resultSMapM, resultMap, matchUnion } from "powerfp";
 import { Env } from "./env";
-import { some } from "./utils/option";
-import { stringify } from "querystring";
 
 export function eval_(mal: MalType, env: Env): ResultS<MalType> {
   switch (mal.type) {
@@ -20,20 +17,11 @@ export function eval_(mal: MalType, env: Env): ResultS<MalType> {
 }
 
 function eval_ast(mal: MalType, env: Env): ResultS<MalType> {
-  switch (mal.type) {
-    case "symbol": {
-      return env.get(mal.name); // tutaj zwracany jest MalType_fn
-    }
-    case "list": {
-      // works for list, vector, hash
-      const itemsValues = mapRS(mal.items, m => eval_(m, env));
-      const mapItems = (items: MalType[]) => ({ ...mal, items: items } as MalType);
-      return liftRS(mapItems)(itemsValues);
-    }
-    default: {
-      return ok(mal);
-    }
-  }
+  return matchUnion(mal, {
+    symbol: ({ name }) => env.get(name),          //  MalType_fn type is returned
+    list: ({ items, listType }) => resultSMapM(items, m => eval_(m, env)).map(evaluatedItems => list(evaluatedItems, listType) as MalType),
+    _: () => ok(mal) as ResultS<MalType>
+  });
 }
 
 
@@ -61,12 +49,10 @@ function apply_nonemptyList(mal: MalType_list, env: Env): ResultS<MalType> {
 function apply_funcCall(mal: MalType_list, env: Env): ResultS<MalType> {
   return eval_ast(mal, env).bind(m => {
     const { items: [fn, ...fnArgs] } = m as MalType_list;
-    switch (fn.type) {
-      case "fn": {
-        return fn.fn(fnArgs);
-      }
-      default: return error(`first element in a list should be 'fn' but it is '${fn.type}'`);
-    }
+    return matchUnion(fn, {
+      fn: ({ fn }) => fn(fnArgs),
+      _: () => error(`first element in a list should be 'fn' but it is '${fn.type}'`) as ResultS<MalType>
+    })
   });
 }
 
@@ -104,7 +90,6 @@ function apply_bindings(bindings: MalType[], env: Env): ResultS<Env> {
   } else if (bindings.length == 1) {
     return error("bindings argument in let* should contain an even number of elements");
   } else {
-    ``
     const [key, value, ...other] = bindings;
     return eval_(value, env).bind(m => {
       const newEnv = new Env(some(env));
@@ -120,7 +105,7 @@ function apply_do(args: MalType[], env: Env): ResultS<MalType> {
   if (args.length === 0) {
     return error(`'do' requires at least one argument but got '${args.length}'`);
   } else {
-    return mapRS(args, item => eval_(item, env)).bind(ms => ok(ms[ms.length - 1]));
+    return resultSMapM(args, item => eval_(item, env)).bind(ms => ok(ms[ms.length - 1]));
     // but precisely according to guide the implementation should look like this
     // return eval_({ type: "list", listType: "vector", items: args }, env)
     //   .bind((aa: MalType) => aa.type === "list" ? ok(aa.items[aa.items.length - 1]) : error("should never be here :) "));
@@ -132,11 +117,11 @@ function apply_if(args: MalType[], env: Env): ResultS<MalType> {
   if (args.length === 1) {
     return error(`'if' requires at least 2 arguments but got '${args.length}'`);
   } else {
-    const [condMal, trueMal, falseMal = { type: "nil" } as MalType] = args;
+    const [condMal, trueMal, falseMal = nil] = args;
     return eval_(condMal, env).bind(condition => {
       switch (condition.type) {
         case "nil":
-        case "false": {
+        case "false_": {
           return eval_(falseMal, env);
         }
         default: {
@@ -155,25 +140,20 @@ function apply_fn(args: MalType[], env: Env): ResultS<MalType> {
     const [fnArgs, fnBody] = args;
     switch (fnArgs.type) {
       case "list": {
-
-
-
-        return mapRS(fnArgs.items, fnArg => fnArg.type === "symbol" ? ok(fnArg.name)
-          : error<string, string>(`'fn*' argument should be a 'symbol' but it was ${fnArg.type}`)
+        return resultSMapM(fnArgs.items, fnArg => fnArg.type === "symbol" ? ok(fnArg.name)
+          : error(`'fn*' argument should be a 'symbol' but it was ${fnArg.type}`)
         )
           .bind(fnArgsNames =>
-            ok({
-              type: "fn",
-              fn: (fnCallArgs) => {
-                // variadic function parameters ( (fn* (& more) (count more)) 1 2 3)
-                const ampersandIndex = fnArgsNames.indexOf("&");
-                if (ampersandIndex !== -1) {
-                  fnArgsNames = fnArgsNames.filter((_, index) => index !== ampersandIndex); // remove &
-                  fnCallArgs = [...fnCallArgs.slice(0, ampersandIndex), { type: "list", listType: "list", items: fnCallArgs.slice(ampersandIndex) }]
-                }
-                return eval_(fnBody, new Env(some(env), fnArgsNames, fnCallArgs));
+            ok(fn((fnCallArgs) => {
+              // variadic function parameters ( (fn* (& more) (count more)) 1 2 3)
+              const ampersandIndex = fnArgsNames.indexOf("&");
+              if (ampersandIndex !== -1) {
+                fnArgsNames = fnArgsNames.filter((_, index) => index !== ampersandIndex); // remove &
+                fnCallArgs = [...fnCallArgs.slice(0, ampersandIndex), list(fnCallArgs.slice(ampersandIndex), "list")]
               }
-            } as MalType_fn)
+              return eval_(fnBody, new Env(some(env), fnArgsNames, fnCallArgs));
+            }
+            ))
           );
       }
       default: {

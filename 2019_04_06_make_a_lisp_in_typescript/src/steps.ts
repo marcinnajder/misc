@@ -1,6 +1,6 @@
 import { read_str } from "./reader";
 import { pr_str } from "./printer";
-import { ResultS, error, ok } from "./utils/result";
+import { ResultS, error, ok } from "powerfp";
 import { assertNever } from "./utils/common";
 import { eval_, } from "./eval";
 import { Env } from "./env";
@@ -43,6 +43,7 @@ export function step0_repl(text: string): ResultS<string> {
 
 export function step1_read_print(text: string): ResultS<string> {
   const expressionE = read_str(text);
+
   switch (expressionE.type) {
     case "error": return error(expressionE.error);
     case "ok": {

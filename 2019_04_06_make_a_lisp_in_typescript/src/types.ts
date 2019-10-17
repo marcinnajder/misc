@@ -1,5 +1,7 @@
-import { ResultS } from "./utils/result";
-
+import { ResultS } from "powerfp";
+import { MalType_number_, MalType_symbol, MalType_string_, MalType_keyword, MalType_list } from "./adt.generated";
+import { assertNever } from "./utils/common";
+export * from "./adt.generated";
 export type ListType = "list" | "vector" | "hash-map";
 
 export const list2BracketMap: { [key in ListType]: [string, string] } = {
@@ -18,47 +20,30 @@ export type MalFuncType = (args: MalType[]) => ResultS<MalType>;
 
 // ast
 
-export type MalType_number = { type: "number", value: number };
-export type MalType_symbol = { type: "symbol", name: string };
-export type MalType_string = { type: "string", value: string };
-export type MalType_keyword = { type: "keyword", name: string };
-
-
-export type MalType_list = { type: "list", items: MalType[], listType: ListType };
-export type MalType_fn = { type: "fn", fn: MalFuncType };
-
-
 export type MalType =
-  | MalType_number
-  | MalType_symbol
-  | MalType_list
+  | { type: "number_", value: number }
+  | { type: "symbol", name: string }
+  | { type: "list", items: MalType[], listType: ListType }
 
   | { type: "nil" }
-  | { type: "true" }
-  | { type: "false" }
-  | MalType_string
+  | { type: "true_" }
+  | { type: "false_" }
+  | { type: "string_", value: string }
 
   | { type: "quote", mal: MalType }
   | { type: "quasiquote", mal: MalType }
   | { type: "unquote", mal: MalType }
-  | { type: "splice-unquote", mal: MalType }
+  | { type: "splice_unquote", mal: MalType }
 
-  | MalType_keyword
+  | { type: "keyword", name: string }
 
-  | MalType_fn
+  | { type: "fn", fn: MalFuncType }
   ;
 
-
-// apply
-
-// export type EnvironmentType = any;
 export type ValueType = any;
 
-// export type MalTypeOrValue =
-//   | { type: "value", value: ValueType }
-//   | { type: "mal", mal: MalType }
-//   // | { type: "ast", mal: MalType }
-//   ;
+
+
 
 
 export function malEqual(mal1: MalType, mal2: MalType): boolean {
@@ -67,19 +52,19 @@ export function malEqual(mal1: MalType, mal2: MalType): boolean {
     return false;
   } else {
     switch (mal1.type) {
-      case "number": return mal1.value == (mal2 as MalType_number).value;
+      case "number_": return mal1.value == (mal2 as MalType_number_).value;
       case "symbol": return mal1.name == (mal2 as MalType_symbol).name;
-      case "string": return mal1.value == (mal2 as MalType_string).value;
+      case "string_": return mal1.value == (mal2 as MalType_string_).value;
       case "keyword": return mal1.name == (mal2 as MalType_keyword).name;
 
-      case "true":
-      case "false":
+      case "true_":
+      case "false_":
       case "nil": return true;
 
       case "quote":
       case "quasiquote":
       case "unquote":
-      case "splice-unquote": return malEqual(mal1, mal2);
+      case "splice_unquote": return malEqual(mal1, mal2);
 
       case "list": {
         const mal2_list = mal2 as MalType_list;
@@ -97,8 +82,10 @@ export function malEqual(mal1: MalType, mal2: MalType): boolean {
       case "fn": {
         return false;
       }
+      default: {
+        return assertNever(mal1);
+      }
     }
-    return false; // to make compiler happy
   }
 }
 

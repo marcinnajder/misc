@@ -1,9 +1,10 @@
+import "../src/useDevPowerfp";
 import * as path from "path";
 import * as fs from "fs";
 import * as os from "os";
 import assert = require("assert");
 import { pipe, map, toarray, filter, buffer, scan, intersect, count, reduce, distinctuntilchanged } from "powerseq";
-import { ResultS } from "../src/utils/result";
+import { ResultS } from "powerfp";
 import { step1_read_print, step0_repl, step2_eval, step3_env, StepFunc } from "../src/steps";
 import { defaultEnv, Env } from "../src/env";
 import { assertNever } from "../src/utils/common";
@@ -30,10 +31,10 @@ const testsPath = path.join(repoPath, "tests");
 runAllTests();
 
 function runAllTests() {
-  // executeTest("malSteps/step0_repl.mal", step0_repl);
-  // executeTest("malSteps/step1_read_print.mal", step1_read_print, ["deferrable", "optional"]);
-  // executeTest("malSteps/step2_eval.mal", step2_eval, ["deferrable", "optional"]);
-  // executeTest("malSteps/step3_env.mal", step3_env, ["deferrable", "optional"]);
+  executeTest("malSteps/step0_repl.mal", step0_repl);
+  executeTest("malSteps/step1_read_print.mal", step1_read_print, ["deferrable", "optional"]);
+  executeTest("malSteps/step2_eval.mal", step2_eval, ["deferrable", "optional"]);
+  executeTest("malSteps/step3_env.mal", step3_env, ["deferrable", "optional"]);
   executeTest("malSteps/step4_if_fn_do.mal", step3_env, ["deferrable", "optional"]);
 }
 

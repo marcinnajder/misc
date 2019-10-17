@@ -5,16 +5,18 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node ./dist/src/index.js",
+    "del-dist": "shx rm -rf ./dist",
     "test-mal": "node ./dist/tests/runMalStepsTests.js",
-    "test-monadic": "node ./dist/tests/common/monadicFunctionsTests.js"
+    "generate": "node ./dist/src/generators/runGenerators.js"
   },
   "author": "Marcin Najder",
   "license": "ISC",
   "dependencies": {
-    "typescript": "3.4.1"
+    "typescript": "^3.5.2"
   },
   "devDependencies": {
     "@types/node": "^11.13.0",
-    "powerseq": "^1.0.4"
+    "powerseq": "^1.0.4",
+    "shx": "^0.3.2"
   }
 }
