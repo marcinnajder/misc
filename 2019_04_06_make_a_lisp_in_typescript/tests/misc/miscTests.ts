@@ -5,7 +5,9 @@ import { Result_ok, Option_some } from "powerfp";
 import { MalType } from "src/types";
 
 
-console.log(tokenize("(+ 1  ;;; ( +    1 2 )"));
+console.log(tokenize("@abc"));
+
+// console.log(tokenize("(+ 1  ;;; ( +    1 2 )"));
 
 // console.log(tokenize(`( +   "a" "b")`));
 

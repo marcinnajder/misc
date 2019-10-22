@@ -15,13 +15,14 @@ export function pr_str(mal: MalType, print_readably: boolean): string {
     true_: ({ type }) => removeUnderscore(type),
     false_: ({ type }) => removeUnderscore(type),
     nil: ({ type }) => type,
-    quote: quote_str,
-    quasiquote: quote_str,
-    unquote: quote_str,
-    splice_unquote: quote_str,
+    // quote: quote_str,
+    // quasiquote: quote_str,
+    // unquote: quote_str,
+    // splice_unquote: quote_str,
     list: ({ listType, items }) =>
       `${list2BracketMap[listType][0]}${items.map(m => pr_str(m, print_readably)).join(" ")}${list2BracketMap[listType][1]}`,
-    fn: _ => "#<function>"
+    fn: _ => "#<function>",
+    atom: ({ mal }) => `(atom ${pr_str(mal, print_readably)})`
   });
 
   function quote_str(mal: { type: string, mal: MalType }) {

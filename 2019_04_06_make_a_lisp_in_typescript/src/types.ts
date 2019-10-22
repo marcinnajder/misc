@@ -1,6 +1,7 @@
 import { ResultS } from "powerfp";
-import { MalType_number_, MalType_symbol, MalType_string_, MalType_keyword, MalType_list } from "./adt.generated";
+import { MalType_number_, MalType_symbol, MalType_string_, MalType_keyword, MalType_list, MalType_atom } from "./adt.generated";
 import { assertNever } from "./utils/common";
+import { toobject } from "powerseq";
 export * from "./adt.generated";
 export type ListType = "list" | "vector" | "hash-map";
 
@@ -9,11 +10,10 @@ export const list2BracketMap: { [key in ListType]: [string, string] } = {
   "vector": ["[", "]"],
   "hash-map": ["{", "}"]
 };
-export const bracket2ListMap: { [key: string]: ListType } = {
-  "(": "list",
-  "[": "vector",
-  "{": "hash-map"
-};
+
+export const bracket2ListMap: { [key: string]: ListType } =
+  toobject(Object.entries(list2BracketMap), ([, [opening]]) => opening, ([key]) => key) as any;
+
 
 
 export type MalFuncType = (args: MalType[]) => ResultS<MalType>;
@@ -30,14 +30,15 @@ export type MalType =
   | { type: "false_" }
   | { type: "string_", value: string }
 
-  | { type: "quote", mal: MalType }
-  | { type: "quasiquote", mal: MalType }
-  | { type: "unquote", mal: MalType }
-  | { type: "splice_unquote", mal: MalType }
+  // | { type: "quote", mal: MalType }
+  // | { type: "quasiquote", mal: MalType }
+  // | { type: "unquote", mal: MalType }
+  // | { type: "splice_unquote", mal: MalType }
 
   | { type: "keyword", name: string }
 
   | { type: "fn", fn: MalFuncType }
+  | { type: "atom", mal: MalType }
   ;
 
 export type ValueType = any;
@@ -61,10 +62,10 @@ export function malEqual(mal1: MalType, mal2: MalType): boolean {
       case "false_":
       case "nil": return true;
 
-      case "quote":
-      case "quasiquote":
-      case "unquote":
-      case "splice_unquote": return malEqual(mal1, mal2);
+      // case "quote":
+      // case "quasiquote":
+      // case "unquote":
+      // case "splice_unquote": return malEqual(mal1, mal2);
 
       case "list": {
         const mal2_list = mal2 as MalType_list;
@@ -82,6 +83,7 @@ export function malEqual(mal1: MalType, mal2: MalType): boolean {
       case "fn": {
         return false;
       }
+      case "atom": return malEqual(mal1.mal, (mal2 as MalType_atom).mal);
       default: {
         return assertNever(mal1);
       }

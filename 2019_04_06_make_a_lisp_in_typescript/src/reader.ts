@@ -1,7 +1,6 @@
 import { ResultS, error, ok, Option, none, some, matchUnion } from "powerfp";
 import { assertNever, parseMalType } from "./utils/common";
-import { MalType, ListType, list2BracketMap, bracket2ListMap, list } from "./types";
-
+import { MalType, ListType, list2BracketMap, bracket2ListMap, list, symbol } from "./types";
 
 
 class Reader {
@@ -23,17 +22,24 @@ export function read_str(text: string): ResultS<Option<MalType>> {
 
 
 
+const readerMacros: { [token: string]: string } = {
+  "@": "deref",
+  "'": "quote",
+  "`": "quasiquote",
+  "~": "unquote",
+  "~@": "splice-unquote",
+};
+
 export function read_form(reader: Reader): ResultS<Option<MalType>> {
   const token = reader.peek();
-  switch (token) {
-    case list2BracketMap["list"][0]:
-    case list2BracketMap["vector"][0]:
-    case list2BracketMap["hash-map"][0]: {
-      return read_list(reader, bracket2ListMap[token]).bind(v => ok(some(v)));
-    }
-    default: {
-      return read_atom(reader);
-    }
+
+  if (token in readerMacros) {              // reader macro
+    reader.next();                          // skip current token
+    return read_form(reader).map(malO => malO.map(mal => list([symbol(readerMacros[token]), mal], "list")));
+  } else if (token in bracket2ListMap) {   // list
+    return read_list(reader, bracket2ListMap[token]).bind(v => ok(some(v)));
+  } else {
+    return read_atom(reader);
   }
 }
 
@@ -75,7 +81,7 @@ const quoteMapping = {
   "'": "quote",
   "`": "quasiquote",
   "~": "unquote",
-  "~@": "splice_unquote"
+  "~@": "splice-unquote"
 };
 
 function read_atom(reader: Reader): ResultS<Option<MalType>> {

@@ -1,6 +1,8 @@
 import { MalType, MalType_list, MalType_symbol, MalType_fn, list, nil, fn } from "./types";
-import { ResultS, error, ok, some, resultSMapM, resultMap, matchUnion } from "powerfp";
+import { ResultS, error, ok, some, resultSMapM, resultMap, matchUnion, isUnion } from "powerfp";
 import { Env } from "./env";
+import { symbol, MalType_string_ } from "./adt.generated";
+import * as util from "util";
 
 export function eval_(mal: MalType, env: Env): ResultS<MalType> {
   switch (mal.type) {
@@ -36,6 +38,10 @@ function apply_nonemptyList(mal: MalType_list, env: Env): ResultS<MalType> {
         case "do": return apply_do(args, env);
         case "if": return apply_if(args, env);
         case "fn*": return apply_fn(args, env);
+        case "quote": return apply_quote(args, env);
+        case "quasiquote": {
+          return eval_(transform_quasiquote(args), env);
+        }
         default: return apply_funcCall(mal, env);
       }
     } default: {
@@ -164,3 +170,36 @@ function apply_fn(args: MalType[], env: Env): ResultS<MalType> {
 }
 
 
+
+/** (quote (...) ) */
+function apply_quote(args: MalType[], env: Env): ResultS<MalType> {
+  const [first]: MalType_list[] = args as any;
+  return ok(first);
+}
+
+
+
+
+/** (quasiquote (...) ) */
+function transform_quasiquote(args: MalType[]): MalType {
+  const [arg]: MalType_list[] = args as any;
+
+  if (is_pair(arg) === false) { // arg is not a list
+    return list([symbol("quote"), arg], "list");
+  } else {
+    const [head, ...tail] = arg.items;
+    if (isUnion(head, "symbol") && head.name == "unquote") {
+      return tail[0];
+    } else if (is_pair(head) && isUnion(head, "list") && isUnion(head.items[0], "symbol") &&
+      (head.items[0] as MalType_symbol).name === "splice-unquote") {
+      return list([symbol("concat"), head.items[1], transform_quasiquote([list(tail, "list")])], "list");
+    } else {
+      return list([symbol("cons"), transform_quasiquote([head]), transform_quasiquote([list(tail, "list")])], "list");
+    }
+  }
+}
+
+
+function is_pair(mal: MalType) {
+  return mal.type === "list" && mal.items.length > 0 ? true : false;
+}

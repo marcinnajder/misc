@@ -17,7 +17,7 @@ interface TestCase {
   output: string[];
   options: TestOptions;
 }
-type TestOption = "deferrable" | "optional";
+type TestOption = "deferrable" | "optional" | "soft";
 type TestOptions = TestOption[];
 
 type TestCaseLine =
@@ -36,6 +36,9 @@ function runAllTests() {
   executeTest("malSteps/step2_eval.mal", step2_eval, ["deferrable", "optional"]);
   executeTest("malSteps/step3_env.mal", step3_env, ["deferrable", "optional"]);
   executeTest("malSteps/step4_if_fn_do.mal", step3_env, ["deferrable", "optional"]);
+  //executeTest("malSteps/step5_tco.mal", step3_env, ["deferrable", "optional"]);
+  executeTest("malSteps/step6_file.mal", step3_env, ["deferrable", "optional", "soft"]);
+  executeTest("malSteps/step7_quote.mal", step3_env, ["deferrable", "optional"]);
 }
 
 
@@ -121,6 +124,7 @@ function readTestCases(fileName: string): TestCase[] {
     map<string, TestCaseLine>(l => {
       if (l === ";>>> optional=True") return { type: "option", option: "optional" };
       if (l === ";>>> deferrable=True") return { type: "option", option: "deferrable" };
+      if (l === ";>>> soft=True") return { type: "option", option: "soft" };
       if (l.startsWith(";=>") || l.startsWith(";/.") || l.startsWith(";/")) return { type: "output", text: l };
       return { type: "input", text: l };
     }),

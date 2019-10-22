@@ -72,5 +72,5 @@ export function step2_eval(text: string, env: Env): ResultS<string> {
 }
 
 export const step3_env = step2_eval;
-export const step4_if_fn_do = step2_eval;
+
 
