@@ -1,6 +1,6 @@
 import { ResultS, error, ok, Option, none, some, matchUnion } from "powerfp";
-import { assertNever, parseMalType } from "./utils/common";
-import { MalType, ListType, list2BracketMap, bracket2ListMap, list, symbol } from "./types";
+import { parseMalType } from "./utils/common";
+import { MalType, ListType, list2BracketMap, bracket2ListMap, list, symbol, listToMap, nil } from "./types";
 
 
 class Reader {
@@ -21,31 +21,40 @@ export function read_str(text: string): ResultS<Option<MalType>> {
 }
 
 
-
 const readerMacros: { [token: string]: string } = {
   "@": "deref",
   "'": "quote",
   "`": "quasiquote",
   "~": "unquote",
   "~@": "splice-unquote",
+  // "^": "with-meta",
 };
 
 export function read_form(reader: Reader): ResultS<Option<MalType>> {
   const token = reader.peek();
 
-  if (token in readerMacros) {              // reader macro
+  // reader macro
+  if (token === "^") {
     reader.next();                          // skip current token
-    return read_form(reader).map(malO => malO.map(mal => list([symbol(readerMacros[token]), mal], "list")));
+    return read_form(reader).bind(metaMalO => matchUnion(metaMalO, {
+      "some": ({ value }) => read_form(reader).map(malO => malO.map(mal => list([symbol("with-meta", nil), mal, value], "list", nil))),
+      "none": v => ok(v)
+    }));
+  } else if (token in readerMacros) {              // reader macro
+    reader.next();                          // skip current token
+    return read_form(reader).map(malO => malO.map(mal => list([symbol(readerMacros[token], nil), mal], "list", nil)));
   } else if (token in bracket2ListMap) {   // list
-    return read_list(reader, bracket2ListMap[token]).bind(v => ok(some(v)));
+    return read_list(reader, token).map(v => some(v));
   } else {
     return read_atom(reader);
   }
 }
 
-function read_list(reader: Reader, listType: ListType): ResultS<MalType> {
+function read_list(reader: Reader, token: string): ResultS<MalType> {
+  const listType = bracket2ListMap[token];
   const closingBracket = list2BracketMap[listType][1];
-  const result = list([], listType);
+  const items: MalType[] = [];
+
 
   reader.next(); // skip first char '('
 
@@ -63,11 +72,15 @@ function read_list(reader: Reader, listType: ListType): ResultS<MalType> {
             switch (mal.type) {
               case "symbol": {
                 if (mal.name === closingBracket) {
-                  return ok(result);
+                  if (closingBracket === "}") {
+                    return listToMap(items);
+                  } else {
+                    return ok(list(items, listType as ListType, nil));
+                  }
                 }
               }
               default: {
-                result.items.push(mal);
+                items.push(mal);
               }
             }
           }

@@ -7,15 +7,15 @@ import { defaultEnv, Env } from "./env";
 import { __printLine, ns } from "./core";
 import * as os from "os";
 import { PrintLineType, pr_str } from "./printer";
-import { fn, MalType, list } from "./types";
+import { fn, MalType, list, nil } from "./types";
 import { eval_ } from "./eval";
 import { string_ } from "./adt.generated";
 
 const [nodeProcessPath, indexFilePath, malScriptPath, ...argv] = process.argv
 
-
 const defaultEnv_ = defaultEnv(ns);
 const step: StepFunc = step2_eval;
+//const step: StepFunc = step1_read_print;
 initEnv(step, defaultEnv_);
 type CallbackType = (err: Error | null, result?: any) => void;
 
@@ -24,7 +24,6 @@ if (malScriptPath) {      // execute script file
 } else {                  // execute repl
   repl.start({ prompt: '> ', eval: executeRepl }); // https://nodejs.org/api/repl.html
 }
-
 
 
 function executeScript(scriptPath: string) {
@@ -44,7 +43,7 @@ function executeScript(scriptPath: string) {
 function executeRepl(this: repl.REPLServer, evalCmd: string, context: Context, file: string, cb: CallbackType) {
   // override "__printLine" method printing to console 
   ((ns as any)[__printLine] as PrintLineType) = (...s) => {
-    console.log(...s);
+    // console.log(...s);
 
     s.forEach(ss => this.outputStream.write(ss));
     this.outputStream.write(os.EOL);
@@ -55,13 +54,15 @@ function executeRepl(this: repl.REPLServer, evalCmd: string, context: Context, f
 
 export function initEnv(s: StepFunc, e: Env) {
   // add *ARGV* before anything else
-  e.set("*ARGV*", list(malScriptPath ? argv.map(s => string_(s)) : [], "list"))
+  e.set("*ARGV*", list(malScriptPath ? argv.map(s => string_(s)) : [], "list", nil))
 
-  e.set("eval", fn(([ast]: MalType[]) => eval_(ast, e)));
+  e.set("eval", fn(([ast]: MalType[]) => eval_(ast, e), nil));
 
   s(`(def! not (fn* (a) (if a false true)))`, e);
   s(`(def! load-file (fn* (f) (eval (read-string (str "(do " (slurp f) "\nnil)")))))`, e);
+  s("(defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))", e);
 }
+
 
 
 function print(result: ResultS<unknown>, cb: CallbackType) {

@@ -3,14 +3,14 @@ import * as path from "path";
 import * as fs from "fs";
 import * as os from "os";
 import assert = require("assert");
-import { pipe, map, toarray, filter, buffer, scan, intersect, count, reduce, distinctuntilchanged } from "powerseq";
-import { ResultS } from "powerfp";
-import { step1_read_print, step0_repl, step2_eval, step3_env, StepFunc } from "../src/steps";
+import { pipe, map, toarray, filter, scan, intersect, count, reduce, distinctuntilchanged } from "powerseq";
+import { step1_read_print, step0_repl, step2_eval, StepFunc } from "../src/steps";
 import { defaultEnv, Env } from "../src/env";
 import { assertNever } from "../src/utils/common";
 import { __printLine, ns } from "../src/core";
 import { PrintLineType, pr_str } from "../src/printer";
 import { initEnv } from "../src";
+import { inspect } from "util";
 
 interface TestCase {
   input: string;
@@ -34,13 +34,15 @@ function runAllTests() {
   executeTest("malSteps/step0_repl.mal", step0_repl);
   executeTest("malSteps/step1_read_print.mal", step1_read_print, ["deferrable", "optional"]);
   executeTest("malSteps/step2_eval.mal", step2_eval, ["deferrable", "optional"]);
-  executeTest("malSteps/step3_env.mal", step3_env, ["deferrable", "optional"]);
-  executeTest("malSteps/step4_if_fn_do.mal", step3_env, ["deferrable", "optional"]);
-  //executeTest("malSteps/step5_tco.mal", step3_env, ["deferrable", "optional"]);
-  executeTest("malSteps/step6_file.mal", step3_env, ["deferrable", "optional", "soft"]);
-  executeTest("malSteps/step7_quote.mal", step3_env, ["deferrable", "optional"]);
+  executeTest("malSteps/step3_env.mal", step2_eval, ["deferrable", "optional"]);
+  executeTest("malSteps/step4_if_fn_do.mal", step2_eval, ["deferrable", "optional"]);
+  //executeTest("malSteps/step5_tco.mal", step2_eval, ["deferrable", "optional"]);
+  executeTest("malSteps/step6_file.mal", step2_eval, ["deferrable", "optional", "soft"]);
+  executeTest("malSteps/step7_quote.mal", step2_eval, ["deferrable", "optional"]);
+  executeTest("malSteps/step8_macros.mal", step2_eval, ["deferrable", "optional"]);
+  executeTest("malSteps/step9_try.mal", step2_eval, ["deferrable", "optional"]);
+  executeTest("malSteps/stepA_mal.mal", step2_eval, ["deferrable", "optional", "soft"]);
 }
-
 
 
 function executeTest(fileName: string, step: StepFunc, options: TestOptions = []) {
@@ -72,6 +74,7 @@ function executeTest(fileName: string, step: StepFunc, options: TestOptions = []
       }
 
       const result = step(testCase.input, env);
+
       console.log(testCase.input);
 
       switch (result.type) {

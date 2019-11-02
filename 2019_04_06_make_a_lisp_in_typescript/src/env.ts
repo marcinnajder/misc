@@ -1,12 +1,11 @@
 import { Option, some, none, error, ResultS, ok, matchUnion } from "powerfp";
-import { MalType, MalType_fn, fn } from "./types";
-import { ns, Ns } from "./core";
-
+import { MalType, MalType_fn, fn, nil } from "./types";
+import { Ns } from "./core";
 
 export function defaultEnv(ns: Ns) {
   const env = new Env(none);
   for (const key of Object.keys(ns)) {
-    env.set(key, fn(ns[key])); // wrap in MalType_fn    
+    env.set(key, fn(ns[key], nil)); // wrap in MalType_fn    
   }
   return env;
 }
@@ -39,4 +38,3 @@ export class Env {
     })
   }
 }
-

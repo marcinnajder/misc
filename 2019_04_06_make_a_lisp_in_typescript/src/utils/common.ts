@@ -25,7 +25,7 @@ export function parseMalType(text: string): ResultS<MalType> {
   if (text[0] === ":") {
     return ok(keyword(text.substr(1)));
   }
-  return ok(symbol(text));
+  return ok(symbol(text, nil));
 }
 
 
