@@ -1,6 +1,5 @@
 import { ResultS, error, ok, isUnion } from "powerfp";
 import { MalType_number_, MalType_symbol, MalType_string_, MalType_keyword, MalType_atom, keyword, MalType_map, string_, nil } from "./adt.generated";
-import { assertNever } from "./utils/common";
 import { toobject, flatmap, toarray, buffer, map as map_, pipe, find } from "powerseq";
 import { map } from "./adt.generated";
 export * from "./adt.generated";
@@ -109,3 +108,6 @@ export function stringToKey(str: string): KeyType {
 }
 
 
+export function assertNever(x: never): never {
+  throw new Error("Unexpected object: " + x);
+}

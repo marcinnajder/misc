@@ -75,7 +75,7 @@ function apply_funcCall(mal: MalType_list, env: Env): ResultS<MalType> {
 /** (def! a 1) */
 function apply_def(args: MalType[], env: Env): ResultS<MalType> {
   return validateDefArguments(args).bind(([symbol, value]) => {
-    return eval_(value, env).bind(m => ok(env.set(symbol.name, m)));
+    return eval_(value, env).map(m => env.set(symbol.name, m));
   });
 }
 

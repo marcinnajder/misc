@@ -1,7 +1,6 @@
 import { read_str } from "./reader";
 import { pr_str } from "./printer";
 import { ResultS, error, ok, matchUnion } from "powerfp";
-import { assertNever } from "./utils/common";
 import { eval_, } from "./eval";
 import { Env } from "./env";
 

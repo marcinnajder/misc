@@ -6,7 +6,7 @@ import assert = require("assert");
 import { pipe, map, toarray, filter, scan, intersect, count, reduce, distinctuntilchanged } from "powerseq";
 import { step1_read_print, step0_repl, step2_eval, StepFunc } from "../src/steps";
 import { defaultEnv, Env } from "../src/env";
-import { assertNever } from "../src/utils/common";
+import { assertNever } from "../src/types";
 import { __printLine, ns } from "../src/core";
 import { PrintLineType, pr_str } from "../src/printer";
 import { initEnv } from "../src";
