@@ -2,7 +2,7 @@ import "./useDevPowerfp";
 import * as repl from "repl";
 import { Context } from "vm";
 import { ResultS } from "powerfp";
-import { step1_read_print, step2_eval, StepFunc } from "./steps";
+import { step_read_print, step_eval, step_ast, StepFunc } from "./steps";
 import { defaultEnv, Env } from "./env";
 import { __printLine, ns } from "./core";
 import * as os from "os";
@@ -14,8 +14,7 @@ import { string_ } from "./adt.generated";
 const [nodeProcessPath, indexFilePath, malScriptPath, ...argv] = process.argv
 
 const defaultEnv_ = defaultEnv(ns);
-const step: StepFunc = step2_eval;
-//const step: StepFunc = step1_read_print;
+const step: StepFunc = step_eval;
 initEnv(step, defaultEnv_);
 type CallbackType = (err: Error | null, result?: any) => void;
 

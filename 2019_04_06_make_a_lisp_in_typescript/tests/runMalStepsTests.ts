@@ -4,7 +4,7 @@ import * as fs from "fs";
 import * as os from "os";
 import assert = require("assert");
 import { pipe, map, toarray, filter, scan, intersect, count, reduce, distinctuntilchanged } from "powerseq";
-import { step1_read_print, step0_repl, step2_eval, StepFunc } from "../src/steps";
+import { step_read_print, step_repl, step_eval, StepFunc } from "../src/steps";
 import { defaultEnv, Env } from "../src/env";
 import { assertNever } from "../src/types";
 import { __printLine, ns } from "../src/core";
@@ -31,17 +31,17 @@ const testsPath = path.join(repoPath, "tests");
 runAllTests();
 
 function runAllTests() {
-  executeTest("malSteps/step0_repl.mal", step0_repl);
-  executeTest("malSteps/step1_read_print.mal", step1_read_print, ["deferrable", "optional"]);
-  executeTest("malSteps/step2_eval.mal", step2_eval, ["deferrable", "optional"]);
-  executeTest("malSteps/step3_env.mal", step2_eval, ["deferrable", "optional"]);
-  executeTest("malSteps/step4_if_fn_do.mal", step2_eval, ["deferrable", "optional"]);
+  executeTest("malSteps/step0_repl.mal", step_repl);
+  executeTest("malSteps/step1_read_print.mal", step_read_print, ["deferrable", "optional"]);
+  executeTest("malSteps/step2_eval.mal", step_eval, ["deferrable", "optional"]);
+  executeTest("malSteps/step3_env.mal", step_eval, ["deferrable", "optional"]);
+  executeTest("malSteps/step4_if_fn_do.mal", step_eval, ["deferrable", "optional"]);
   //executeTest("malSteps/step5_tco.mal", step2_eval, ["deferrable", "optional"]);
-  executeTest("malSteps/step6_file.mal", step2_eval, ["deferrable", "optional", "soft"]);
-  executeTest("malSteps/step7_quote.mal", step2_eval, ["deferrable", "optional"]);
-  executeTest("malSteps/step8_macros.mal", step2_eval, ["deferrable", "optional"]);
-  executeTest("malSteps/step9_try.mal", step2_eval, ["deferrable", "optional"]);
-  executeTest("malSteps/stepA_mal.mal", step2_eval, ["deferrable", "optional", "soft"]);
+  executeTest("malSteps/step6_file.mal", step_eval, ["deferrable", "optional", "soft"]);
+  executeTest("malSteps/step7_quote.mal", step_eval, ["deferrable", "optional"]);
+  executeTest("malSteps/step8_macros.mal", step_eval, ["deferrable", "optional"]);
+  executeTest("malSteps/step9_try.mal", step_eval, ["deferrable", "optional"]);
+  executeTest("malSteps/stepA_mal.mal", step_eval, ["deferrable", "optional", "soft"]);
 }
 
 
