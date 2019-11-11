@@ -6,12 +6,13 @@
   "scripts": {
     "start": "node ./dist/src/index.js",
     "del-dist": "shx rm -rf ./dist",
-    "test-mal": "node ./dist/tests/runMalStepsTests.js",
+    "test": "node ./dist/tests/runMalStepsTests.js",
     "generate": "node ./dist/src/generators/runGenerators.js"
   },
   "author": "Marcin Najder",
   "license": "ISC",
   "dependencies": {
+    "powerfp": "0.0.1",
     "typescript": "^3.5.2"
   },
   "devDependencies": {
