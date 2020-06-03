@@ -1,0 +1,14 @@
+{
+  "name": "2020_01_22_translation_in_type_safe_way",
+  "version": "1.0.0",
+  "description": "Let's say we have a very simple piece of code:",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Marcin Najder",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^3.7.5"
+  }
+}
