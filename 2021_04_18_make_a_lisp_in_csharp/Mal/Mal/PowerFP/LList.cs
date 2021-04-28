@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace PowerFP
@@ -40,21 +41,117 @@ namespace PowerFP
         public static LList<T>? ToLList<T>(this IEnumerable<T> llist)
         {
             return NextValue(llist.GetEnumerator());
-            static LList<T>? NextValue(IEnumerator<T> e) => e.MoveNext() ? new LList<T>(e.Current, NextValue(e)) : null;
+            static LList<T>? NextValue(IEnumerator<T> e) => e.MoveNext() ? new(e.Current, NextValue(e)) : null;
         }
 
+
+        public static int Count<T>(this LList<T>? llist) =>
+            llist switch
+            {
+                null => 0,
+                LList<T>(_, var Tail) => 1 + Count(Tail)
+            };
+
+        public static LList<R>? Select<T, R>(this LList<T>? llist, Func<T, R> f) =>
+            llist switch
+            {
+                null => null,
+                LList<T>(var Head, var Tail) => new(f(Head), Select(Tail, f))
+            };
+
+        public static LList<T>? Where<T>(this LList<T>? llist, Func<T, bool> f) =>
+            llist switch
+            {
+                null => null,
+                LList<T>(var Head, var Tail) => f(Head) ? llist with { Tail = Where(Tail, f) } : Where(Tail, f)
+            };
+
+        public static A Aggregate<T, A>(this LList<T>? llist, A seed, Func<A, T, A> f) =>
+            llist switch
+            {
+                null => seed,
+                LList<T>(var Head, var Tail) => Aggregate(Tail, f(seed, Head), f)
+            };
+
+        public static T Aggregate<T>(this LList<T>? llist, Func<T, T, T> f) =>
+            llist switch
+            {
+                null => throw new Exception("List contains no elements"),
+                LList<T> { Tail: null } => llist.Head,
+                _ => Aggregate(llist.Tail, llist.Head, f)
+            };
+
+        public static LList<T>? Take<T>(this LList<T>? llist, int count) =>
+            llist switch
+            {
+                null => null,
+                LList<T>(var Head, var Tail) => count <= 0 ? null : new(Head, Take(Tail, count - 1))
+            };
+
+        public static LList<T>? Skip<T>(this LList<T>? llist, int count) =>
+            llist switch
+            {
+                null => null,
+                LList<T>(var Head, var Tail) => count <= 0 ? llist : Skip(Tail, count - 1)
+            };
+
+
+
+        public static LList<T>? Concat<T>(this LList<T>? llist1, LList<T>? llist2) =>
+            (llist1, llist2) switch
+            {
+                (null, _) => llist2,
+                (LList<T>(var Head, var Tail), _) => new(Head, Concat(Tail, llist2))
+            };
+
+
+        public static LList<R>? Zip<T1, T2, R>(this LList<T1>? llist1, LList<T2>? llist2, Func<T1, T2, R> f) =>
+            (llist1, llist2) switch
+            {
+                (null, _) or (_, null) => null,
+                (LList<T1>(var Head1, var Tail1), LList<T2>(var Head2, var Tail2)) => new LList<R>(f(Head1, Head2), Zip(Tail1, Tail2, f))
+            };
+
+
+        public static LList<TT>? SelectMany<T, TT>(this LList<T>? llist, Func<T, LList<TT>?> f) =>
+            llist switch
+            {
+                null => null,
+                LList<T>(var Head, var Tail) => f(Head).Concat(SelectMany(Tail, f))
+            };
+
+        public static LList<R>? SelectMany<T, TT, R>(this LList<T>? llist, Func<T, LList<TT>?> f, Func<T, TT, R> r) =>
+            llist switch
+            {
+                null => null,
+                LList<T>(var Head, var Tail) => f(Head).Select(tt => r(Head, tt)).Concat(SelectMany(Tail, f, r))
+            };
 
         public static LList<T>? Reverse<T>(this LList<T>? llist)
         {
-            return llist switch
-            {
-                null => null,
-                LList<T>(var Head, var Tails) => null,
-                // _ => null
-            };
+            return Reverse2(llist, null);
+
+            static LList<T>? Reverse2(LList<T>? llist, LList<T>? result) =>
+                llist switch
+                {
+                    null => result,
+                    LList<T>(var Head, var Tail) => Reverse2(Tail, new(Head, result)),
+                };
         }
 
-        // todo, Map, Filter, Reduce
+        public static bool All<T>(this LList<T>? llist, Func<T, bool> f) =>
+            llist switch
+            {
+                null => true,
+                LList<T>(var Head, var Tail) => f(Head) && All(Tail, f)
+            };
+
+        public static bool Any<T>(this LList<T>? llist, Func<T, bool> f) =>
+            llist switch
+            {
+                null => false,
+                LList<T>(var Head, var Tail) => f(Head) || Any(Tail, f)
+            };
     }
 }
 
