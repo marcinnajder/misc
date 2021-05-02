@@ -44,33 +44,35 @@ namespace PowerFP
             static LList<T>? NextValue(IEnumerator<T> e) => e.MoveNext() ? new(e.Current, NextValue(e)) : null;
         }
 
+        public static LList<T>? LListFrom<T>(params T[] items) => items.Length > 0 ? items.ToLList() : null;
+
 
         public static int Count<T>(this LList<T>? llist) =>
             llist switch
             {
                 null => 0,
-                LList<T>(_, var Tail) => 1 + Count(Tail)
+                (_, var Tail) => 1 + Count(Tail)
             };
 
         public static LList<R>? Select<T, R>(this LList<T>? llist, Func<T, R> f) =>
             llist switch
             {
                 null => null,
-                LList<T>(var Head, var Tail) => new(f(Head), Select(Tail, f))
+                (var Head, var Tail) => new(f(Head), Select(Tail, f))
             };
 
         public static LList<T>? Where<T>(this LList<T>? llist, Func<T, bool> f) =>
             llist switch
             {
                 null => null,
-                LList<T>(var Head, var Tail) => f(Head) ? llist with { Tail = Where(Tail, f) } : Where(Tail, f)
+                (var Head, var Tail) => f(Head) ? llist with { Tail = Where(Tail, f) } : Where(Tail, f)
             };
 
         public static A Aggregate<T, A>(this LList<T>? llist, A seed, Func<A, T, A> f) =>
             llist switch
             {
                 null => seed,
-                LList<T>(var Head, var Tail) => Aggregate(Tail, f(seed, Head), f)
+                (var Head, var Tail) => Aggregate(Tail, f(seed, Head), f)
             };
 
         public static T Aggregate<T>(this LList<T>? llist, Func<T, T, T> f) =>
@@ -85,14 +87,14 @@ namespace PowerFP
             llist switch
             {
                 null => null,
-                LList<T>(var Head, var Tail) => count <= 0 ? null : new(Head, Take(Tail, count - 1))
+                (var Head, var Tail) => count <= 0 ? null : new(Head, Take(Tail, count - 1))
             };
 
         public static LList<T>? Skip<T>(this LList<T>? llist, int count) =>
             llist switch
             {
                 null => null,
-                LList<T>(var Head, var Tail) => count <= 0 ? llist : Skip(Tail, count - 1)
+                (var Head, var Tail) => count <= 0 ? llist : Skip(Tail, count - 1)
             };
 
 
@@ -101,7 +103,7 @@ namespace PowerFP
             (llist1, llist2) switch
             {
                 (null, _) => llist2,
-                (LList<T>(var Head, var Tail), _) => new(Head, Concat(Tail, llist2))
+                ((var Head, var Tail), _) => new(Head, Concat(Tail, llist2))
             };
 
 
@@ -109,7 +111,7 @@ namespace PowerFP
             (llist1, llist2) switch
             {
                 (null, _) or (_, null) => null,
-                (LList<T1>(var Head1, var Tail1), LList<T2>(var Head2, var Tail2)) => new LList<R>(f(Head1, Head2), Zip(Tail1, Tail2, f))
+                ((var Head1, var Tail1), (var Head2, var Tail2)) => new(f(Head1, Head2), Zip(Tail1, Tail2, f))
             };
 
 
@@ -117,14 +119,14 @@ namespace PowerFP
             llist switch
             {
                 null => null,
-                LList<T>(var Head, var Tail) => f(Head).Concat(SelectMany(Tail, f))
+                (var Head, var Tail) => f(Head).Concat(SelectMany(Tail, f))
             };
 
         public static LList<R>? SelectMany<T, TT, R>(this LList<T>? llist, Func<T, LList<TT>?> f, Func<T, TT, R> r) =>
             llist switch
             {
                 null => null,
-                LList<T>(var Head, var Tail) => f(Head).Select(tt => r(Head, tt)).Concat(SelectMany(Tail, f, r))
+                (var Head, var Tail) => f(Head).Select(tt => r(Head, tt)).Concat(SelectMany(Tail, f, r))
             };
 
         public static LList<T>? Reverse<T>(this LList<T>? llist)
@@ -135,7 +137,7 @@ namespace PowerFP
                 llist switch
                 {
                     null => result,
-                    LList<T>(var Head, var Tail) => Reverse2(Tail, new(Head, result)),
+                    (var Head, var Tail) => Reverse2(Tail, new(Head, result)),
                 };
         }
 
@@ -143,14 +145,14 @@ namespace PowerFP
             llist switch
             {
                 null => true,
-                LList<T>(var Head, var Tail) => f(Head) && All(Tail, f)
+                (var Head, var Tail) => f(Head) && All(Tail, f)
             };
 
         public static bool Any<T>(this LList<T>? llist, Func<T, bool> f) =>
             llist switch
             {
                 null => false,
-                LList<T>(var Head, var Tail) => f(Head) || Any(Tail, f)
+                (var Head, var Tail) => f(Head) || Any(Tail, f)
             };
     }
 }

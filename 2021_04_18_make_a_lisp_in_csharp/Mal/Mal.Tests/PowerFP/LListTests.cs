@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PowerFP;
+using static PowerFP.LListM;
 
 namespace Mal.Tests
 {
@@ -27,6 +28,9 @@ namespace Mal.Tests
 
             Assert.AreEqual(new[] { 11, 22, 33 }.ToLList(), list);
             Assert.IsNull(new int[] { }.ToLList());
+
+            Assert.AreEqual(LListM.LListFrom(11, 22, 33), list);
+            Assert.IsNull(LListM.LListFrom<int>());
         }
 
         [TestMethod]
@@ -102,7 +106,7 @@ namespace Mal.Tests
         {
             var list123 = new LList<int>(1, new(2, new(3, null)));
 
-            Assert.AreEqual(new[] { 1, 2, 3, 2, 3 }.ToLList(), list123.Concat(new(2, new(3, null))));
+            Assert.AreEqual(LListFrom(1, 2, 3, 2, 3), list123.Concat(new(2, new(3, null))));
             Assert.AreEqual(list123, list123.Concat(null));
             Assert.AreEqual(list123, (null as LList<int>).Concat(list123));
         }
@@ -113,7 +117,7 @@ namespace Mal.Tests
             var list123 = new LList<int>(1, new(2, new(3, null)));
             var listAb = new LList<string>("a", new("b", null));
 
-            Assert.AreEqual(new[] { "a1", "b2" }.ToLList(), list123.Zip(listAb, (l, r) => r + l));
+            Assert.AreEqual(LListFrom("a1", "b2"), list123.Zip(listAb, (l, r) => r + l));
             Assert.AreEqual(null, list123.Zip(null as LList<string>, (l, r) => r + l));
             Assert.AreEqual(null, (null as LList<int>).Zip(listAb, (l, r) => r + l));
         }
@@ -128,7 +132,7 @@ namespace Mal.Tests
                 new(111, new(222, null))
             }.ToLList();
 
-            Assert.AreEqual(new[] { 11, 22, 111, 222 }.ToLList(), list.SelectMany(x => x));
+            Assert.AreEqual(LListFrom(11, 22, 111, 222), list.SelectMany(x => x));
         }
 
         [TestMethod]
@@ -141,7 +145,7 @@ namespace Mal.Tests
                 new(111, new(222, null))
             }.ToLList();
 
-            Assert.AreEqual(new[] { "11 11", "11 22", "111 111", "111 222" }.ToLList(), list.SelectMany(x => x, (x, y) => x!.Head + " " + y));
+            Assert.AreEqual(LListFrom("11 11", "11 22", "111 111", "111 222"), list.SelectMany(x => x, (x, y) => x!.Head + " " + y));
         }
 
         [TestMethod]

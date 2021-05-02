@@ -9,22 +9,34 @@ namespace Mal.Tests
     [TestClass]
     public class TypesTests
     {
-        // [TestMethod]
-        // public void StringToKeyTest()
-        // {
-        //     Assert.AreEqual(new Str("123"), "s123".StringToKey());
-        //     Assert.AreEqual(new Keyword("123"), "k123".StringToKey());
-        //     Assert.ThrowsException<Exception>(() => "123".StringToKey());
-        // }
+        [TestMethod]
+        public void MalEqualTest()
+        {
+            Assert.IsTrue(MalEqual(new Str("a"), new Str("a")));
+            Assert.IsFalse(MalEqual(new Str("a"), new Str("b")));
+            Assert.IsFalse(MalEqual(new Str("a"), new Symbol("b", NilV)));
 
-        // [TestMethod]
-        // public void KeyToStringTest()
-        // {
-        //     Assert.AreEqual("s123", new Str("123").KeyToString());
-        //     Assert.AreEqual("k123", new Keyword("123").KeyToString());
-        //     Assert.ThrowsException<Exception>(() => TrueV.KeyToString());
-        // }
+            Func<MalType[], MalType> f = _ => NilV;
+            Assert.IsTrue(MalEqual(new Fn(f, NilV), new Fn(f, NilV)));
+            Assert.IsFalse(MalEqual(new Fn(_ => NilV, NilV), new Fn(f, NilV)));
 
+
+            Assert.IsTrue(MalEqual(
+                new Map(new() { { new Str("name"), new Str("marcin") } }, NilV),
+                new Map(new() { { new Str("name"), new Str("marcin") } }, NilV)));
+
+            Assert.IsFalse(MalEqual(
+                new Map(new() { { new Keyword("name"), new Str("marcin") } }, NilV),
+                new Map(new() { { new Str("name"), new Str("marcin") } }, NilV)));
+
+            Assert.IsFalse(MalEqual(
+                new Map(new() { { new Str("name"), new Keyword("marcin") } }, NilV),
+                new Map(new() { { new Str("name"), new Str("marcin") } }, NilV)));
+
+            Assert.IsFalse(MalEqual(
+                new Map(new() { { new Str("name"), new Str("marcin") }, { new Str("age"), new Number(30) } }, NilV),
+                new Map(new() { { new Str("name"), new Str("marcin") } }, NilV)));
+        }
     }
 }
 

@@ -6,30 +6,10 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using static Mal.Types;
 
-
 namespace Mal
 {
-
     public static class Reader
     {
-        public static MalType? ReadText(string text) => Tokenize(text).Pipe(LListM.ToLList).Pipe(ReadForm).Mal;
-
-        public static (LList<string>? Tokens, MalType? Mal) ReadForm(LList<string>? tokens)
-        {
-            return tokens switch
-            {
-                null => (null, null),
-                LList<string>(var token, var restTokens) => token switch
-                {
-                    "^" => default, // todo 
-                    _ when MacroTokensMap.TryGetValue(token, out var macroToken) => default, // todo 
-                    _ when Bracket2ListMap.TryGetValue(token, out var listToken) => default, // todo 
-                    _ => (restTokens, ReadAtom(token))
-                }
-            };
-        }
-
-
         private static readonly Dictionary<string, string> MacroTokensMap = new()
         {
             { "@", "deref" },
@@ -39,28 +19,70 @@ namespace Mal
             { "~@", "splice-unquote" },
         };
 
+        public static MalType? ReadText(string text) => Tokenize(text).Pipe(LListM.ToLList).Pipe(ReadForm).Mal;
+
+        public static FormReader ReadForm(LList<string>? tokens) =>
+            tokens switch
+            {
+                null => new(null, null),
+                (var Token, var RestTokens) => Token switch
+                {
+                    "^" => ReadMeta(RestTokens),
+                    _ when MacroTokensMap.TryGetValue(Token, out var macroToken) => ReadMacro(RestTokens, macroToken),
+                    _ when Bracket2ListMap.TryGetValue(Token, out var ListType) =>
+                        ReadList(RestTokens, Types.List2BracketMap[ListType].Right).Pipe(r =>
+                            new FormReader(r.Tokens, ListType == ListTypeAndMap.HashMap ? MalsToMap(r.Mals) : new List(r.Mals, (ListType)ListType, NilV))
+                        ),
+                    _ => new(RestTokens, ReadAtom(Token))
+                }
+            };
 
 
-        // export function read_form(reader: Reader): ResultS<Option<MalType>> {
-        //   const token = reader.peek();
+        public record FormReader(LList<string>? Tokens, MalType? Mal) { }
+        public record ListReader(LList<string>? Tokens, LList<MalType>? Mals) { }
 
-        //   // reader macro
-        //   if (token === "^") {
-        //     reader.next();                          // skip current token
-        //     return read_form(reader).bind(metaMalO => matchUnion(metaMalO, {
-        //       some: ({ value }) => read_form(reader).map(malO => malO.map(mal => list([symbol("with-meta", nil), mal, value], "list", nil))),
-        //       none: ok
-        //     }));
-        //   } else if (token in readerMacros) {       // reader macro
-        //     reader.next();                          // skip current token
-        //     return read_form(reader).map(malO => malO.map(mal => list([symbol(readerMacros[token], nil), mal], "list", nil)));
-        //   } else if (token in bracket2ListMap) {   // list
-        //     return read_list(reader, token).map(some);
-        //   } else {
-        //     return read_atom(reader);
-        //   }
-        // }
 
+        public static ListReader ReadList(LList<string>? tokens, string eolToken)
+        {
+            return ReadForm(tokens) switch
+            {
+                { Mal: null } => throw new Exception("List is not closed"),
+                { Mal: Symbol symbol } fr when symbol.Name == eolToken => new(fr.Tokens, null),
+                (var RestTokens, var Mal) => ReadList(RestTokens, eolToken).Pipe(r => r with { Mals = new(Mal!, r.Mals) })
+            };
+        }
+
+        public static FormReader ReadMeta(LList<string>? tokens) =>
+            ReadForm(tokens) switch
+            {
+                { Mal: null } r => r,
+                (var RestTokens1, var MetaMal) => ReadForm(RestTokens1) switch
+                {
+                    { Mal: null } r => r,
+                    (var RestTokens2, var ValueMal) => new(RestTokens2, ListFrom(new Symbol("with-meta", NilV), ValueMal!, MetaMal!))
+                }
+            };
+
+        public static FormReader ReadMacro(LList<string>? tokens, string macroToken) =>
+            ReadForm(tokens) switch
+            {
+                { Mal: null } r => r,
+                (var RestTokens, var Mal) => new(RestTokens, ListFrom(new Symbol(macroToken, NilV), Mal!))
+            };
+
+        internal static Map MalsToMap(LList<MalType>? mals) =>
+            new(MalsToKeyValuePairs(mals).ToEnumerable().ToDictionary(kv => kv.Key, kv => kv.Value), NilV);
+
+        internal static LList<(MalType Key, MalType Value)>? MalsToKeyValuePairs(LList<MalType>? mals)
+        {
+            return mals switch
+            {
+                null => null,
+                { Head: Keyword or Str, Tail: { Head: { } value } } => new((mals.Head, value), MalsToKeyValuePairs(mals.Tail.Tail)),
+                _ => throw new Exception(string.Join(" ", mals.ToEnumerable().Select(m => Printer.PrintStr(m))).Pipe(str =>
+                        $"Invalid Map '{str}'. Valid Map requiries even number of items where each even item is 'keyword' or 'string'.")),
+            };
+        }
 
         internal static MalType ReadAtom(string token) =>
             Double.TryParse(token, out var doubleValue) switch
@@ -78,7 +100,7 @@ namespace Mal
                             _ when token.Length > 1 && token.LastOrDefault() == '"' => new Str(token[1..^1].CleanUpText()),
                             _ => throw new Exception($"String value '${token}' in not closed")
                         },
-                    _ => new Symbol(token)
+                    _ => new Symbol(token, NilV)
                 }
             };
 
