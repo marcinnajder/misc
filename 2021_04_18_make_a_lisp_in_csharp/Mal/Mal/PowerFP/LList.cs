@@ -44,7 +44,7 @@ namespace PowerFP
             static LList<T>? NextValue(IEnumerator<T> e) => e.MoveNext() ? new(e.Current, NextValue(e)) : null;
         }
 
-        public static LList<T>? LListFrom<T>(params T[] items) => items.Length > 0 ? items.ToLList() : null;
+        public static LList<T>? LListFrom<T>(params T[] items) => items.Length == 0 ? null : items.ToLList();
 
 
         public static int Count<T>(this LList<T>? llist) =>

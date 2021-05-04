@@ -17,7 +17,19 @@ namespace Mal
             while (true)
             {
                 var text = Console.ReadLine();
-                Console.WriteLine(text);
+                if (text != null)
+                {
+                    try
+                    {
+                        MalType? mal = Reader.ReadText(text);
+                        Console.WriteLine(mal == null ? "<empty>" : Printer.PrintStr(mal));
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine($"Error: {exception.Message}");
+                    }
+
+                }
             }
         }
     }
