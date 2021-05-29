@@ -21,7 +21,8 @@ namespace Mal.Tests
             Assert.AreEqual("(atom abc)", new Atom(new Str("abc")).PrintStr());
             Assert.AreEqual("#<function>", new Fn((_) => NilV, NilV).PrintStr());
             Assert.AreEqual("(a true [nil])", new List(new MalType[] { new Str("a"), TrueV, new List(new(NilV, null), ListType.Vector, NilV) }.ToLList(), ListType.List, NilV).PrintStr());
-            Assert.AreEqual("{name marcin :age 30}", new Map(new() { { new Str("name"), new Str("marcin") }, { new Keyword("age"), new Number(30) } }, NilV).PrintStr());
+            Assert.AreEqual("{name marcin :age 30}", new Map(MapM.MapFrom<MalType, MalType>((new Str("name"), new Str("marcin")), (new Keyword("age"), new Number(30))), NilV).PrintStr());
+
         }
 
     }

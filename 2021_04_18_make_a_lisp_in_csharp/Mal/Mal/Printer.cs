@@ -26,7 +26,7 @@ namespace Mal
                 Fn => "#<function>",
                 Atom(var Value) => $"(atom {PrintStr(Value, printReadable)})",
                 Map(var Value, _) =>
-                    $"{{{string.Join(' ', Value.Select(kv => $"{PrintStr(kv.Key, printReadable)} {PrintStr(kv.Value, printReadable)}")) }}}",
+                    $"{{{string.Join(' ', Value.Items.ToEnumerable().Select(kv => $"{PrintStr(kv.Key, printReadable)} {PrintStr(kv.Value, printReadable)}")) }}}",
 
                 //     list: ({ listType, items }) =>
                 //       `${list2BracketMap[listType][0]}${items.map(m => pr_str(m, print_readably)).join(" ")}${list2BracketMap[listType][1]}`,

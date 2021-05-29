@@ -71,7 +71,8 @@ namespace Mal
             };
 
         internal static Map MalsToMap(LList<MalType>? mals) =>
-            new(MalsToKeyValuePairs(mals).ToEnumerable().ToDictionary(kv => kv.Key, kv => kv.Value), NilV);
+                new(MapM.MapFrom(MalsToKeyValuePairs(mals).ToEnumerable()), NilV);
+        //new(MalsToKeyValuePairs(mals).ToEnumerable().ToDictionary(kv => kv.Key, kv => kv.Value), NilV);
 
         internal static LList<(MalType Key, MalType Value)>? MalsToKeyValuePairs(LList<MalType>? mals)
         {
@@ -80,7 +81,7 @@ namespace Mal
                 null => null,
                 { Head: Keyword or Str, Tail: { Head: { } value } } => new((mals.Head, value), MalsToKeyValuePairs(mals.Tail.Tail)),
                 _ => throw new Exception(string.Join(" ", mals.ToEnumerable().Select(m => Printer.PrintStr(m))).Pipe(str =>
-                        $"Invalid Map '{str}'. Valid Map requiries even number of items where each even item is 'keyword' or 'string'.")),
+                        $"Invalid Map '{str}'. Valid Map requires even number of items where each even item is 'keyword' or 'string'.")),
             };
         }
 

@@ -4,119 +4,99 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Mal.Types;
-
+using PowerFP;
 
 namespace Mal.Tests
 {
     public static class MalStepsRunner
     {
-        private enum Option { Deferrable, Optional, Soft }
+        public enum Option { Deferrable, Optional, Soft }
+        public record TestCase(string Input, List<string> Output, List<Option> Options) { }
 
-        private record TestCaseLine { }
-        private record OptionLine(Option Option) : TestCaseLine { }
-        private record InputLine(string Text) : TestCaseLine { }
-        private record OutputLine(string Text) : TestCaseLine { }
+        private static Dictionary<string, Option> OptionLines = Enum.GetValues<Option>()
+            .ToDictionary(option => $";>>> {option.ToString().ToLower()}=True");
 
-        private record TestCase(string Input, List<string> Output, List<Option> Options) { }
-
-
-
-
-        //"../../../Steps/step0_repl.mal"
-        private static TestCase[] readTestCase(string testFilePath) =>
+        public static TestCase[] ReadTestCases(string testFilePath) =>
             File.ReadAllLines(testFilePath)
                 .Select(l => l.Trim())
                 .Where(l => !string.IsNullOrEmpty(l))
                 .Where(l => !l.StartsWith(";;")) // skip comments
-                .Select(l => l switch
+                .Aggregate(new List<TestCase>(), (agg, l) =>
                {
-                   ";>>> optional=True" => new OptionLine(Option.Optional) as TestCaseLine,
-                   ";>>> deferrable=True" => new OptionLine(Option.Deferrable),
-                   ";>>> soft=True" => new OptionLine(Option.Soft),
-                   _ when l.StartsWith(";=>") && l.StartsWith(";/.") && l.StartsWith(";/") => new OutputLine(l),
-                   _ => new OutputLine(l)
-               })
-               .Aggregate(new List<TestCase>(), (agg, line) =>
-               {
-                   switch (line)
+                   if (OptionLines.TryGetValue(l, out var option))
                    {
-                       case InputLine(var Text):
-                           {
-                               agg.Add(new TestCase(Text, new(), new()));
-                               break;
-                           }
-                       case OutputLine(var Text):
-                           {
-                               agg.Last().Output.Add(Text);
-                               break;
-                           }
-                       case OptionLine(var Option):
-
-                           {
-                               agg.Last().Options.Add(Option);
-                               break;
-                           }
+                       agg.Last().Options.Add(option);
+                   }
+                   else if (l.StartsWith(";=>") || l.StartsWith(";/.") || l.StartsWith(";/"))
+                   {
+                       agg.Last().Output.Add(l);
+                   }
+                   else
+                   {
+                       agg.Add(new TestCase(l, new(), new()));
                    }
                    return agg;
                })
                .ToArray();
 
+        public static void ExecuteTest(string fileName, bool verbose, Func<string, object?, string> stepFunc, params Option[] options)
+        {
 
+            Action<string> Log = verbose ? Console.WriteLine : _ => { };
 
+            Log("******************************");
+            Log($"Runing file '{fileName}' ... ");
 
+            try
+            {
+                var testCases = ReadTestCases(fileName);
+                foreach (var testCase in testCases)
+                {
+                    // skip test when option not match
+                    if (testCase.Options.Count > 0 && testCase.Options.Intersect(options).Count() < testCase.Options.Count)
+                    {
+                        continue;
+                    }
 
-        // function readTestCases(fileName: string): TestCase[] {
-        //   const result: TestCase[] = [];
-        //   const testContent = fs.readFileSync(path.join(testsPath, fileName), "utf-8");
-        //   const testLines = testContent.split(os.EOL);
+                    try
+                    {
+                        var consoleOutputs = new List<string>();
 
-        //   var tests = pipe(
-        //     testLines,
-        //     map(l => l.trim()),
-        //     filter(l => l !== ""), // skip empty lines
-        //     filter(l => !/^;;/.test(l)), // skip comments
+                        Log(testCase.Input);
+                        var result = stepFunc(testCase.Input, null/*env*/);
+                        Log("-> " + result);
 
-        //     map<string, TestCaseLine>(l => {
-        //       if (l === ";>>> optional=True") return { type: "option", option: "optional" };
-        //       if (l === ";>>> deferrable=True") return { type: "option", option: "deferrable" };
-        //       if (l === ";>>> soft=True") return { type: "option", option: "soft" };
-        //       if (l.startsWith(";=>") || l.startsWith(";/.") || l.startsWith(";/")) return { type: "output", text: l };
-        //       return { type: "input", text: l };
-        //     }),
+                        var expected = testCase.Output
+                            .Select(l => new[] { ";=>", ";/" }.Aggregate(l, (ll, prefix) => ll.StartsWith(prefix) ? ll.Substring(prefix.Length) : ll))
+                            .ToLList();
 
-        //     scan<TestCaseLine, TestCase | null>((agg, l) => {
-        //       if (agg != null) {
-        //         switch (l.type) {
-        //           case "input": return { input: l.text, output: [], options: [...agg.options] };
-        //           case "output": {
-        //             agg.output.push(l.text);
-        //             return agg;
-        //           }
-        //           case "option": {
-        //             agg.options.push(l.option)
-        //             return agg;
-        //           }
-        //           default: return assertNever(l);
-        //         }
-        //       } else {
-        //         switch (l.type) {
-        //           case "input": return { input: l.text, output: [], options: [] };
-        //           default: {
-        //             throw `incorrect format of file '${fileName}' (input line should be first)`
-        //           }
-        //         }
-        //       }
-        //     }, null),
-        //     filter(o => o !== null),    // skip first "null" item
-        //     distinctuntilchanged(),     // for many outputs the same testcase is duplicated
-        //     toarray()
-        //   ) as any as TestCase[];
+                        var actual = consoleOutputs.Concat(new[] { result }.Where(l => l != "#<function>"))
+                            .ToLList();
 
-        //   return tests;
-        // }
+                        Assert.AreEqual(expected, actual);
 
-
+                        Log(" test succeeded");
+                    }
+                    catch (Exception stepException)
+                    {
+                        var errorOutputLine = testCase.Output.FirstOrDefault(l => l.StartsWith(";/."));
+                        if (errorOutputLine != null)
+                        {
+                            Log($"{stepException.Message} ~ {errorOutputLine}");
+                        }
+                        else
+                        {
+                            Assert.Fail(stepException.Message);
+                        }
+                        break;
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Log(exception.Message);
+                Log(" test failed");
+            }
+        }
     }
 }
-

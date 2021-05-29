@@ -98,7 +98,7 @@ namespace Mal.Tests
             Assert.AreEqual(new("aa", null), Tokens);
             Assert.IsTrue(Mal is Map);
             Assert.IsTrue(Types.MalEqual(
-                new Map(new() { { new Keyword("name"), new Str("marcin") }, { new Keyword("age"), new Number(30) } }, NilV),
+                new Map(MapM.MapFrom<MalType, MalType>((new Keyword("name"), new Str("marcin")), (new Keyword("age"), new Number(30))), NilV),
                 Mal!));
         }
     }

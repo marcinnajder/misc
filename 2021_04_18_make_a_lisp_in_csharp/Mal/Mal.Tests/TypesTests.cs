@@ -1,6 +1,7 @@
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PowerFP;
 using static Mal.Types;
 
 
@@ -22,20 +23,21 @@ namespace Mal.Tests
 
 
             Assert.IsTrue(MalEqual(
-                new Map(new() { { new Str("name"), new Str("marcin") } }, NilV),
-                new Map(new() { { new Str("name"), new Str("marcin") } }, NilV)));
+                new Map(MapM.MapFrom<MalType, MalType>((new Str("name"), new Str("marcin"))), NilV),
+                new Map(MapM.MapFrom<MalType, MalType>((new Str("name"), new Str("marcin"))), NilV)));
 
             Assert.IsFalse(MalEqual(
-                new Map(new() { { new Keyword("name"), new Str("marcin") } }, NilV),
-                new Map(new() { { new Str("name"), new Str("marcin") } }, NilV)));
+                new Map(MapM.MapFrom<MalType, MalType>((new Keyword("name"), new Str("marcin"))), NilV),
+                new Map(MapM.MapFrom<MalType, MalType>((new Str("name"), new Str("marcin"))), NilV)));
+
 
             Assert.IsFalse(MalEqual(
-                new Map(new() { { new Str("name"), new Keyword("marcin") } }, NilV),
-                new Map(new() { { new Str("name"), new Str("marcin") } }, NilV)));
+                new Map(MapM.MapFrom<MalType, MalType>((new Str("name"), new Keyword("marcin"))), NilV),
+                new Map(MapM.MapFrom<MalType, MalType>((new Str("name"), new Str("marcin"))), NilV)));
 
             Assert.IsFalse(MalEqual(
-                new Map(new() { { new Str("name"), new Str("marcin") }, { new Str("age"), new Number(30) } }, NilV),
-                new Map(new() { { new Str("name"), new Str("marcin") } }, NilV)));
+                new Map(MapM.MapFrom<MalType, MalType>((new Str("name"), new Keyword("marcin")), (new Str("age"), new Number(30))), NilV),
+                new Map(MapM.MapFrom<MalType, MalType>((new Str("name"), new Str("marcin"))), NilV)));
         }
     }
 }

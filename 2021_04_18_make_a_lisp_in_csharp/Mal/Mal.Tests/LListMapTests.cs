@@ -1,16 +1,17 @@
 
 using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PowerFP;
 using static Mal.Types;
 using static PowerFP.LListM;
-using static PowerFP.MapM;
+using static PowerFP.LListMapM;
 
 
 namespace Mal.Tests
 {
     [TestClass]
-    public class MapTests
+    public class LListMapTests
     {
         [TestMethod]
         public void AddTests()
@@ -36,7 +37,14 @@ namespace Mal.Tests
             var map2 = MapFrom(("surname", "najder"), ("name", "marcin"));
             Assert.AreNotSame(map1, map2);
             Assert.AreEqual(map1, map2);
-            Assert.IsNull(MapM.MapFrom<string, string>());
+
+            Assert.IsNull(LListMapM.MapFrom<string, string>());
+            Assert.IsNull(LListMapM.MapFrom(new Dictionary<string, string>() { }));
+            Assert.IsNull(LListMapM.MapFrom(new (string, string)[] { }));
+
+            Assert.AreEqual(
+                LListMapM.MapFrom(new Dictionary<string, string>() { { "name", "marcin" } }),
+                LListMapM.MapFrom(new[] { ("name", "marcin") }));
         }
 
         [TestMethod]
