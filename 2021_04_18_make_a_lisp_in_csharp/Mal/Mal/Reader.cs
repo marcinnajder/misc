@@ -10,14 +10,14 @@ namespace Mal
 {
     public static class Reader
     {
-        private static readonly Dictionary<string, string> MacroTokensMap = new()
-        {
-            { "@", "deref" },
-            { "'", "quote" },
-            { "`", "quasiquote" },
-            { "~", "unquote" },
-            { "~@", "splice-unquote" },
-        };
+        private static readonly Map<string, string> MacroTokensMap = MapM.MapFrom(
+            ("@", "deref"),
+            ("'", "quote"),
+            ("`", "quasiquote"),
+            ("~", "unquote"),
+            ("~@", "splice-unquote")
+        );
+
 
         public static MalType? ReadText(string text) => Tokenize(text).Pipe(LListM.ToLList).Pipe(ReadForm).Mal;
 
@@ -28,9 +28,9 @@ namespace Mal
                 (var Token, var RestTokens) => Token switch
                 {
                     "^" => ReadMeta(RestTokens),
-                    _ when MacroTokensMap.TryGetValue(Token, out var macroToken) => ReadMacro(RestTokens, macroToken),
-                    _ when Bracket2ListMap.TryGetValue(Token, out var ListType) =>
-                        ReadList(RestTokens, Types.List2BracketMap[ListType].Right).Pipe(r =>
+                    _ when MacroTokensMap.TryFind(Token, out var macroToken) => ReadMacro(RestTokens, macroToken),
+                    _ when Bracket2ListMap.TryFind(Token, out var ListType) =>
+                        ReadList(RestTokens, Types.List2BracketMap.Find(ListType).Right).Pipe(r =>
                             new FormReader(r.Tokens, ListType == ListTypeAndMap.HashMap ? MalsToMap(r.Mals) : new List(r.Mals, (ListType)ListType, NilV))
                         ),
                     _ => new(RestTokens, ReadAtom(Token))
@@ -70,9 +70,7 @@ namespace Mal
                 (var RestTokens, var Mal) => new(RestTokens, ListFrom(new Symbol(macroToken, NilV), Mal!))
             };
 
-        internal static Map MalsToMap(LList<MalType>? mals) =>
-                new(MapM.MapFrom(MalsToKeyValuePairs(mals).ToEnumerable()), NilV);
-        //new(MalsToKeyValuePairs(mals).ToEnumerable().ToDictionary(kv => kv.Key, kv => kv.Value), NilV);
+        internal static Map MalsToMap(LList<MalType>? mals) => new(MapM.MapFrom(MalsToKeyValuePairs(mals).ToEnumerable()), NilV);
 
         internal static LList<(MalType Key, MalType Value)>? MalsToKeyValuePairs(LList<MalType>? mals)
         {

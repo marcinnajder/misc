@@ -38,14 +38,16 @@ namespace Mal
         public static Nil NilV = new Nil();
 
 
-        public static readonly Dictionary<ListTypeAndMap, (string Left, string Right)> List2BracketMap = new()
-        {
-            { ListTypeAndMap.List, ("(", ")") },
-            { ListTypeAndMap.Vector, ("[", "]") },
-            { ListTypeAndMap.HashMap, ("{", "}") },
-        };
+        public static readonly Map<ListTypeAndMap, (string Left, string Right)> List2BracketMap = MapM.MapFrom(
+            (ListTypeAndMap.List, ("(", ")")),
+            (ListTypeAndMap.Vector, ("[", "]")),
+            (ListTypeAndMap.HashMap, ("{", "}"))
+        );
 
-        public static readonly Dictionary<string, ListTypeAndMap> Bracket2ListMap = List2BracketMap.ToDictionary(kv => kv.Value.Left, kv => kv.Key);
+        public static readonly Map<string, ListTypeAndMap> Bracket2ListMap =
+            MapM.MapFrom(List2BracketMap.Entries().Select(kv => (kv.Value.Left, kv.Key)));
+
+
 
         public static List ListFrom(params MalType[] mals) => new List(mals.ToLList(), ListType.List, NilV);
 

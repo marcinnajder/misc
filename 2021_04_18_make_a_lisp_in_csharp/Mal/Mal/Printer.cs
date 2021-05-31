@@ -9,7 +9,7 @@ namespace Mal
 {
     public static class Printer
     {
-        private static (string Left, string Right) ToBracket(ListType listType) => List2BracketMap[(ListTypeAndMap)(int)listType];
+        private static (string Left, string Right) ToBracket(ListType listType) => List2BracketMap.Find((ListTypeAndMap)(int)listType);
 
         public static string PrintStr(this MalType mal, bool printReadable = false) =>
             mal switch
@@ -26,7 +26,7 @@ namespace Mal
                 Fn => "#<function>",
                 Atom(var Value) => $"(atom {PrintStr(Value, printReadable)})",
                 Map(var Value, _) =>
-                    $"{{{string.Join(' ', Value.Items.ToEnumerable().Select(kv => $"{PrintStr(kv.Key, printReadable)} {PrintStr(kv.Value, printReadable)}")) }}}",
+                    $"{{{string.Join(' ', Value.Entries().Select(kv => $"{PrintStr(kv.Key, printReadable)} {PrintStr(kv.Value, printReadable)}")) }}}",
 
                 //     list: ({ listType, items }) =>
                 //       `${list2BracketMap[listType][0]}${items.map(m => pr_str(m, print_readably)).join(" ")}${list2BracketMap[listType][1]}`,

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace PowerFP
@@ -27,5 +28,16 @@ namespace PowerFP
         public static bool ContainsKey<K, V>(this Map<K, V> map, K key) => LListMapM.ContainsKey(map.Items, key);
         public static Map<K, V> Remove<K, V>(this Map<K, V> map, K key) => new(LListMapM.Remove(map.Items, key));
         public static Map<K, V> Change<K, V>(this Map<K, V> map, K key, Func<(bool, V?), (bool, V?)> f) => new(LListMapM.Change(map.Items, key, f));
+
+
+        public static bool TryFind<K, V>(this Map<K, V> map, K key, out V value)
+        {
+            var (found, foundValue) = LListMapM.TryFind(map.Items, key);
+            value = (found ? foundValue : default)!;
+            return found;
+        }
+
+        public static IEnumerable<(K Key, V Value)> Entries<K, V>(this Map<K, V> map) => map.Items.ToEnumerable();
+        public static LList<(K Key, V Value)>? EntriesL<K, V>(this Map<K, V> map) => map.Items;
     }
 }

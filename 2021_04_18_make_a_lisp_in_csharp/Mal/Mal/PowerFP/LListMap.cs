@@ -17,7 +17,6 @@ namespace PowerFP
         public static LList<(K, V)>? MapFrom<K, V>(IEnumerable<(K, V)> items) =>
             items.Aggregate((LList<(K, V)>?)null, (m, kv) => m.Add(kv.Item1, kv.Item2));
 
-
         public static LList<(K, V)> Add<K, V>(this LList<(K, V)>? map, K key, V value)
             => (map, key) switch
             {
