@@ -29,7 +29,7 @@ namespace Mal
         public record False() : MalType { };
         public record Str(string Value) : MalType { };
         public record Keyword(string Name) : MalType { };
-        public record Fn(Func<MalType[], MalType> Value, MalType Meta) : MalType { };
+        public record Fn(Func<LList<MalType>?, MalType> Value, MalType Meta) : MalType { };
         public record Atom(MalType Mal) : MalType { };
         public record Map(Map<MalType, MalType> Value, MalType Meta) : MalType { };
 
@@ -79,4 +79,4 @@ namespace Mal
 }
 
 #pragma warning disable CS8509
-#pragma warning disable CS8509
+#pragma warning restore CS8509

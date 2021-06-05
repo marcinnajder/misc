@@ -17,7 +17,7 @@ namespace Mal.Tests
             Assert.IsFalse(MalEqual(new Str("a"), new Str("b")));
             Assert.IsFalse(MalEqual(new Str("a"), new Symbol("b", NilV)));
 
-            Func<MalType[], MalType> f = _ => NilV;
+            Func<LList<MalType>?, MalType> f = _ => NilV;
             Assert.IsTrue(MalEqual(new Fn(f, NilV), new Fn(f, NilV)));
             Assert.IsFalse(MalEqual(new Fn(_ => NilV, NilV), new Fn(f, NilV)));
 

@@ -25,7 +25,7 @@ namespace Mal.Tests
 
             Assert.AreEqual(LListFrom((3, "3!"), (5, "5!"), (7, "7!!"), (10, "10!")), map = map.Add(7, "7!!"));
 
-            Assert.ThrowsException<Exception>(() => new LList<(string?, string)>(("", ""), null).Add(null, ""));
+            //Assert.ThrowsException<Exception>(() => new LList<(string?, string)>(("", ""), null).Add(null, ""));
 
             Assert.AreEqual(LListFrom((3, "3!"), (5, "5!"), (7, "7!"), (10, "10!")), map = map.Add(7, "7!"));
         }

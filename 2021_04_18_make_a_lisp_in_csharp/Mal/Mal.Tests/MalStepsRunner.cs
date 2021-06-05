@@ -21,23 +21,23 @@ namespace Mal.Tests
                 .Select(l => l.Trim())
                 .Where(l => !string.IsNullOrEmpty(l))
                 .Where(l => !l.StartsWith(";;")) // skip comments
-                .Aggregate(new List<TestCase>(), (agg, l) =>
-               {
-                   if (OptionLines.TryGetValue(l, out var option))
-                   {
-                       agg.Last().Options.Add(option);
-                   }
-                   else if (l.StartsWith(";=>") || l.StartsWith(";/.") || l.StartsWith(";/"))
-                   {
-                       agg.Last().Output.Add(l);
-                   }
-                   else
-                   {
-                       agg.Add(new TestCase(l, new(), new()));
-                   }
-                   return agg;
-               })
-               .ToArray();
+                .Aggregate(new { Items = new List<TestCase>(), Options = new List<Option>() }, (agg, l) =>
+                {
+                    if (OptionLines.TryGetValue(l, out var option))
+                    {
+                        agg.Options.Add(option);
+                    }
+                    else if (l.StartsWith(";=>") || l.StartsWith(";/.") || l.StartsWith(";/"))
+                    {
+                        agg.Items.Last().Output.Add(l);
+                    }
+                    else
+                    {
+                        agg.Items.Add(new TestCase(l, new(), agg.Options.ToList()));
+                    }
+                    return agg;
+                })
+                .Items.ToArray();
 
         public static void ExecuteTest(string fileName, bool verbose, Func<string, object?, string> stepFunc, params Option[] options)
         {
@@ -52,6 +52,7 @@ namespace Mal.Tests
                 var testCases = ReadTestCases(fileName);
                 foreach (var testCase in testCases)
                 {
+
                     // skip test when option not match
                     if (testCase.Options.Count > 0 && testCase.Options.Intersect(options).Count() < testCase.Options.Count)
                     {
@@ -88,7 +89,7 @@ namespace Mal.Tests
                         {
                             Assert.Fail(stepException.Message);
                         }
-                        break;
+                        // break;
                     }
                 }
             }
@@ -96,6 +97,7 @@ namespace Mal.Tests
             {
                 Log(exception.Message);
                 Log(" test failed");
+                throw;
             }
         }
     }

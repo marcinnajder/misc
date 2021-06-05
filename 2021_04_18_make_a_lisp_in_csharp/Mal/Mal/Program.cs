@@ -7,6 +7,7 @@ using static Mal.Types;
 
 [assembly: InternalsVisibleTo("Mal.Tests")]
 
+
 namespace Mal
 {
     class Program
@@ -22,7 +23,15 @@ namespace Mal
                     try
                     {
                         MalType? mal = Reader.ReadText(text);
-                        Console.WriteLine(mal == null ? "<empty>" : Printer.PrintStr(mal));
+                        if (mal == null)
+                        {
+                            Console.WriteLine("<empty>");
+                        }
+                        else
+                        {
+                            mal = Evaluation.Eval(mal, Evaluation.Env);
+                            Console.WriteLine(Printer.PrintStr(mal, true));
+                        }
                     }
                     catch (Exception exception)
                     {

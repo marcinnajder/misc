@@ -79,7 +79,7 @@ namespace PowerFP
             llist switch
             {
                 null => throw new Exception("List contains no elements"),
-                LList<T> { Tail: null } => llist.Head,
+                { Tail: null } => llist.Head,
                 _ => Aggregate(llist.Tail, llist.Head, f)
             };
 

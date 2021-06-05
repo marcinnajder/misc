@@ -1,7 +1,5 @@
 
 using PowerFP;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using static Mal.Types;
 
@@ -11,7 +9,7 @@ namespace Mal
     {
         private static (string Left, string Right) ToBracket(ListType listType) => List2BracketMap.Find((ListTypeAndMap)(int)listType);
 
-        public static string PrintStr(this MalType mal, bool printReadable = false) =>
+        public static string PrintStr(this MalType? mal, bool printReadable = false) =>
             mal switch
             {
                 Number(var Value) => Value.ToString(),

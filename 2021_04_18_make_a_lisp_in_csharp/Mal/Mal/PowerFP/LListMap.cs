@@ -7,23 +7,36 @@ namespace PowerFP
 {
     public static class LListMapM
     {
-        public static LList<(K, V)>? MapFrom<K, V>(params (K, V)[] items) =>
+        public static LList<(K, V)>? MapFrom<K, V>(params (K, V)[] items) where K : notnull =>
             items.Length == 0 ? null : MapFrom(items as IEnumerable<(K, V)>);
 
 
         public static LList<(K, V)>? MapFrom<K, V>(Dictionary<K, V> items) where K : notnull =>
             items.Count == 0 ? null : MapFrom(items.Select(kv => (kv.Key, kv.Value)));
 
-        public static LList<(K, V)>? MapFrom<K, V>(IEnumerable<(K, V)> items) =>
+        public static LList<(K, V)>? MapFrom<K, V>(IEnumerable<(K, V)> items) where K : notnull =>
             items.Aggregate((LList<(K, V)>?)null, (m, kv) => m.Add(kv.Item1, kv.Item2));
 
-        public static LList<(K, V)> Add<K, V>(this LList<(K, V)>? map, K key, V value)
-            => (map, key) switch
-            {
+        // public static LList<(K, V)> Add<K, V>(this LList<(K, V)>? map, K key, V value)
+        //     => (map, key) switch
+        //     {
 
-                (_, null) or (((null, _), _), _) => throw new Exception("'Key' value cannot be null."),
-                (null, _) => new((key, value), null),
-                ((var Head, var Tail), _) => Head switch
+        //         (_, null) or (((null, _), _), _) => throw new Exception("'Key' value cannot be null."),
+        //         (null, _) => new((key, value), null),
+        //         ((var Head, var Tail), _) => Head switch
+        //         {
+        //             (var Key, _) when key.Equals(Key) => new((key, value), Tail),
+        //             (var Key, _) when key.GetHashCode() < Key.GetHashCode() => new((key, value), map),
+        //             _ => new(Head, Add(Tail, key, value))
+        //         },
+        //     };
+
+
+        public static LList<(K, V)> Add<K, V>(this LList<(K, V)>? map, K key, V value) where K : notnull
+            => map switch
+            {
+                null => new((key, value), null),
+                (var Head, var Tail) => Head switch
                 {
                     (var Key, _) when key.Equals(Key) => new((key, value), Tail),
                     (var Key, _) when key.GetHashCode() < Key.GetHashCode() => new((key, value), map),
@@ -31,12 +44,12 @@ namespace PowerFP
                 },
             };
 
-        public static (bool, V?) TryFind<K, V>(this LList<(K, V)>? map, K key)
-            => (map, key) switch
+
+        public static (bool, V?) TryFind<K, V>(this LList<(K, V)>? map, K key) where K : notnull
+            => map switch
             {
-                (_, null) or (((null, _), _), _) => throw new Exception("'Key' value cannot be null."),
-                (null, _) => (false, default(V)),
-                ((var Head, var Tail), _) => Head switch
+                null => (false, default(V)),
+                (var Head, var Tail) => Head switch
                 {
                     (var Key, var Value) when key.Equals(Key) => (true, Value),
                     (var Key, _) when key.GetHashCode() < Key.GetHashCode() => (false, default(V)),
@@ -45,14 +58,14 @@ namespace PowerFP
             };
 
 
-        public static V Find<K, V>(this LList<(K, V)>? map, K key)
+        public static V Find<K, V>(this LList<(K, V)>? map, K key) where K : notnull
             => TryFind(map, key) is (true, var Value) ? Value! : throw new Exception($"Map does not contain '{key}' key");
 
-        public static bool ContainsKey<K, V>(this LList<(K, V)>? map, K key)
+        public static bool ContainsKey<K, V>(this LList<(K, V)>? map, K key) where K : notnull
             => TryFind(map, key) is (true, _) ? true : false;
 
 
-        public static LList<(K, V)>? Remove<K, V>(this LList<(K, V)>? map, K key)
+        public static LList<(K, V)>? Remove<K, V>(this LList<(K, V)>? map, K key) where K : notnull
             => (map, key) switch
             {
                 (_, null) or (((null, _), _), _) => throw new Exception("'Key' value cannot be null."),
@@ -65,7 +78,7 @@ namespace PowerFP
                 },
             };
 
-        public static LList<(K, V)>? Change<K, V>(this LList<(K, V)>? map, K key, Func<(bool, V?), (bool, V?)> f)
+        public static LList<(K, V)>? Change<K, V>(this LList<(K, V)>? map, K key, Func<(bool, V?), (bool, V?)> f) where K : notnull
             => (map, key) switch
             {
 

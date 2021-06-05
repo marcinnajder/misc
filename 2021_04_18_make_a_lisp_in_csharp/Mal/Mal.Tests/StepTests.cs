@@ -12,6 +12,8 @@ namespace Mal.Tests
     [TestClass]
     public class ExecuteTest
     {
+        private bool verbose = false;
+
         [TestMethod]
         public void Step0()
         {
@@ -19,16 +21,28 @@ namespace Mal.Tests
             // Console.WriteLine(string.Join(Environment.NewLine,
             //     steps.Select(t => (t.Input, string.Join(",", t.Output), string.Join(",", t.Options)))));
 
-            MalStepsRunner.ExecuteTest("../../../MalSteps/step0_repl.mal", verbose: false,
-                (text, env) => text);
+            MalStepsRunner.ExecuteTest("../../../MalSteps/step0_repl.mal", verbose: this.verbose, (text, env) => text);
         }
 
         [TestMethod]
         public void Step1()
         {
-            MalStepsRunner.ExecuteTest("../../../MalSteps/step1_read_print.mal", verbose: false,
-                (text, env) => Reader.ReadText(text).Pipe(mal => Printer.PrintStr(mal!)));
+            MalStepsRunner.ExecuteTest("../../../MalSteps/step1_read_print.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
+                .Pipe(mal => Printer.PrintStr(mal, true))
+                , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional
+                );
         }
+
+        [TestMethod]
+        public void Step2()
+        {
+            MalStepsRunner.ExecuteTest("../../../MalSteps/step2_eval.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
+                .Pipe(mal => mal != null ? Evaluation.Eval(mal!, Evaluation.Env) : null)
+                .Pipe(mal => Printer.PrintStr(mal, true))
+                , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional
+            );
+        }
+
 
         // [TestMethod]
         // public void Step2()
