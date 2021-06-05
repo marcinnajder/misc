@@ -29,7 +29,7 @@ namespace Mal
                         }
                         else
                         {
-                            mal = Evaluation.Eval(mal, Evaluation.Env);
+                            mal = EvalM.Eval(mal, EnvM.DefaultEnv);
                             Console.WriteLine(Printer.PrintStr(mal, true));
                         }
                     }

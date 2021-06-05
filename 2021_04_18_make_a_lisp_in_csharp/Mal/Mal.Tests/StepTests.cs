@@ -37,7 +37,17 @@ namespace Mal.Tests
         public void Step2()
         {
             MalStepsRunner.ExecuteTest("../../../MalSteps/step2_eval.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
-                .Pipe(mal => mal != null ? Evaluation.Eval(mal!, Evaluation.Env) : null)
+                .Pipe(mal => mal != null ? EvalM.Eval(mal!, EnvM.DefaultEnv) : null)
+                .Pipe(mal => Printer.PrintStr(mal, true))
+                , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional
+            );
+        }
+
+        [TestMethod]
+        public void Step3()
+        {
+            MalStepsRunner.ExecuteTest("../../../MalSteps/step3_env.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
+                .Pipe(mal => mal != null ? EvalM.Eval(mal!, EnvM.DefaultEnv) : null)
                 .Pipe(mal => Printer.PrintStr(mal, true))
                 , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional
             );
