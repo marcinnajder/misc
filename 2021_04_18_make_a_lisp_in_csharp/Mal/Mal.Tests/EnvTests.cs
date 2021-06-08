@@ -12,18 +12,6 @@ namespace Mal.Tests
     public class EnvTests
     {
         [TestMethod]
-        public void ExecuteArithmeticOperationTest()
-        {
-            Func<double, double, double> add = (a, b) => a + b;
-
-            Assert.ThrowsException<Exception>(() => EnvM.ExecuteArithmeticOperation(null, add));
-            Assert.ThrowsException<Exception>(() => EnvM.ExecuteArithmeticOperation(new(new Number(1), null), add));
-            Assert.ThrowsException<Exception>(() => EnvM.ExecuteArithmeticOperation(new(new Number(1), new(new Str("2"), null)), add));
-
-            Assert.AreEqual(new Number(1 + 2 + 3), EnvM.ExecuteArithmeticOperation(new Number[] { new(1), new(2), new(3) }.Cast<MalType>().ToLList(), add));
-        }
-
-        [TestMethod]
         public void EnvTest()
         {
             var a = new Symbol("a", NilV);
@@ -32,11 +20,11 @@ namespace Mal.Tests
             var d = new Symbol("d", NilV);
 
             var env1 = new Env(
-                new Map<Symbol, MalType>(null).Add(a, new Str("a")).Add(b, new Str("b")),
+                MapM.Empty<Symbol, MalType>().Add(a, new Str("a")).Add(b, new Str("b")),
                 null);
 
             var env2 = new Env(
-                new Map<Symbol, MalType>(null).Add(c, new Str("c")),
+                MapM.Empty<Symbol, MalType>().Add(c, new Str("c")),
                 env1);
 
 

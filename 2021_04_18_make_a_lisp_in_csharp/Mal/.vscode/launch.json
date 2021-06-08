@@ -12,7 +12,7 @@
             "program": "${workspaceFolder}/Mal/bin/Debug/net5.0/Mal.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Mal",
-            "console": "internalConsole",
+            "console": "integratedTerminal",
             "stopAtEntry": false
         },
         {

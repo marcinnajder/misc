@@ -10,9 +10,11 @@ namespace PowerFP
         public static LList<(K, V)>? MapFrom<K, V>(params (K, V)[] items) where K : notnull =>
             items.Length == 0 ? null : MapFrom(items as IEnumerable<(K, V)>);
 
-
         public static LList<(K, V)>? MapFrom<K, V>(Dictionary<K, V> items) where K : notnull =>
             items.Count == 0 ? null : MapFrom(items.Select(kv => (kv.Key, kv.Value)));
+
+        public static LList<(K, V)>? MapFrom<K, V>(LList<(K Key, V Value)>? items) where K : notnull =>
+            items == null ? null : MapFrom(items.ToEnumerable());
 
         public static LList<(K, V)>? MapFrom<K, V>(IEnumerable<(K, V)> items) where K : notnull =>
             items.Aggregate((LList<(K, V)>?)null, (m, kv) => m.Add(kv.Item1, kv.Item2));

@@ -7,6 +7,8 @@ namespace Mal
 {
     public static class Printer
     {
+
+
         private static (string Left, string Right) ToBracket(ListType listType) => List2BracketMap.Find((ListTypeAndMap)(int)listType);
 
         public static string PrintStr(this MalType? mal, bool printReadable = false) =>

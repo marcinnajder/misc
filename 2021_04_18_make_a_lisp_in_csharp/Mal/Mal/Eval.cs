@@ -19,6 +19,9 @@ namespace Mal
                 List { Items: null } => mal,
                 List { Items: (Symbol { Name: "def!" }, var Tail) } => ApplyDef(Tail, env),
                 List { Items: (Symbol { Name: "let*" }, var Tail) } => ApplyLet(Tail, env),
+                List { Items: (Symbol { Name: "do" }, var Tail) } => ApplyDo(Tail, env),
+                List { Items: (Symbol { Name: "if" }, var Tail) } => ApplyIf(Tail, env),
+                List { Items: (Symbol { Name: "fn*" }, var Tail) } => ApplyFn(Tail, env),
                 List list => EvalAst(list, env) switch
                 {
                     List { Items: (Fn fn, var Args) } => fn.Value(Args),
@@ -27,12 +30,21 @@ namespace Mal
                 },
             };
 
+        internal static MalType EvalAst(MalType mal, Env env) =>
+            mal switch
+            {
+                Symbol symbol => env.Get(symbol),
+                List list => list with { Items = list.Items.Select(m => Eval(m, env)) },
+                Map map => map with { Value = MapM.MapFrom(map.Value.EntriesL().Select(kv => (kv.Key, Eval(kv.Value, env)))) },
+                _ => mal
+            };
+
         // (let* (a 1) a + 2) 
         internal static MalType ApplyLet(LList<MalType>? items, Env env)
             => items switch
             {
                 (List { Items: var Bindings }, (var Expr, null)) =>
-                    ApplyBindings(Bindings, new Env(new(null), env)).Pipe(newEnv => Eval(Expr, newEnv)),
+                    ApplyBindings(Bindings, new Env(MapM.Empty<Symbol, MalType>(), env)).Pipe(newEnv => Eval(Expr, newEnv)),
                 _ => throw new Exception($"'let*' requires 2 arguments where the first is a list of bindings and the second is a Mal expression, but got '{items.JoinMalTypes()}'")
             };
 
@@ -55,14 +67,68 @@ namespace Mal
                 _ => throw new Exception($"'def!' requires 2 arguments where the first argument must be 'symbol', but got '{items.JoinMalTypes()}'")
             };
 
-        internal static MalType EvalAst(MalType mal, Env env) =>
-            mal switch
+        // (do (...) (...) (....) ) 
+        internal static MalType ApplyDo(LList<MalType>? items, Env env)
+            => items switch
             {
-                Symbol symbol => env.Get(symbol),
-                List list => list with { Items = list.Items.Select(m => Eval(m, env)) },
-                Map map => map with { Value = new(map.Value.Items.Select(kv => (kv.Key, Eval(kv.Value, env)))) },
-                _ => mal
+                (var Head, var Tail) => Eval(Head, env).Pipe(mal => Tail == null ? mal : ApplyDo(Tail, env)),
+                null => throw new Exception($"'do' requires at least one argument")
             };
+
+        // (if (...) (...) (...) )
+        internal static MalType ApplyIf(LList<MalType>? items, Env env)
+            => items switch
+            {
+                (var If, (var Then, (null or (_, null))) ThenElse) => Eval(If, env).Pipe(@if => @if switch
+               {
+                   not (Nil or False) => Eval(Then, env),
+                   _ => ThenElse.Tail == null ? NilV : Eval(ThenElse.Tail.Head, env)
+               }),
+                _ => throw new Exception($"'if' requires 2 or 3 arguments but got '{items.JoinMalTypes()}'")
+            };
+
+
+
+
+        // (fn* (...) ...)
+        internal static MalType ApplyFn(LList<MalType>? items, Env env)
+             => items switch
+             {
+                 (List { Items: var ArgNames }, (var Body, null)) =>
+                    new Fn(argsValues => Eval(Body, new Env(MapM.MapFrom(BindFunctionArguments(ArgNames, argsValues).ToEnumerable()), env)), NilV),
+                 // new Fn(argsValues =>
+                 // {
+                 //     //var aaa = new Env(new(BindFunctionArguments(ArgNames, argsValues)), env);
+
+
+                 //     var aaa = new Env(MapM.MapFrom(BindFunctionArguments(ArgNames, argsValues).ToEnumerable()), env);
+
+                 //     var body = Body;
+                 //     return Eval(body, aaa);
+                 // }, NilV),
+                 _ => throw new Exception($"'fn*' requires 2 arguments where the first one must be a 'list', but got '{items.JoinMalTypes()}'")
+             };
+
+
+        internal static LList<(Symbol, MalType)>? BindFunctionArguments(LList<MalType>? names, LList<MalType>? values)
+            => (names, values) switch
+            {
+                (null, _) => null,
+                ((Symbol { Name: "&" }, (Symbol ArgName, null)), var ArgValue) => new((ArgName, new List(ArgValue, ListType.List, NilV)), null),
+                ((Symbol ArgName, var RestArgNames), (var ArgValue, var RestArgValues)) =>
+                    new((ArgName, ArgValue), BindFunctionArguments(RestArgNames, RestArgValues)),
+                _ => throw new Exception($"Cannot bind function arguments, names: '{names.JoinMalTypes()}' , values: '{values.JoinMalTypes()}'")
+            };
+
+        // => items switch
+        // {
+        //     (var If, (var Then, (null or (_, null))) ThenElse) => Eval(If, env).Pipe(@if => @if switch
+        //    {
+        //        not (Nil or False) => Eval(Then, env),
+        //        _ => ThenElse.Tail == null ? NilV : Eval(ThenElse.Tail.Head, env)
+        //    }),
+        //     _ => throw new Exception($"'if' requires 2 or 3 arguments but got '{items.JoinMalTypes()}'")
+        // };
 
     }
 }

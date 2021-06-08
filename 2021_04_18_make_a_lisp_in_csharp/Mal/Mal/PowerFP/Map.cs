@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,10 +15,23 @@ namespace PowerFP
     // public record Map1<K, V>((K, V) Head, LList<(K, V)>? Tail) : LList<(K, V)>(Head, Tail) { }
     // public record Map2<K, V>(K Key, V Value, Map2<K, V>? Tail) { }
 
-    public record Map<K, V>(LList<(K Key, V Value)>? Items) where K : notnull { }
+
+    //public record Map<K, V>(LList<(K Key, V Value)>? Items) where K : notnull { }
+
+    // 'Map' wraps sorted linked list and only 'MapM' type can access members of 'Map' type.
+    public record Map<K, V>
+        where K : notnull
+    {
+        internal LList<(K Key, V Value)>? Items { get; }
+        internal Map(LList<(K Key, V Value)>? items) => Items = items;
+    }
+
 
     public static class MapM
     {
+        public static Map<K, V> Empty<K, V>() where K : notnull => new(null);
+
+        public static Map<K, V> MapFrom<K, V>(LList<(K Key, V Value)>? items) where K : notnull => new(LListMapM.MapFrom(items));
         public static Map<K, V> MapFrom<K, V>(params (K, V)[] items) where K : notnull => new(LListMapM.MapFrom(items));
         public static Map<K, V> MapFrom<K, V>(Dictionary<K, V> items) where K : notnull => new(LListMapM.MapFrom(items));
         public static Map<K, V> MapFrom<K, V>(IEnumerable<(K, V)> items) where K : notnull => new(LListMapM.MapFrom(items));

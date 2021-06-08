@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PowerFP;
+using static Mal.EnvM;
+using static Mal.Program;
 
 namespace Mal.Tests
 {
@@ -39,10 +41,15 @@ namespace Mal.Tests
                 })
                 .Items.ToArray();
 
-        public static void ExecuteTest(string fileName, bool verbose, Func<string, object?, string> stepFunc, params Option[] options)
+        public static void ExecuteTest(string fileName, bool verbose, Func<string, Env, string> stepFunc, params Option[] options)
         {
 
             Action<string> Log = verbose ? Console.WriteLine : _ => { };
+            List<string> consoleOutputs = new List<string>();
+            Core.PrintLine = text => consoleOutputs.Add(text);
+
+            Env env = DefaultEnv();
+            InitEnv(ReplStep, env);
 
             Log("******************************");
             Log($"Runing file '{fileName}' ... ");
@@ -61,12 +68,18 @@ namespace Mal.Tests
 
                     try
                     {
-                        var consoleOutputs = new List<string>();
+                        consoleOutputs = new List<string>();
 
                         Log(testCase.Input);
-                        var result = stepFunc(testCase.Input, null/*env*/);
+                        var result = stepFunc(testCase.Input, env);
                         Log("-> " + result);
 
+
+                        if (testCase.Output.Any(aa => aa.StartsWith(";/")))
+                        {
+                            var aa132 = 123;
+
+                        }
                         var expected = testCase.Output
                             .Select(l => new[] { ";=>", ";/" }.Aggregate(l, (ll, prefix) => ll.StartsWith(prefix) ? ll.Substring(prefix.Length) : ll))
                             .ToLList();

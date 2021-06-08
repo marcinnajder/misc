@@ -4,8 +4,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PowerFP;
-using static Mal.Types;
-
+using static Mal.Program;
 
 namespace Mal.Tests
 {
@@ -37,7 +36,7 @@ namespace Mal.Tests
         public void Step2()
         {
             MalStepsRunner.ExecuteTest("../../../MalSteps/step2_eval.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
-                .Pipe(mal => mal != null ? EvalM.Eval(mal!, EnvM.DefaultEnv) : null)
+                .Pipe(mal => mal != null ? EvalM.Eval(mal!, env) : null)
                 .Pipe(mal => Printer.PrintStr(mal, true))
                 , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional
             );
@@ -47,7 +46,17 @@ namespace Mal.Tests
         public void Step3()
         {
             MalStepsRunner.ExecuteTest("../../../MalSteps/step3_env.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
-                .Pipe(mal => mal != null ? EvalM.Eval(mal!, EnvM.DefaultEnv) : null)
+                .Pipe(mal => mal != null ? EvalM.Eval(mal!, env) : null)
+                .Pipe(mal => Printer.PrintStr(mal, true))
+                , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional
+            );
+        }
+
+        [TestMethod]
+        public void Step4()
+        {
+            MalStepsRunner.ExecuteTest("../../../MalSteps/step4_if_fn_do.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
+                .Pipe(mal => mal != null ? EvalM.Eval(mal!, env) : null)
                 .Pipe(mal => Printer.PrintStr(mal, true))
                 , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional
             );

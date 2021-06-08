@@ -25,7 +25,7 @@ namespace Mal.Tests
             // kolejnosc elementow w Map nie jest deterministyczna poniewaz GetHashCode() dla rekordow liczy sie roznie pomiedzy wywolaniami
             var list = MapM.MapFrom<MalType, MalType>((new Str("name"), new Str("marcin")), (new Keyword("age"), new Number(30)));
             var map = new Map(list, NilV);
-            if (map.Value.Items!.Head.Key is Str)
+            if (map.Value.EntriesL()!.Head.Key is Str)
             {
                 Assert.AreEqual("{name marcin :age 30}", map.PrintStr());
             }
