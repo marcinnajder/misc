@@ -96,16 +96,6 @@ namespace Mal
              {
                  (List { Items: var ArgNames }, (var Body, null)) =>
                     new Fn(argsValues => Eval(Body, new Env(MapM.MapFrom(BindFunctionArguments(ArgNames, argsValues).ToEnumerable()), env)), NilV),
-                 // new Fn(argsValues =>
-                 // {
-                 //     //var aaa = new Env(new(BindFunctionArguments(ArgNames, argsValues)), env);
-
-
-                 //     var aaa = new Env(MapM.MapFrom(BindFunctionArguments(ArgNames, argsValues).ToEnumerable()), env);
-
-                 //     var body = Body;
-                 //     return Eval(body, aaa);
-                 // }, NilV),
                  _ => throw new Exception($"'fn*' requires 2 arguments where the first one must be a 'list', but got '{items.JoinMalTypes()}'")
              };
 
@@ -119,16 +109,5 @@ namespace Mal
                     new((ArgName, ArgValue), BindFunctionArguments(RestArgNames, RestArgValues)),
                 _ => throw new Exception($"Cannot bind function arguments, names: '{names.JoinMalTypes()}' , values: '{values.JoinMalTypes()}'")
             };
-
-        // => items switch
-        // {
-        //     (var If, (var Then, (null or (_, null))) ThenElse) => Eval(If, env).Pipe(@if => @if switch
-        //    {
-        //        not (Nil or False) => Eval(Then, env),
-        //        _ => ThenElse.Tail == null ? NilV : Eval(ThenElse.Tail.Head, env)
-        //    }),
-        //     _ => throw new Exception($"'if' requires 2 or 3 arguments but got '{items.JoinMalTypes()}'")
-        // };
-
     }
 }

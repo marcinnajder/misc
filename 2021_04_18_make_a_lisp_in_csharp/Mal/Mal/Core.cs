@@ -1,9 +1,10 @@
 
 using PowerFP;
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using static Mal.Printer;
 using static Mal.Types;
 
@@ -11,31 +12,26 @@ namespace Mal
 {
     public static class Core
     {
-        public static readonly Map<Symbol, MalType> Ns = MapM.MapFrom(
-            (new Symbol("+", NilV), new Fn(args => ExecuteArithmeticFn(args, (a, b) => a + b), NilV) as MalType),
-            (new Symbol("-", NilV), new Fn(args => ExecuteArithmeticFn(args, (a, b) => a - b), NilV)),
-            (new Symbol("*", NilV), new Fn(args => ExecuteArithmeticFn(args, (a, b) => a * b), NilV)),
-            (new Symbol("/", NilV), new Fn(args => ExecuteArithmeticFn(args, (a, b) => a / b), NilV)),
+        private class MalFunctionAttribute : Attribute
+        {
+            public string Name { get; set; }
+            public MalFunctionAttribute(string name) => Name = name;
+        }
 
-            (new Symbol("list", NilV), new Fn(ListFn, NilV)),
-            (new Symbol("list?", NilV), new Fn(IsListFn, NilV)),
-            (new Symbol("empty?", NilV), new Fn(IsEmptyFn, NilV)),
-            (new Symbol("count", NilV), new Fn(CountFn, NilV)),
-            (new Symbol("=", NilV), new Fn(EqualsFn, NilV)),
+        private static Map<Symbol, MalType>? ns = null;
+        // property (instead of field because) order of static members initialization matters
+        public static Map<Symbol, MalType> Ns => ns ?? (ns = MapM.MapFrom(
+              GetMalFunctions().Concat(LListM.LListFrom(
+                  (new Symbol("+", NilV), new Fn(args => ExecuteArithmeticFn(args, (a, b) => a + b), NilV) as MalType),
+                  (new Symbol("-", NilV), new Fn(args => ExecuteArithmeticFn(args, (a, b) => a - b), NilV)),
+                  (new Symbol("*", NilV), new Fn(args => ExecuteArithmeticFn(args, (a, b) => a * b), NilV)),
+                  (new Symbol("/", NilV), new Fn(args => ExecuteArithmeticFn(args, (a, b) => a / b), NilV)),
 
-            (new Symbol("<", NilV), new Fn(args => ExecuteComparisonFn(args, (a, b) => a < b), NilV)),
-            (new Symbol("<=", NilV), new Fn(args => ExecuteComparisonFn(args, (a, b) => a <= b), NilV)),
-            (new Symbol(">", NilV), new Fn(args => ExecuteComparisonFn(args, (a, b) => a > b), NilV)),
-            (new Symbol(">=", NilV), new Fn(args => ExecuteComparisonFn(args, (a, b) => a >= b), NilV)),
-
-            (new Symbol("pr-str", NilV), new Fn(PrStrFn, NilV)),
-            (new Symbol("str", NilV), new Fn(StrFn, NilV)),
-            (new Symbol("prn", NilV), new Fn(PrnFn, NilV)),
-            (new Symbol("println", NilV), new Fn(PrintLnFn, NilV)),
-
-
-            (new Symbol("list123", NilV), new Fn(ListFn, NilV))
-            );
+                  (new Symbol("<", NilV), new Fn(args => ExecuteComparisonFn(args, (a, b) => a < b), NilV)),
+                  (new Symbol("<=", NilV), new Fn(args => ExecuteComparisonFn(args, (a, b) => a <= b), NilV)),
+                  (new Symbol(">", NilV), new Fn(args => ExecuteComparisonFn(args, (a, b) => a > b), NilV)),
+                  (new Symbol(">=", NilV), new Fn(args => ExecuteComparisonFn(args, (a, b) => a >= b), NilV))
+              ))));
 
         internal static MalType ExecuteArithmeticFn(LList<MalType>? args, Func<double, double, double> operation)
             => args switch
@@ -48,37 +44,43 @@ namespace Mal
                 _ => throw new Exception($"Arithmetic operation required at least two arguments, but got '{args.Count()}', arguments: {args.JoinMalTypes(",")}"),
             };
 
-        internal static MalType ListFn(LList<MalType>? args) => new List(args, ListType.List, NilV);
+        [MalFunction("list")]
+        internal static FnDelegate ListFn = args => new List(args, ListType.List, NilV);
 
-        internal static MalType IsListFn(LList<MalType>? args)
+        [MalFunction("list?")]
+        internal static FnDelegate IsListFn = args
             => args switch
             {
                 (List { ListType: ListType.List }, null) => TrueV,
                 (_, null) => FalseV,
-                _ => throw new Exception($"'list?' function requires one argument, but got {args.JoinMalTypes(",")}"),
+                _ => ThrowError(args, "one argument"),
             };
 
-        internal static MalType IsEmptyFn(LList<MalType>? args)
-            => args switch
-            {
-                (List { Items: null }, null) => TrueV,
-                (List { }, null) => FalseV,
-                _ => throw new Exception($"'empty?' function requires one argument of type 'list' or 'vector', but got {args.JoinMalTypes(",")}"),
-            };
+        [MalFunction("empty?")]
+        internal static FnDelegate IsEmptyFn = args
+           => args switch
+           {
+               (List { Items: null }, null) => TrueV,
+               (List { }, null) => FalseV,
+               _ => ThrowError(args, "one argument of type 'list' or 'vector'")
+           };
 
-        internal static MalType CountFn(LList<MalType>? args)
+        [MalFunction("count")]
+        internal static FnDelegate CountFn = args
             => args switch
             {
                 (Nil, null) => new Number(0),
                 (List { Items: var items }, null) => new Number(items.Count()),
-                _ => throw new Exception($"'count' function requires one argument of type 'list' or 'vector' or 'nil', but got {args.JoinMalTypes(",")}"),
+                _ => ThrowError(args, "one argument of type 'list' or 'vector' or 'nil'")
             };
 
-        internal static MalType EqualsFn(LList<MalType>? args)
+        [MalFunction("=")]
+        internal static FnDelegate EqualsFn = args
             => args switch
             {
                 (var Mal1, (var Mal2, null)) => Types.MalEqual(Mal1, Mal2) ? TrueV : FalseV,
-                _ => throw new Exception($"'=' function requires two arguments, but got {args.JoinMalTypes(",")}"),
+                _ => ThrowError(args, "two arguments"),
+
             };
 
         internal static MalType ExecuteComparisonFn(LList<MalType>? args, Func<double, double, bool> comparison)
@@ -90,6 +92,7 @@ namespace Mal
 
         internal static Action<string> PrintLine = Console.WriteLine;
 
+
         private static MalType PrintLineFn(MalType mal)
             => mal switch
             {
@@ -100,9 +103,55 @@ namespace Mal
         private static MalType MalsToStr(LList<MalType>? args, string separator, bool printReadable)
             => new Str(string.Join(separator, args.ToEnumerable().Select(mal => Printer.PrintStr(mal, printReadable))));
 
-        internal static MalType PrStrFn(LList<MalType>? args) => MalsToStr(args, " ", true);
-        internal static MalType StrFn(LList<MalType>? args) => MalsToStr(args, "", false);
-        internal static MalType PrnFn(LList<MalType>? args) => MalsToStr(args, " ", true).Pipe(PrintLineFn);
-        internal static MalType PrintLnFn(LList<MalType>? args) => MalsToStr(args, " ", false).Pipe(PrintLineFn);
+        [MalFunction("pr-str")]
+        internal static FnDelegate PrStrFn = args => MalsToStr(args, " ", true);
+
+        [MalFunction("str")]
+        internal static FnDelegate StrFn = args => MalsToStr(args, "", false);
+
+        [MalFunction("prn")]
+        internal static FnDelegate PrnFn = args => MalsToStr(args, " ", true).Pipe(PrintLineFn);
+
+        [MalFunction("println")]
+        internal static FnDelegate PrintLnFn = args => MalsToStr(args, " ", false).Pipe(PrintLineFn);
+
+        [MalFunction("read-string")]
+        internal static FnDelegate ReadStringFn = args
+            => args switch
+            {
+                (Str { Value: var strValue }, null) => Reader.ReadText(strValue) ?? NilV,
+                _ => ThrowError(args, "one argument of type 'string'")
+            };
+
+        [MalFunction("slurp")]
+        internal static FnDelegate Slurp = args
+            => args switch
+            {
+                (Str { Value: var filePath }, null) => new Str(File.ReadAllText(filePath)),
+                _ => ThrowError(args, "one argument of type 'string'")
+            };
+
+        // private
+
+        // 'Binding' is a property instead of a field because it is used during initialization of other static properties or fields
+        private static BindingFlags Binding => BindingFlags.Static | BindingFlags.NonPublic;
+
+        private static MalType ThrowError(LList<MalType>? args, string message, [CallerMemberName] string malFunctionName = "")
+        {
+            var methodInfo = typeof(Core).GetField(malFunctionName, Binding);
+            var malFunction = (MalFunctionAttribute?)Attribute.GetCustomAttribute(methodInfo!, typeof(MalFunctionAttribute));
+            throw new Exception($"'{malFunction!.Name}' function requires {message}, but got {args.JoinMalTypes(",")}");
+        }
+
+        internal static LList<(Symbol Name, MalType Fn)>? GetMalFunctions()
+            =>
+            (
+                from field in typeof(Core).GetFields(Binding)
+                where field.FieldType == typeof(FnDelegate)
+                let attribute = Attribute.GetCustomAttribute(field, typeof(MalFunctionAttribute)) as MalFunctionAttribute
+                where attribute != null
+                let fn = field.GetValue(null) as FnDelegate
+                select (new Symbol(attribute.Name, NilV), new Fn(fn, NilV) as MalType)
+            ).ToLList();
     }
 }

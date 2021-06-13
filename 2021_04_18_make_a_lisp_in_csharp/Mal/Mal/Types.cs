@@ -17,6 +17,8 @@ namespace Mal
 {
     public static class Types
     {
+        public delegate MalType FnDelegate(LList<MalType>? args);
+
         public enum ListType { List, Vector }
         public enum ListTypeAndMap { List = ListType.List, Vector = ListType.Vector, HashMap }
 
@@ -29,7 +31,7 @@ namespace Mal
         public record False() : MalType { };
         public record Str(string Value) : MalType { };
         public record Keyword(string Name) : MalType { };
-        public record Fn(Func<LList<MalType>?, MalType> Value, MalType Meta) : MalType { };
+        public record Fn(FnDelegate Value, MalType Meta) : MalType { };
         public record Atom(MalType Mal) : MalType { };
         public record Map(Map<MalType, MalType> Value, MalType Meta) : MalType { };
 

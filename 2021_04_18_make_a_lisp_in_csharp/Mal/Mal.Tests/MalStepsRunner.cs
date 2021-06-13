@@ -74,12 +74,6 @@ namespace Mal.Tests
                         var result = stepFunc(testCase.Input, env);
                         Log("-> " + result);
 
-
-                        if (testCase.Output.Any(aa => aa.StartsWith(";/")))
-                        {
-                            var aa132 = 123;
-
-                        }
                         var expected = testCase.Output
                             .Select(l => new[] { ";=>", ";/" }.Aggregate(l, (ll, prefix) => ll.StartsWith(prefix) ? ll.Substring(prefix.Length) : ll))
                             .ToLList();

@@ -73,15 +73,14 @@ namespace Mal
         internal static Map MalsToMap(LList<MalType>? mals) => new(MapM.MapFrom(MalsToKeyValuePairs(mals).ToEnumerable()), NilV);
 
         internal static LList<(MalType Key, MalType Value)>? MalsToKeyValuePairs(LList<MalType>? mals)
-        {
-            return mals switch
+            => mals switch
             {
                 null => null,
-                { Head: Keyword or Str, Tail: { Head: { } value } } => new((mals.Head, value), MalsToKeyValuePairs(mals.Tail.Tail)),
+                (Keyword or Str, (var Value, var Rest)) => new((mals.Head, Value), MalsToKeyValuePairs(Rest)),
                 _ => throw new Exception(string.Join(" ", mals.ToEnumerable().Select(m => Printer.PrintStr(m))).Pipe(str =>
                         $"Invalid Map '{str}'. Valid Map requires even number of items where each even item is 'keyword' or 'string'.")),
             };
-        }
+
 
         internal static MalType ReadAtom(string token) =>
             Double.TryParse(token, out var doubleValue) switch

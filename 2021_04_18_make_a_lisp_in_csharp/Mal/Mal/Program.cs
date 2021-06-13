@@ -5,7 +5,10 @@ using System.Runtime.CompilerServices;
 using PowerFP;
 using static Mal.Types;
 using static Mal.EnvM;
+using static Mal.EvalM;
 using static Mal.Core;
+using static Mal.Printer;
+using static Mal.Reader;
 
 [assembly: InternalsVisibleTo("Mal.Tests")]
 
@@ -19,8 +22,8 @@ namespace Mal
         public static Env EmptyEnv() => new Env(MapM.Empty<Symbol, MalType>(), null);
         public static Env DefaultEnv() => new Env(Ns, null);
 
-        public static StepFunction ReplStep = (string text, Env env) =>
-            Reader.ReadText(text)?.Pipe(mal => EvalM.Eval(mal, env)).Pipe(mal => Printer.PrintStr(mal, true));
+        public static StepFunction ReplStep = (text, env) =>
+            ReadText(text)?.Pipe(mal => Eval(mal, env)).Pipe(mal => Printer.PrintStr(mal, true));
 
         public static void InitEnv(StepFunction step, Env env)
         {
@@ -29,6 +32,7 @@ namespace Mal
 
         static void Main(string[] args)
         {
+
             var env = DefaultEnv();
             InitEnv(ReplStep, env);
 

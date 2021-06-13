@@ -4,6 +4,7 @@ using static Mal.EnvM;
 using static Mal.Types;
 using PowerFP;
 using static PowerFP.LListM;
+using static Mal.Core;
 using System;
 using System.Linq;
 
@@ -12,6 +13,22 @@ namespace Mal.Tests
     [TestClass]
     public class CoreTests
     {
+        [TestMethod]
+        public void MalFunctionAttributeTest()
+        {
+            var fns = Core.GetMalFunctions().ToEnumerable().ToList();
+            var fn = (fns.FirstOrDefault(f => f.Name.Name == "=")).Fn as Fn;
+
+            Assert.IsNotNull(fn);
+            Assert.AreEqual(TrueV, fn!.Value(LListM.LListFrom<MalType>(new Number(1), new Number(1))));
+            Assert.AreEqual(FalseV, fn!.Value(LListM.LListFrom<MalType>(new Number(1), new Number(2))));
+            Assert.AreEqual(FalseV, fn!.Value(LListM.LListFrom<MalType>(new Number(1), new Str("a"))));
+
+            Assert.ThrowsException<Exception>(() => fn!.Value(LListM.LListFrom<MalType>(new Number(1), new Number(2), new Number(3))));
+        }
+
+
+
         [TestMethod]
         public void ExecuteArithmeticFnTest()
         {
@@ -103,16 +120,19 @@ namespace Mal.Tests
 
             Assert.AreEqual(TrueV, Core.ExecuteComparisonFn(LListFrom<MalType>(new Number(123), new Number(124)), lessThen));
             Assert.AreEqual(FalseV, Core.ExecuteComparisonFn(LListFrom<MalType>(new Number(123), new Number(123)), lessThen));
-
-
-            // Assert.AreEqual(FalseV, Core.EqualsFn(LListFrom<MalType>(new Number(123), new Number(1230))));
-            // Assert.AreEqual(FalseV, Core.EqualsFn(LListFrom<MalType>(new Number(123), new Str("123"))));
-
-            // Assert.AreEqual(TrueV, Core.EqualsFn(LListFrom<MalType>(
-            //     new List(new(new Number(4), null), ListType.Vector, NilV),
-            //     new List(new(new Number(4), null), ListType.Vector, NilV)
-            // )));
         }
+
+        [TestMethod]
+        public void ReadStringFnTest()
+        {
+            Assert.ThrowsException<Exception>(() => Core.ReadStringFn(null));
+            Assert.ThrowsException<Exception>(() => Core.ReadStringFn(LListFrom<MalType>(new Number(1))));
+            Assert.ThrowsException<Exception>(() => Core.ReadStringFn(LListFrom<MalType>(new Str(""), new Str(""))));
+
+            Assert.AreEqual(new Number(123), Core.ReadStringFn(LListFrom<MalType>(new Str("123"))));
+            Assert.AreEqual(NilV, Core.ReadStringFn(LListFrom<MalType>(new Str(""))));
+        }
+
 
     }
 }
