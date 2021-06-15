@@ -131,6 +131,52 @@ namespace Mal
                 _ => ThrowError(args, "one argument of type 'string'")
             };
 
+
+
+
+
+        [MalFunction("atom")]
+        internal static FnDelegate AtomFn = args
+            => args switch
+            {
+                (var Mal, null) => new Atom(Mal),
+                _ => ThrowError(args, "one argument")
+            };
+
+        [MalFunction("atom?")]
+        internal static FnDelegate IsAtomFn = args
+            => args switch
+            {
+                (Atom, null) => TrueV,
+                _ => FalseV
+            };
+
+        [MalFunction("deref")]
+        internal static FnDelegate DerefFn = args
+            => args switch
+            {
+                (Atom { Mal: var Mal }, null) => Mal,
+                _ => ThrowError(args, "one argument of type 'atom'")
+            };
+
+        [MalFunction("reset!")]
+        internal static FnDelegate ResetFn = args
+            => args switch
+            {
+                (Atom atom, (var NewMal, null)) => atom.Mal = NewMal,
+                _ => ThrowError(args, "two arguments of type 'atom' and any other type")
+            };
+
+        [MalFunction("swap!")]
+        internal static FnDelegate SwapFn = args
+            => args switch
+            {
+                (Atom { Mal: var Mal } atom, (Fn { Value: var Func }, var RestArgs)) =>
+                    Func(new(Mal, RestArgs)).Pipe(result => atom.Mal = result),
+                _ => ThrowError(args, "two or more arguments of following types 'atom', 'fn', other optional 'fn'")
+            };
+
+
         // private
 
         // 'Binding' is a property instead of a field because it is used during initialization of other static properties or fields
@@ -153,5 +199,7 @@ namespace Mal
                 let fn = field.GetValue(null) as FnDelegate
                 select (new Symbol(attribute.Name, NilV), new Fn(fn, NilV) as MalType)
             ).ToLList();
+
+
     }
 }

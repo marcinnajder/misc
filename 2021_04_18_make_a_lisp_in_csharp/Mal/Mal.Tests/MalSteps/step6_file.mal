@@ -25,23 +25,23 @@
 (eval (read-string "(+ 2 3)"))
 ;=>5
 
-(slurp "./tests/malTests/test.txt")
-;=>"A line of text\n"
+;;(slurp "./tests/malTests/test.txt")
+;;=>"A line of text\n"
 
 ;;; Load the same file twice.
-(slurp "./tests/malTests/test.txt")
-;=>"A line of text\n"
+;; (slurp "./tests/malTests/test.txt")
+;;=>"A line of text\n"
 
 ;; Testing load-file
 
-(load-file "./tests/malTests/inc.mal")
-;=>nil
-(inc1 7)
-;=>8
-(inc2 7)
-;=>9
-(inc3 9)
-;=>12
+;;(load-file "./tests/malTests/inc.mal")
+;;;=>nil
+;;(inc1 7)
+;;;=>8
+;;(inc2 7)
+;;;=>9
+;;(inc3 9)
+;;;=>12
 
 ;;
 ;; Testing atoms
@@ -100,12 +100,12 @@
 ;; -------- Deferrable Functionality --------
 
 ;; Testing reading of large files
-(load-file "./tests/malTests/computations.mal")
-;=>nil
-(sumdown 2)
-;=>3
-(fib 2)
-;=>1
+;;(load-file "./tests/malTests/computations.mal")
+;;=>nil
+;;(sumdown 2)
+;;;=>3
+;;(fib 2)
+;;;=>1
 
 ;; Testing `@` reader macro (short for `deref`)
 (def! atm (atom 9))

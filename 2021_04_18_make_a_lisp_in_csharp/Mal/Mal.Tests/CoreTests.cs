@@ -134,5 +134,27 @@ namespace Mal.Tests
         }
 
 
+        [TestMethod]
+        public void AtomTest()
+        {
+            var atom = Core.AtomFn(new(new Number(1), null));
+            Assert.AreEqual(new Atom(new Number(1)), atom);
+
+            Assert.AreEqual(TrueV, Core.IsAtomFn(new(atom, null)));
+            Assert.AreEqual(FalseV, Core.IsAtomFn(new(new Number(1), null)));
+
+            Assert.AreEqual(new Number(1), Core.DerefFn(new(atom, null)));
+
+            Assert.AreEqual(new Number(2), Core.ResetFn(new(atom, new(new Number(2), null))));
+            Assert.AreEqual(new Atom(new Number(2)), atom);
+
+            FnDelegate fn = args => args switch
+            {
+                (Number(var number1), (Number(var number2), null)) => new Number(number1 + number2),
+                _ => throw new Exception("")
+            };
+            Assert.AreEqual(new Number(102), Core.SwapFn(LListM.LListFrom<MalType>(atom, new Fn(fn, NilV), new Number(100))));
+        }
+
     }
 }

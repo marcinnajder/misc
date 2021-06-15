@@ -23,16 +23,21 @@ namespace Mal
         public enum ListTypeAndMap { List = ListType.List, Vector = ListType.Vector, HashMap }
 
         public abstract record MalType { }
-        public record Number(double Value) : MalType { };
-        public record Symbol(string Name, MalType Meta) : MalType { };
-        public record List(LList<MalType>? Items, ListType ListType, MalType Meta) : MalType { };
-        public record Nil() : MalType { };
-        public record True() : MalType { };
-        public record False() : MalType { };
-        public record Str(string Value) : MalType { };
-        public record Keyword(string Name) : MalType { };
+        public record Number(double Value) : MalType { }
+        public record Symbol(string Name, MalType Meta) : MalType { }
+        public record List(LList<MalType>? Items, ListType ListType, MalType Meta) : MalType { }
+        public record Nil() : MalType { }
+        public record True() : MalType { }
+        public record False() : MalType { }
+        public record Str(string Value) : MalType { }
+        public record Keyword(string Name) : MalType { }
         public record Fn(FnDelegate Value, MalType Meta) : MalType { };
-        public record Atom(MalType Mal) : MalType { };
+        public record Atom : MalType
+        {
+            public MalType Mal { get; set; }
+            public Atom(MalType Mal) => this.Mal = Mal;
+            public void Deconstruct(out MalType Mal) => Mal = this.Mal;
+        }
         public record Map(Map<MalType, MalType> Value, MalType Meta) : MalType { };
 
         public static True TrueV = new True();

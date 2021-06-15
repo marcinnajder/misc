@@ -63,6 +63,17 @@ namespace Mal.Tests
         }
 
 
+
+        [TestMethod]
+        public void Step5()
+        {
+            MalStepsRunner.ExecuteTest("../../../MalSteps/step6_file.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
+                .Pipe(mal => mal != null ? EvalM.Eval(mal!, env) : null)
+                .Pipe(mal => Printer.PrintStr(mal, true))
+                , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional
+            );
+        }
+
         // [TestMethod]
         // public void Step2()
         // {
