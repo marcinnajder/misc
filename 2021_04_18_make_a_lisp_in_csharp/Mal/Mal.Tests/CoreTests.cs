@@ -156,5 +156,49 @@ namespace Mal.Tests
             Assert.AreEqual(new Number(102), Core.SwapFn(LListM.LListFrom<MalType>(atom, new Fn(fn, NilV), new Number(100))));
         }
 
+
+        [TestMethod]
+        public void ConstTest()
+        {
+            Assert.ThrowsException<Exception>(() => Core.ConsFn(null));
+            Assert.ThrowsException<Exception>(() => Core.ConsFn(LListFrom<MalType>(new Number(1))));
+            Assert.ThrowsException<Exception>(() => Core.ConsFn(LListFrom<MalType>(new Number(1), new Number(2))));
+
+            Assert.AreEqual(
+                new List(LListFrom<MalType>(new Number(1), new Number(2)), ListType.List, NilV),
+                Core.ConsFn(LListFrom<MalType>(new Number(1), new List(new(new Number(2), null), ListType.List, NilV))));
+        }
+
+        [TestMethod]
+        public void ConcatTest()
+        {
+            Assert.ThrowsException<Exception>(() => Core.ConcatFn(LListFrom<MalType>(new Number(1))));
+
+            Assert.AreEqual(new List(null, ListType.List, NilV), Core.ConcatFn(null));
+            Assert.AreEqual(
+                new List(LListFrom<MalType>(new Number(1), new Number(2), new Number(3)), ListType.List, NilV),
+                Core.ConcatFn(LListFrom<MalType>(
+                    new List(null, ListType.List, NilV),
+                    new List(LListFrom<MalType>(new Number(1), new Number(2)), ListType.List, NilV),
+                    new List(null, ListType.List, NilV),
+                    new List(LListFrom<MalType>(new Number(3)), ListType.List, NilV),
+                    new List(null, ListType.List, NilV)
+                )));
+        }
+
+        [TestMethod]
+        public void VecTest()
+        {
+            Assert.ThrowsException<Exception>(() => Core.VecFn(LListFrom<MalType>(new Number(1))));
+            Assert.ThrowsException<Exception>(() => Core.VecFn(LListFrom<MalType>()));
+
+            Assert.AreEqual(
+                new List(LListFrom<MalType>(new Number(1)), ListType.Vector, NilV),
+                Core.VecFn(new(new List(LListFrom<MalType>(new Number(1)), ListType.Vector, NilV), null)));
+            Assert.AreEqual(
+                new List(LListFrom<MalType>(new Number(1)), ListType.Vector, NilV),
+                Core.VecFn(new(new List(LListFrom<MalType>(new Number(1)), ListType.List, NilV), null)));
+
+        }
     }
 }

@@ -21,8 +21,8 @@ namespace Mal
 
         public static MalType? ReadText(string text) => Tokenize(text).Pipe(LListM.ToLList).Pipe(ReadForm).Mal;
 
-        public static FormReader ReadForm(LList<string>? tokens) =>
-            tokens switch
+        public static FormReader ReadForm(LList<string>? tokens)
+            => tokens switch
             {
                 null => new(null, null),
                 (var Token, var RestTokens) => Token switch
@@ -43,17 +43,16 @@ namespace Mal
 
 
         public static ListReader ReadList(LList<string>? tokens, string eolToken)
-        {
-            return ReadForm(tokens) switch
+            => ReadForm(tokens) switch
             {
                 { Mal: null } => throw new Exception("List is not closed"),
                 { Mal: Symbol symbol } fr when symbol.Name == eolToken => new(fr.Tokens, null),
                 (var RestTokens, var Mal) => ReadList(RestTokens, eolToken).Pipe(r => r with { Mals = new(Mal!, r.Mals) })
             };
-        }
 
-        public static FormReader ReadMeta(LList<string>? tokens) =>
-            ReadForm(tokens) switch
+
+        public static FormReader ReadMeta(LList<string>? tokens)
+            => ReadForm(tokens) switch
             {
                 { Mal: null } r => r,
                 (var RestTokens1, var MetaMal) => ReadForm(RestTokens1) switch
@@ -63,8 +62,8 @@ namespace Mal
                 }
             };
 
-        public static FormReader ReadMacro(LList<string>? tokens, string macroToken) =>
-            ReadForm(tokens) switch
+        public static FormReader ReadMacro(LList<string>? tokens, string macroToken)
+            => ReadForm(tokens) switch
             {
                 { Mal: null } r => r,
                 (var RestTokens, var Mal) => new(RestTokens, ListFrom(new Symbol(macroToken, NilV), Mal!))
@@ -82,8 +81,8 @@ namespace Mal
             };
 
 
-        internal static MalType ReadAtom(string token) =>
-            Double.TryParse(token, out var doubleValue) switch
+        internal static MalType ReadAtom(string token)
+            => Double.TryParse(token, out var doubleValue) switch
             {
                 true => new Number(doubleValue),
                 _ => token switch

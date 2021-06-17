@@ -177,6 +177,38 @@ namespace Mal
             };
 
 
+
+        [MalFunction("cons")]
+        internal static FnDelegate ConsFn = args
+            => args switch
+            {
+                (var FirstArg, (List { Items: var Items } ListArg, null)) => new List(new(FirstArg, Items), ListType.List, NilV),
+                //(var FirstArg, (List { Items: var Items } ListArg, null)) => ListArg with { Items = new(FirstArg, Items) },
+                _ => ThrowError(args, "two arguments where the second one must be of type 'list'")
+            };
+
+        [MalFunction("concat")]
+        internal static FnDelegate ConcatFn = ConcatImplFn;
+        [MalFunction("concat")]
+        private static MalType ConcatImplFn(LList<MalType>? args)
+            => args switch
+            {
+                null => new List(null, ListType.List, NilV),
+                (List { Items: var Items }, var RestArguments) =>
+                    new List(Items.Concat((ConcatImplFn(RestArguments) as List)!.Items), ListType.List, NilV),
+                _ => ThrowError(args, "all arguments to be of type 'list'")
+            };
+
+
+        [MalFunction("vec")]
+        internal static FnDelegate VecFn = args
+            => args switch
+            {
+                (List { ListType: ListType.Vector } vector, null) => vector,
+                (List list, null) => new List(list.Items, ListType.Vector, list.Meta),
+                _ => ThrowError(args, "one arguments of type 'list' or 'vector'")
+            };
+
         // private
 
         // 'Binding' is a property instead of a field because it is used during initialization of other static properties or fields
@@ -184,7 +216,8 @@ namespace Mal
 
         private static MalType ThrowError(LList<MalType>? args, string message, [CallerMemberName] string malFunctionName = "")
         {
-            var methodInfo = typeof(Core).GetField(malFunctionName, Binding);
+            var methodInfo = typeof(Core).GetField(malFunctionName, Binding) as MemberInfo
+                ?? typeof(Core).GetMethod(malFunctionName, Binding);
             var malFunction = (MalFunctionAttribute?)Attribute.GetCustomAttribute(methodInfo!, typeof(MalFunctionAttribute));
             throw new Exception($"'{malFunction!.Name}' function requires {message}, but got {args.JoinMalTypes(",")}");
         }

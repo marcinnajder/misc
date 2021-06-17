@@ -213,6 +213,44 @@ namespace Mal.Tests
             Assert.AreEqual(new Number(3), fn.Value(LListFrom(one, two)));
         }
 
+        [TestMethod]
+        public void ApplyQuoteTest()
+        {
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyQuote(LListFrom<MalType>(
+                ), EmptyEnv()));
 
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyFn(LListFrom<MalType>(
+                new Number(1),
+                new Number(1)
+                ), EmptyEnv()));
+
+            Assert.AreEqual(new Number(1), EvalM.ApplyQuote(LListFrom<MalType>(new Number(1)), EmptyEnv()));
+        }
+
+        [TestMethod]
+        public void TransformQuasiquoteTest()
+        {
+            Assert.AreEqual(new Number(1), EvalM.TransformQuasiquote(new Number(1)));
+            Assert.AreEqual(
+                new List(LListFrom<MalType>(new Symbol("quote", NilV), new Symbol("abc", NilV)), ListType.List, NilV),
+                EvalM.TransformQuasiquote(new Symbol("abc", NilV)));
+
+            Assert.AreEqual("(cons 1 (cons 2 ()))", Printer.PrintStr(EvalM.TransformQuasiquote(new List(
+                LListFrom<MalType>(new Number(1), new Number(2)), ListType.List, NilV))));
+
+
+            var oneTwoList = new List(LListM.LListFrom<MalType>(new Number(1), new Number(2)), ListType.List, NilV);
+
+            var mal = EvalM.TransformQuasiquote(new List(
+                LListFrom<MalType>(
+                    new Number(1),
+                    new List(LListM.LListFrom<MalType>(new Symbol("unquote", NilV), oneTwoList), ListType.List, NilV),
+                    new Number(4),
+                    new List(LListM.LListFrom<MalType>(new Symbol("splice-unquote", NilV), oneTwoList), ListType.List, NilV)
+                    )
+                , ListType.List, NilV));
+
+            Assert.AreEqual("(cons 1 (cons (1 2) (cons 4 (concat (1 2) ()))))", Printer.PrintStr(mal));
+        }
     }
 }

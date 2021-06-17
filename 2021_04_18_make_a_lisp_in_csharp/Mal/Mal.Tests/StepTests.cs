@@ -65,9 +65,19 @@ namespace Mal.Tests
 
 
         [TestMethod]
-        public void Step5()
+        public void Step6()
         {
             MalStepsRunner.ExecuteTest("../../../MalSteps/step6_file.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
+                .Pipe(mal => mal != null ? EvalM.Eval(mal!, env) : null)
+                .Pipe(mal => Printer.PrintStr(mal, true))
+                , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional
+            );
+        }
+
+        [TestMethod]
+        public void Step7()
+        {
+            MalStepsRunner.ExecuteTest("../../../MalSteps/step7_quote.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
                 .Pipe(mal => mal != null ? EvalM.Eval(mal!, env) : null)
                 .Pipe(mal => Printer.PrintStr(mal, true))
                 , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional

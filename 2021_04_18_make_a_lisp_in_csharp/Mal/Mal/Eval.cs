@@ -22,6 +22,11 @@ namespace Mal
                 List { Items: (Symbol { Name: "do" }, var Tail) } => ApplyDo(Tail, env),
                 List { Items: (Symbol { Name: "if" }, var Tail) } => ApplyIf(Tail, env),
                 List { Items: (Symbol { Name: "fn*" }, var Tail) } => ApplyFn(Tail, env),
+
+                List { Items: (Symbol { Name: "quote" }, var Tail) } => ApplyQuote(Tail, env),
+                List { Items: (Symbol { Name: "quasiquoteexpand" }, var Tail) } => ApplyQuasiquoteExpand(Tail, env),
+                List { Items: (Symbol { Name: "quasiquote" }, var Tail) } => ApplyQuasiquote(Tail, env),
+
                 List list => EvalAst(list, env) switch
                 {
                     List { Items: (Fn fn, var Args) } => fn.Value(Args),
@@ -88,8 +93,6 @@ namespace Mal
             };
 
 
-
-
         // (fn* (...) ...)
         internal static MalType ApplyFn(LList<MalType>? items, Env env)
              => items switch
@@ -108,6 +111,49 @@ namespace Mal
                 ((Symbol ArgName, var RestArgNames), (var ArgValue, var RestArgValues)) =>
                     new((ArgName, ArgValue), BindFunctionArguments(RestArgNames, RestArgValues)),
                 _ => throw new Exception($"Cannot bind function arguments, names: '{names.JoinMalTypes()}' , values: '{values.JoinMalTypes()}'")
+            };
+
+        // (quote ...)
+        internal static MalType ApplyQuote(LList<MalType>? items, Env env)
+             => items switch
+             {
+                 (var First, null) => First,
+                 _ => throw new Exception($"'quote' requires one argument, but got '{items.JoinMalTypes()}'")
+             };
+
+        //(quasiquoteexpand (...))
+        internal static MalType ApplyQuasiquoteExpand(LList<MalType>? items, Env env)
+            => items switch
+            {
+                (var Mal, null) => TransformQuasiquote(Mal),
+                _ => throw new Exception($"'quasiquoteexpand' requires one argument, but got '{items.JoinMalTypes()}'")
+            };
+
+        // (quasiquote (...))
+        internal static MalType ApplyQuasiquote(LList<MalType>? items, Env env)
+             => items switch
+             {
+                 (var Mal, null) => TransformQuasiquote(Mal).Pipe(mal => Eval(mal, env)),
+                 _ => throw new Exception($"'quasiquote' requires one argument, but got '{items.JoinMalTypes()}'")
+             };
+
+
+        internal static MalType TransformQuasiquote(MalType mal)
+            => mal switch
+            {
+                List { ListType: ListType.List, Items: (Symbol("unquote", _), (var UnquotedMal, null)) } => UnquotedMal,
+                List { ListType: ListType.List, Items: null } => new List(null, ListType.List, NilV),
+                List { ListType: ListType.List, Items: (var Head, var Tail) } => Head switch
+                {
+                    List { Items: (Symbol("splice-unquote", _), (var UnquotedMal, null)) } =>
+                        new List(LListM.LListFrom(new Symbol("concat", NilV), UnquotedMal, TransformQuasiquote(new List(Tail, ListType.List, NilV))),
+                            ListType.List, NilV),
+                    var Mal =>
+                        new List(LListM.LListFrom(new Symbol("cons", NilV), TransformQuasiquote(Mal), TransformQuasiquote(new List(Tail, ListType.List, NilV))),
+                            ListType.List, NilV),
+                },
+                Map or Symbol => new List(LListM.LListFrom(new Symbol("quote", NilV), mal), ListType.List, NilV),
+                _ => mal
             };
     }
 }
