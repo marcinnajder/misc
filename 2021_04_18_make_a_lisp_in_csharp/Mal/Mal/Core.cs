@@ -209,6 +209,33 @@ namespace Mal
                 _ => ThrowError(args, "one arguments of type 'list' or 'vector'")
             };
 
+
+        [MalFunction("nth")]
+        internal static FnDelegate NthFn = args
+            => args switch
+            {
+                (List { Items: var Items }, (Number { Value: var Index }, null)) => Items.ElementAt((int)Index),
+                _ => ThrowError(args, "two arguments where the first one is of type 'list' and the second of type 'number'")
+            };
+
+        [MalFunction("first")]
+        internal static FnDelegate FirstFn = args
+            => args switch
+            {
+                (Nil, null) => NilV,
+                (List { Items: var Items }, null) => Items == null ? NilV : Items.Head,
+                _ => ThrowError(args, "one argument of type 'list' or 'vector'")
+            };
+
+        [MalFunction("rest")]
+        internal static FnDelegate RestFn = args
+            => args switch
+            {
+                (Nil, null) => new List(null, ListType.List, NilV),
+                (List { Items: var Items }, null) => new List(Items?.Tail, ListType.List, NilV),
+                _ => ThrowError(args, "one argument of type 'list' or 'vector'")
+            };
+
         // private
 
         // 'Binding' is a property instead of a field because it is used during initialization of other static properties or fields

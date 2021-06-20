@@ -31,7 +31,7 @@ namespace Mal
         public record False() : MalType { }
         public record Str(string Value) : MalType { }
         public record Keyword(string Name) : MalType { }
-        public record Fn(FnDelegate Value, MalType Meta) : MalType { };
+        public record Fn(FnDelegate Value, MalType Meta, bool IsMacro = false) : MalType { };
         public record Atom : MalType
         {
             public MalType Mal { get; set; }
@@ -53,6 +53,9 @@ namespace Mal
 
         public static readonly Map<string, ListTypeAndMap> Bracket2ListMap =
             MapM.MapFrom(List2BracketMap.Entries().Select(kv => (kv.Value.Left, kv.Key)));
+
+        public static LList<MalType>? MalLListFrom(params MalType[] mals) => LListM.LListFrom(mals);
+        public static List MalListFrom(params MalType[] mals) => new List(MalLListFrom(mals), ListType.List, NilV);
 
 
 

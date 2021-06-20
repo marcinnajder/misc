@@ -32,30 +32,9 @@ namespace Mal.Tests
                 );
         }
 
-        [TestMethod]
-        public void Step2()
+        private void ExecuteFile(string fileName)
         {
-            MalStepsRunner.ExecuteTest("../../../MalSteps/step2_eval.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
-                .Pipe(mal => mal != null ? EvalM.Eval(mal!, env) : null)
-                .Pipe(mal => Printer.PrintStr(mal, true))
-                , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional
-            );
-        }
-
-        [TestMethod]
-        public void Step3()
-        {
-            MalStepsRunner.ExecuteTest("../../../MalSteps/step3_env.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
-                .Pipe(mal => mal != null ? EvalM.Eval(mal!, env) : null)
-                .Pipe(mal => Printer.PrintStr(mal, true))
-                , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional
-            );
-        }
-
-        [TestMethod]
-        public void Step4()
-        {
-            MalStepsRunner.ExecuteTest("../../../MalSteps/step4_if_fn_do.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
+            MalStepsRunner.ExecuteTest($"../../../MalSteps/{fileName}", verbose: this.verbose, (text, env) => Reader.ReadText(text)
                 .Pipe(mal => mal != null ? EvalM.Eval(mal!, env) : null)
                 .Pipe(mal => Printer.PrintStr(mal, true))
                 , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional
@@ -63,33 +42,23 @@ namespace Mal.Tests
         }
 
 
+        [TestMethod]
+        public void Step2() => ExecuteFile("step2_eval.mal");
 
         [TestMethod]
-        public void Step6()
-        {
-            MalStepsRunner.ExecuteTest("../../../MalSteps/step6_file.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
-                .Pipe(mal => mal != null ? EvalM.Eval(mal!, env) : null)
-                .Pipe(mal => Printer.PrintStr(mal, true))
-                , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional
-            );
-        }
+        public void Step3() => ExecuteFile("step3_env.mal");
 
         [TestMethod]
-        public void Step7()
-        {
-            MalStepsRunner.ExecuteTest("../../../MalSteps/step7_quote.mal", verbose: this.verbose, (text, env) => Reader.ReadText(text)
-                .Pipe(mal => mal != null ? EvalM.Eval(mal!, env) : null)
-                .Pipe(mal => Printer.PrintStr(mal, true))
-                , MalStepsRunner.Option.Deferrable, MalStepsRunner.Option.Optional
-            );
-        }
+        public void Step4() => ExecuteFile("step4_if_fn_do.mal");
 
-        // [TestMethod]
-        // public void Step2()
-        // {
-        //     MalStepsRunner.ExecuteTest("../../../MalSteps/step2_eval.mal", verbose: true,
-        //         (text, env) => Reader.ReadText(text).Pipe(mal => Printer.PrintStr(mal!)));
-        // }
+        [TestMethod]
+        public void Step6() => ExecuteFile("step6_file.mal");
+
+        [TestMethod]
+        public void Step7() => ExecuteFile("step7_quote.mal");
+
+        [TestMethod]
+        public void Step8() => ExecuteFile("step8_macros.mal");
     }
 }
 

@@ -34,10 +34,10 @@ namespace Mal.Tests
             Assert.AreEqual(null, MalsToKeyValuePairs(null));
             Assert.AreEqual(
                 new (MalType Key, MalType Value)[] { (new Str("a"), TrueV), (new Keyword("b"), FalseV) }.ToLList(),
-                MalsToKeyValuePairs(LListFrom<MalType>(new Str("a"), TrueV, new Keyword("b"), FalseV)));
+                MalsToKeyValuePairs(MalLListFrom(new Str("a"), TrueV, new Keyword("b"), FalseV)));
 
-            Assert.ThrowsException<Exception>(() => MalsToKeyValuePairs(LListFrom<MalType>(new Str("a"))));
-            Assert.ThrowsException<Exception>(() => MalsToKeyValuePairs(LListFrom<MalType>(TrueV, TrueV)));
+            Assert.ThrowsException<Exception>(() => MalsToKeyValuePairs(MalLListFrom(new Str("a"))));
+            Assert.ThrowsException<Exception>(() => MalsToKeyValuePairs(MalLListFrom(TrueV, TrueV)));
         }
 
 
@@ -45,7 +45,7 @@ namespace Mal.Tests
         public void ReadListTest()
         {
             Assert.AreEqual(
-                new ListReader(new("a", null), LListFrom<MalType>(new Str("a"), FalseV, new Number(12))),
+                new ListReader(new("a", null), MalLListFrom(new Str("a"), FalseV, new Number(12))),
                 ReadList(LListFrom("\"a\"", "false", "12", ")", "a"), ")"));
 
             Assert.ThrowsException<Exception>(() => ReadList(null, ")"));

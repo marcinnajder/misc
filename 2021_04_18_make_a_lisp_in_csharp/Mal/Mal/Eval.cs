@@ -13,10 +13,10 @@ namespace Mal
     public static class EvalM
     {
         public static MalType Eval(MalType mal, Env env)
-            => mal switch
+            => MacroExpand(mal, env).Pipe(expandMal => expandMal switch
             {
-                not List { ListType: ListType.List } => EvalAst(mal, env),
-                List { Items: null } => mal,
+                not List { ListType: ListType.List } => EvalAst(expandMal, env),
+                List { Items: null } => expandMal,
                 List { Items: (Symbol { Name: "def!" }, var Tail) } => ApplyDef(Tail, env),
                 List { Items: (Symbol { Name: "let*" }, var Tail) } => ApplyLet(Tail, env),
                 List { Items: (Symbol { Name: "do" }, var Tail) } => ApplyDo(Tail, env),
@@ -27,13 +27,16 @@ namespace Mal
                 List { Items: (Symbol { Name: "quasiquoteexpand" }, var Tail) } => ApplyQuasiquoteExpand(Tail, env),
                 List { Items: (Symbol { Name: "quasiquote" }, var Tail) } => ApplyQuasiquote(Tail, env),
 
+                List { Items: (Symbol { Name: "defmacro!" }, var Tail) } => ApplyDefMacro(Tail, env),
+                List { Items: (Symbol { Name: "macroexpand" }, var Tail) } => ApplyMacroExpand(Tail, env),
+
                 List list => EvalAst(list, env) switch
                 {
                     List { Items: (Fn fn, var Args) } => fn.Value(Args),
                     List { Items: { Head: var first } } => throw new Exception($"First element in a list should be 'fn' but it is '{first.PrintStr()}'"),
                     var m => throw new Exception($"Element type should be a 'list' but it is '{m}'")
                 },
-            };
+            });
 
         internal static MalType EvalAst(MalType mal, Env env) =>
             mal switch
@@ -141,19 +144,58 @@ namespace Mal
         internal static MalType TransformQuasiquote(MalType mal)
             => mal switch
             {
-                List { ListType: ListType.List, Items: (Symbol("unquote", _), (var UnquotedMal, null)) } => UnquotedMal,
-                List { ListType: ListType.List, Items: null } => new List(null, ListType.List, NilV),
-                List { ListType: ListType.List, Items: (var Head, var Tail) } => Head switch
+                List { Items: (Symbol("unquote", _), (var UnquotedMal, null)) } => UnquotedMal,
+                List { Items: null } => new List(null, ListType.List, NilV),
+                List { Items: (var Head, var Tail) } => Head switch
                 {
                     List { Items: (Symbol("splice-unquote", _), (var UnquotedMal, null)) } =>
-                        new List(LListM.LListFrom(new Symbol("concat", NilV), UnquotedMal, TransformQuasiquote(new List(Tail, ListType.List, NilV))),
-                            ListType.List, NilV),
+                        MalListFrom(new Symbol("concat", NilV), UnquotedMal, TransformQuasiquote(new List(Tail, ListType.List, NilV))),
                     var Mal =>
-                        new List(LListM.LListFrom(new Symbol("cons", NilV), TransformQuasiquote(Mal), TransformQuasiquote(new List(Tail, ListType.List, NilV))),
-                            ListType.List, NilV),
+                        MalListFrom(new Symbol("cons", NilV), TransformQuasiquote(Mal), TransformQuasiquote(new List(Tail, ListType.List, NilV))),
                 },
-                Map or Symbol => new List(LListM.LListFrom(new Symbol("quote", NilV), mal), ListType.List, NilV),
+                Map or Symbol => MalListFrom(new Symbol("quote", NilV), mal),
                 _ => mal
             };
+
+        // (defmacro! ...) 
+        internal static MalType ApplyDefMacro(LList<MalType>? items, Env env)
+            => items switch
+            {
+                (Symbol VarName, (List { Items: (Symbol { Name: "fn*" }, _) } VarValue, null)) =>
+                    Eval(VarValue, env).Pipe(mal => (Fn)mal).Pipe(fn => env.Set(VarName, fn with { IsMacro = true })),
+                _ => throw new Exception($"'defmacro!' requires 2 arguments where the first argument must be of type 'symbol' and the second of type 'fn', but got '{items.JoinMalTypes()}'")
+            };
+
+
+        internal static bool IsMacroCall(MalType mal, Env env)
+            => mal switch
+            {
+                List { Items: (Symbol symbol, _) } => env.Get(symbol).Pipe(value => value is Fn { IsMacro: true }),
+                _ => false
+            };
+
+
+        internal static MalType MacroExpand(MalType mal, Env env)
+            => mal switch
+            {
+                List { Items: (Symbol FuncName, var Args) } => env
+                    .Pipe(env_ => { try { return env_.Get(FuncName); } catch { return NilV; } })
+                    .Pipe(funcBody => funcBody switch
+                    {
+                        Fn { Value: var FuncCall, IsMacro: true } => MacroExpand(FuncCall(Args), env),
+                        _ => mal,
+                    }),
+                _ => mal
+            };
+
+        // (macroexpand ...) 
+        internal static MalType ApplyMacroExpand(LList<MalType>? items, Env env)
+            => items switch
+            {
+                (var Mal, null) => MacroExpand(Mal, env),
+                _ => throw new Exception($"'macroexpand' requires 1 argument, but got '{items.JoinMalTypes()}'")
+            };
+
+
     }
 }

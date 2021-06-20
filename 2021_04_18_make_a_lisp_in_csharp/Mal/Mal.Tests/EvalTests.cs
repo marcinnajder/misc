@@ -31,29 +31,21 @@ namespace Mal.Tests
         {
             var env1 = EmptyEnv();
 
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyDef(null, env1));
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyDef(LListFrom<MalType>(
-                new Symbol("a", NilV)
-                ), env1));
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyDef(LListFrom<MalType>(
-                new Symbol("a", NilV),
-                new Number(1),
-                new Number(1)
-                ), env1));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyDef(MalLListFrom(), env1));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyDef(MalLListFrom(new Symbol("a", NilV)), env1));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyDef(MalLListFrom(
+                new Symbol("a", NilV), new Number(1), new Number(1)), env1));
 
-            var mal1 = EvalM.ApplyDef(LListFrom<MalType>(
-                new Symbol("x", NilV),
-                new Number(1)
-                ), env1);
+            var mal1 = EvalM.ApplyDef(MalLListFrom(new Symbol("x", NilV), new Number(1)), env1);
 
             Assert.AreEqual(new Number(1), mal1);
             Assert.AreEqual(new Number(1), env1.Get(new Symbol("x", NilV)));
 
 
             var env2 = new Env(MapM.Empty<Symbol, MalType>(), DefaultEnv());
-            var mal2 = EvalM.ApplyDef(LListFrom<MalType>(
+            var mal2 = EvalM.ApplyDef(MalLListFrom(
                 new Symbol("y", NilV),
-                new List(LListFrom<MalType>(new Symbol("+", NilV), new Number(1), new Number(2)), ListType.List, NilV)
+                MalListFrom(new Symbol("+", NilV), new Number(1), new Number(2))
                 ), env2);
 
             Assert.AreEqual(new Number(3), mal2);
@@ -63,22 +55,17 @@ namespace Mal.Tests
         [TestMethod]
         public void ApplyBindingTest()
         {
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyBindings(LListFrom<MalType>(
-                new Symbol("a", NilV)
-                ), EmptyEnv()));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyBindings(MalLListFrom(new Symbol("a", NilV)), EmptyEnv()));
 
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyBindings(LListFrom<MalType>(
-                new Symbol("a", NilV),
-                new Number(1),
-                new Symbol("b", NilV)
-                ), EmptyEnv()));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyBindings(
+                MalLListFrom(new Symbol("a", NilV), new Number(1), new Symbol("b", NilV)), EmptyEnv()));
 
             var env1 = EmptyEnv();
             var envResult1 = EvalM.ApplyBindings(null, env1);
             Assert.AreSame(env1, envResult1);
 
             var env2 = EmptyEnv();
-            var envResult2 = EvalM.ApplyBindings(LListFrom<MalType>(
+            var envResult2 = EvalM.ApplyBindings(MalLListFrom(
                 new Symbol("a", NilV),
                 new Number(1),
                 new Symbol("b", NilV),
@@ -95,17 +82,12 @@ namespace Mal.Tests
         [TestMethod]
         public void ApplyLetTest()
         {
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyLet(LListFrom<MalType>(
-                new Symbol("a", NilV)
-                ), EmptyEnv()));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyLet(MalLListFrom(new Symbol("a", NilV)), EmptyEnv()));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyLet(MalLListFrom(MalListFrom(new Symbol("a", NilV), new Number(1))), EmptyEnv()));
 
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyLet(LListFrom<MalType>(
-                new List(LListFrom<MalType>(new Symbol("a", NilV), new Number(1)), ListType.List, NilV)
-                ), EmptyEnv()));
-
-            var malResult = EvalM.ApplyLet(LListFrom<MalType>(
-                new List(LListFrom<MalType>(new Symbol("a", NilV), new Number(1), new Symbol("b", NilV), new Number(3)), ListType.List, NilV),
-                new List(LListFrom<MalType>(new Symbol("+", NilV), new Symbol("a", NilV), new Symbol("b", NilV)), ListType.List, NilV)
+            var malResult = EvalM.ApplyLet(MalLListFrom(
+                MalListFrom(new Symbol("a", NilV), new Number(1), new Symbol("b", NilV), new Number(3)),
+                MalListFrom(new Symbol("+", NilV), new Symbol("a", NilV), new Symbol("b", NilV))
                 ), DefaultEnv());
 
             Assert.AreEqual(new Number(4), malResult);
@@ -115,29 +97,22 @@ namespace Mal.Tests
         [TestMethod]
         public void ApplyDoTest()
         {
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyDo(LListFrom<MalType>(
-                // new Symbol("a", NilV)
-                ), EmptyEnv()));
-
-            var malResult = EvalM.ApplyDo(LListFrom<MalType>(
-                  NilV,
-                  new List(LListFrom<MalType>(new Symbol("+", NilV), new Number(1), new Number(3)), ListType.List, NilV)
-                  ), DefaultEnv());
-
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyDo(MalLListFrom(), EmptyEnv()));
+            var malResult = EvalM.ApplyDo(MalLListFrom(NilV, MalListFrom(new Symbol("+", NilV), new Number(1), new Number(3))), DefaultEnv());
             Assert.AreEqual(new Number(4), malResult);
         }
 
         [TestMethod]
         public void ApplyIfTest()
         {
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyIf(LListFrom<MalType>(
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyIf(MalLListFrom(
                 ), EmptyEnv()));
 
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyIf(LListFrom<MalType>(
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyIf(MalLListFrom(
                 new Symbol("a", NilV)
                 ), EmptyEnv()));
 
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyIf(LListFrom<MalType>(
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyIf(MalLListFrom(
                 new Symbol("a", NilV),
                 new Symbol("a", NilV),
                 new Symbol("a", NilV),
@@ -146,19 +121,19 @@ namespace Mal.Tests
 
             // falsy values
             Assert.AreEqual(new Number(2),
-                EvalM.ApplyIf(LListFrom<MalType>(FalseV, new Number(1), new Number(2)), EmptyEnv()));
+                EvalM.ApplyIf(MalLListFrom(FalseV, new Number(1), new Number(2)), EmptyEnv()));
             Assert.AreEqual(new Number(2),
-                EvalM.ApplyIf(LListFrom<MalType>(NilV, new Number(1), new Number(2)), EmptyEnv()));
+                EvalM.ApplyIf(MalLListFrom(NilV, new Number(1), new Number(2)), EmptyEnv()));
             Assert.AreEqual(NilV,
-                EvalM.ApplyIf(LListFrom<MalType>(NilV, new Number(1)), EmptyEnv()));
+                EvalM.ApplyIf(MalLListFrom(NilV, new Number(1)), EmptyEnv()));
 
             //truthy values
             Assert.AreEqual(new Number(1),
-                EvalM.ApplyIf(LListFrom<MalType>(TrueV, new Number(1), new Number(2)), EmptyEnv()));
+                EvalM.ApplyIf(MalLListFrom(TrueV, new Number(1), new Number(2)), EmptyEnv()));
             Assert.AreEqual(new Number(1),
-                EvalM.ApplyIf(LListFrom<MalType>(new Str(""), new Number(1), new Number(2)), EmptyEnv()));
+                EvalM.ApplyIf(MalLListFrom(new Str(""), new Number(1), new Number(2)), EmptyEnv()));
             Assert.AreEqual(new Number(1),
-                EvalM.ApplyIf(LListFrom<MalType>(new List(null, ListType.Vector, NilV), new Number(1), new Number(2)), EmptyEnv()));
+                EvalM.ApplyIf(MalLListFrom(new List(null, ListType.Vector, NilV), new Number(1), new Number(2)), EmptyEnv()));
         }
 
         [TestMethod]
@@ -167,48 +142,35 @@ namespace Mal.Tests
             Symbol a = new Symbol("a", NilV), b = new Symbol("b", NilV), amp = new Symbol("&", NilV);
             MalType one = new Number(1), two = new Number(2), three = new Number(3);
 
-            Assert.AreEqual(LListFrom((a, one)), EvalM.BindFunctionArguments(LListFrom<MalType>(a), LListFrom(one)));
-            Assert.AreEqual(null, EvalM.BindFunctionArguments(LListFrom<MalType>(), LListFrom(one)));
-            Assert.AreEqual(LListFrom((a, one)), EvalM.BindFunctionArguments(LListFrom<MalType>(a), LListFrom(one, two)));
-            Assert.ThrowsException<Exception>(() => EvalM.BindFunctionArguments(LListFrom<MalType>(a), LListFrom<MalType>()));
+            Assert.AreEqual(LListFrom((a, one)), EvalM.BindFunctionArguments(MalLListFrom(a), LListFrom(one)));
+            Assert.AreEqual(null, EvalM.BindFunctionArguments(MalLListFrom(), LListFrom(one)));
+            Assert.AreEqual(LListFrom((a, one)), EvalM.BindFunctionArguments(MalLListFrom(a), LListFrom(one, two)));
+            Assert.ThrowsException<Exception>(() => EvalM.BindFunctionArguments(MalLListFrom(a), MalLListFrom()));
 
             Assert.AreEqual(
                 LListFrom((a, one), (b, new List(LListFrom(two, three), ListType.List, NilV))),
-                EvalM.BindFunctionArguments(LListFrom<MalType>(a, amp, b), LListFrom(one, two, three)));
+                EvalM.BindFunctionArguments(MalLListFrom(a, amp, b), LListFrom(one, two, three)));
             Assert.AreEqual(
                 LListFrom((a, one), (b, new List(null, ListType.List, NilV))),
-                EvalM.BindFunctionArguments(LListFrom<MalType>(a, amp, b), LListFrom(one)));
+                EvalM.BindFunctionArguments(MalLListFrom(a, amp, b), LListFrom(one)));
 
             Assert.ThrowsException<Exception>(() => Assert.AreEqual(
                 LListFrom((a, one), (b, new List(null, ListType.List, NilV))),
-                EvalM.BindFunctionArguments(LListFrom<MalType>(a, amp), LListFrom(one))));
+                EvalM.BindFunctionArguments(MalLListFrom(a, amp), LListFrom(one))));
         }
 
         [TestMethod]
         public void ApplyFnTest()
         {
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyFn(LListFrom<MalType>(
-                ), EmptyEnv()));
-
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyFn(LListFrom<MalType>(
-                new Number(1),
-                new Number(1)
-                ), EmptyEnv()));
-
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyFn(LListFrom<MalType>(
-                new List(null, ListType.List, NilV),
-                new Number(1),
-                new Number(1)
-                ), EmptyEnv()));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyFn(MalLListFrom(), EmptyEnv()));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyFn(MalLListFrom(new Number(1), new Number(1)), EmptyEnv()));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyFn(MalLListFrom(MalListFrom(), new Number(1), new Number(1)), EmptyEnv()));
 
 
             Symbol a = new Symbol("a", NilV), b = new Symbol("b", NilV), plus = new Symbol("+", NilV);
             MalType one = new Number(1), two = new Number(2);
 
-            var fn = (Fn)EvalM.ApplyFn(LListFrom<MalType>(
-                new List(LListFrom<MalType>(a, b), ListType.List, NilV),
-                new List(LListFrom<MalType>(plus, a, b), ListType.List, NilV)
-                ), DefaultEnv());
+            var fn = (Fn)EvalM.ApplyFn(MalLListFrom(MalListFrom(a, b), MalListFrom(plus, a, b)), DefaultEnv());
 
             Assert.AreEqual(new Number(3), fn.Value(LListFrom(one, two)));
         }
@@ -216,15 +178,10 @@ namespace Mal.Tests
         [TestMethod]
         public void ApplyQuoteTest()
         {
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyQuote(LListFrom<MalType>(
-                ), EmptyEnv()));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyQuote(MalLListFrom(), EmptyEnv()));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyFn(MalLListFrom(new Number(1), new Number(1)), EmptyEnv()));
 
-            Assert.ThrowsException<Exception>(() => EvalM.ApplyFn(LListFrom<MalType>(
-                new Number(1),
-                new Number(1)
-                ), EmptyEnv()));
-
-            Assert.AreEqual(new Number(1), EvalM.ApplyQuote(LListFrom<MalType>(new Number(1)), EmptyEnv()));
+            Assert.AreEqual(new Number(1), EvalM.ApplyQuote(MalLListFrom(new Number(1)), EmptyEnv()));
         }
 
         [TestMethod]
@@ -232,25 +189,60 @@ namespace Mal.Tests
         {
             Assert.AreEqual(new Number(1), EvalM.TransformQuasiquote(new Number(1)));
             Assert.AreEqual(
-                new List(LListFrom<MalType>(new Symbol("quote", NilV), new Symbol("abc", NilV)), ListType.List, NilV),
+                MalListFrom(new Symbol("quote", NilV), new Symbol("abc", NilV)),
                 EvalM.TransformQuasiquote(new Symbol("abc", NilV)));
 
-            Assert.AreEqual("(cons 1 (cons 2 ()))", Printer.PrintStr(EvalM.TransformQuasiquote(new List(
-                LListFrom<MalType>(new Number(1), new Number(2)), ListType.List, NilV))));
+            Assert.AreEqual("(cons 1 (cons 2 ()))", Printer.PrintStr(EvalM.TransformQuasiquote(
+                MalListFrom(new Number(1), new Number(2)))));
 
 
-            var oneTwoList = new List(LListM.LListFrom<MalType>(new Number(1), new Number(2)), ListType.List, NilV);
+            var oneTwoList = MalListFrom(new Number(1), new Number(2));
 
-            var mal = EvalM.TransformQuasiquote(new List(
-                LListFrom<MalType>(
+            var mal = EvalM.TransformQuasiquote(
+                MalListFrom(
                     new Number(1),
-                    new List(LListM.LListFrom<MalType>(new Symbol("unquote", NilV), oneTwoList), ListType.List, NilV),
+                    MalListFrom(new Symbol("unquote", NilV), oneTwoList),
                     new Number(4),
-                    new List(LListM.LListFrom<MalType>(new Symbol("splice-unquote", NilV), oneTwoList), ListType.List, NilV)
-                    )
-                , ListType.List, NilV));
+                    MalListFrom(new Symbol("splice-unquote", NilV), oneTwoList)
+                    ));
 
             Assert.AreEqual("(cons 1 (cons (1 2) (cons 4 (concat (1 2) ()))))", Printer.PrintStr(mal));
         }
+
+        [TestMethod]
+        public void ApplyDefMacroTest()
+        {
+            var env1 = EmptyEnv();
+
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyDefMacro(MalLListFrom(), env1));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyDefMacro(MalLListFrom(new Symbol("a", NilV)), env1));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyDefMacro(MalLListFrom(new Symbol("a", NilV), new Number(1)), env1));
+
+            var mal1 = EvalM.ApplyDefMacro(MalLListFrom(
+                new Symbol("x", NilV),
+                MalListFrom(new Symbol("fn*", NilV), MalListFrom(), NilV)
+                ), env1);
+
+            Assert.IsTrue(mal1 is Fn { IsMacro: true });
+        }
+
+
+        [TestMethod]
+        public void IsMacroCallTest()
+        {
+
+            var env1 = EmptyEnv();
+            env1.Set(new Symbol("number", NilV), new Number(1));
+            env1.Set(new Symbol("function", NilV), new Fn(args => NilV, NilV, false));
+            env1.Set(new Symbol("macro", NilV), new Fn(args => NilV, NilV, true));
+
+            Assert.ThrowsException<Exception>(() => EvalM.IsMacroCall(MalListFrom(new Symbol("number__", NilV)), env1));
+
+            Assert.IsFalse(EvalM.IsMacroCall(MalListFrom(new Symbol("number", NilV)), env1));
+            Assert.IsFalse(EvalM.IsMacroCall(MalListFrom(new Symbol("function", NilV)), env1));
+            Assert.IsTrue(EvalM.IsMacroCall(MalListFrom(new Symbol("macro", NilV)), env1));
+
+        }
+
     }
 }

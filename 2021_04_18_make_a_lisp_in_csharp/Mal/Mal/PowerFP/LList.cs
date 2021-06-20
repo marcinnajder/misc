@@ -154,6 +154,15 @@ namespace PowerFP
                 null => false,
                 (var Head, var Tail) => f(Head) || Any(Tail, f)
             };
+
+        public static T ElementAt<T>(this LList<T>? llist, int index) =>
+            (llist, index) switch
+            {
+                (_, < 0) => throw new Exception("Index cannot be less than zero"),
+                (null, _) => throw new Exception("Index out of bounds"),
+                ((var Head, _), 0) => Head,
+                ((var Head, var Tail), _) => ElementAt(Tail, index - 1)
+            };
     }
 }
 

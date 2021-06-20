@@ -177,6 +177,22 @@ namespace Mal.Tests
             Assert.AreEqual(false, (null as LList<int>).Any(x => false));
         }
 
+
+        [TestMethod]
+        public void ElementAtTest()
+        {
+            Assert.ThrowsException<Exception>(() => LListFrom<int>().ElementAt(-1));
+            Assert.ThrowsException<Exception>(() => LListFrom<int>().ElementAt(0));
+
+            var list = LListFrom(11, 222, 444);
+            Assert.ThrowsException<Exception>(() => list.ElementAt(3));
+
+            Assert.AreEqual(11, list.ElementAt(0));
+            Assert.AreEqual(222, list.ElementAt(1));
+            Assert.AreEqual(444, list.ElementAt(2));
+        }
+
+
     }
 }
 

@@ -20,11 +20,11 @@ namespace Mal.Tests
             var fn = (fns.FirstOrDefault(f => f.Name.Name == "=")).Fn as Fn;
 
             Assert.IsNotNull(fn);
-            Assert.AreEqual(TrueV, fn!.Value(LListM.LListFrom<MalType>(new Number(1), new Number(1))));
-            Assert.AreEqual(FalseV, fn!.Value(LListM.LListFrom<MalType>(new Number(1), new Number(2))));
-            Assert.AreEqual(FalseV, fn!.Value(LListM.LListFrom<MalType>(new Number(1), new Str("a"))));
+            Assert.AreEqual(TrueV, fn!.Value(MalLListFrom(new Number(1), new Number(1))));
+            Assert.AreEqual(FalseV, fn!.Value(MalLListFrom(new Number(1), new Number(2))));
+            Assert.AreEqual(FalseV, fn!.Value(MalLListFrom(new Number(1), new Str("a"))));
 
-            Assert.ThrowsException<Exception>(() => fn!.Value(LListM.LListFrom<MalType>(new Number(1), new Number(2), new Number(3))));
+            Assert.ThrowsException<Exception>(() => fn!.Value(MalLListFrom(new Number(1), new Number(2), new Number(3))));
         }
 
 
@@ -44,10 +44,10 @@ namespace Mal.Tests
         [TestMethod]
         public void ListFnTest()
         {
-            Assert.AreEqual(new List(null, ListType.List, NilV), Core.ListFn(LListFrom<MalType>()));
-            Assert.AreEqual(new List(new(new Number(1), null), ListType.List, NilV), Core.ListFn(LListFrom<MalType>(new Number(1))));
+            Assert.AreEqual(new List(null, ListType.List, NilV), Core.ListFn(MalLListFrom()));
+            Assert.AreEqual(new List(new(new Number(1), null), ListType.List, NilV), Core.ListFn(MalLListFrom(new Number(1))));
             Assert.AreEqual(new List(new(new Number(1), new(new Number(2), null)), ListType.List, NilV),
-                Core.ListFn(LListFrom<MalType>(new Number(1), new Number(2))));
+                Core.ListFn(MalLListFrom(new Number(1), new Number(2))));
         }
 
 
@@ -55,11 +55,11 @@ namespace Mal.Tests
         public void IsListFnTest()
         {
             Assert.ThrowsException<Exception>(() => Core.IsListFn(null));
-            Assert.ThrowsException<Exception>(() => Core.IsListFn(LListFrom<MalType>(new Number(1), new Number(2))));
+            Assert.ThrowsException<Exception>(() => Core.IsListFn(MalLListFrom(new Number(1), new Number(2))));
 
-            Assert.AreEqual(TrueV, Core.IsListFn(LListFrom<MalType>(new List(new(new Number(1), null), ListType.List, NilV))));
-            Assert.AreEqual(FalseV, Core.IsListFn(LListFrom<MalType>(new List(new(new Number(1), null), ListType.Vector, NilV))));
-            Assert.AreEqual(FalseV, Core.IsListFn(LListFrom<MalType>(new Number(1))));
+            Assert.AreEqual(TrueV, Core.IsListFn(MalLListFrom(new List(new(new Number(1), null), ListType.List, NilV))));
+            Assert.AreEqual(FalseV, Core.IsListFn(MalLListFrom(new List(new(new Number(1), null), ListType.Vector, NilV))));
+            Assert.AreEqual(FalseV, Core.IsListFn(MalLListFrom(new Number(1))));
         }
 
 
@@ -67,12 +67,12 @@ namespace Mal.Tests
         public void IsEmptyFnTest()
         {
             Assert.ThrowsException<Exception>(() => Core.IsEmptyFn(null));
-            Assert.ThrowsException<Exception>(() => Core.IsEmptyFn(LListFrom<MalType>(new Number(1))));
-            Assert.ThrowsException<Exception>(() => Core.IsEmptyFn(LListFrom<MalType>(new Number(1), new Number(2))));
+            Assert.ThrowsException<Exception>(() => Core.IsEmptyFn(MalLListFrom(new Number(1))));
+            Assert.ThrowsException<Exception>(() => Core.IsEmptyFn(MalLListFrom(new Number(1), new Number(2))));
 
-            Assert.AreEqual(TrueV, Core.IsEmptyFn(LListFrom<MalType>(new List(null, ListType.List, NilV))));
-            Assert.AreEqual(TrueV, Core.IsEmptyFn(LListFrom<MalType>(new List(null, ListType.Vector, NilV))));
-            Assert.AreEqual(FalseV, Core.IsEmptyFn(LListFrom<MalType>(new List(new(new Number(1), null), ListType.List, NilV))));
+            Assert.AreEqual(TrueV, Core.IsEmptyFn(MalLListFrom(new List(null, ListType.List, NilV))));
+            Assert.AreEqual(TrueV, Core.IsEmptyFn(MalLListFrom(new List(null, ListType.Vector, NilV))));
+            Assert.AreEqual(FalseV, Core.IsEmptyFn(MalLListFrom(new List(new(new Number(1), null), ListType.List, NilV))));
         }
 
 
@@ -81,27 +81,27 @@ namespace Mal.Tests
         public void CountFnTest()
         {
             Assert.ThrowsException<Exception>(() => Core.CountFn(null));
-            Assert.ThrowsException<Exception>(() => Core.CountFn(LListFrom<MalType>(new Number(1))));
-            Assert.ThrowsException<Exception>(() => Core.CountFn(LListFrom<MalType>(new Number(1), new Number(2))));
+            Assert.ThrowsException<Exception>(() => Core.CountFn(MalLListFrom(new Number(1))));
+            Assert.ThrowsException<Exception>(() => Core.CountFn(MalLListFrom(new Number(1), new Number(2))));
 
-            Assert.AreEqual(new Number(0), Core.CountFn(LListFrom<MalType>(new List(null, ListType.List, NilV))));
-            Assert.AreEqual(new Number(0), Core.CountFn(LListFrom<MalType>(new List(null, ListType.Vector, NilV))));
-            Assert.AreEqual(new Number(1), Core.CountFn(LListFrom<MalType>(new List(new(new Number(100), null), ListType.List, NilV))));
-            Assert.AreEqual(new Number(0), Core.CountFn(LListFrom<MalType>(NilV)));
+            Assert.AreEqual(new Number(0), Core.CountFn(MalLListFrom(new List(null, ListType.List, NilV))));
+            Assert.AreEqual(new Number(0), Core.CountFn(MalLListFrom(new List(null, ListType.Vector, NilV))));
+            Assert.AreEqual(new Number(1), Core.CountFn(MalLListFrom(new List(new(new Number(100), null), ListType.List, NilV))));
+            Assert.AreEqual(new Number(0), Core.CountFn(MalLListFrom(NilV)));
         }
 
         [TestMethod]
         public void EqualsFnTest()
         {
             Assert.ThrowsException<Exception>(() => Core.EqualsFn(null));
-            Assert.ThrowsException<Exception>(() => Core.EqualsFn(LListFrom<MalType>(new Number(1))));
-            Assert.ThrowsException<Exception>(() => Core.EqualsFn(LListFrom<MalType>(new Number(1), new Number(2), new Number(3))));
+            Assert.ThrowsException<Exception>(() => Core.EqualsFn(MalLListFrom(new Number(1))));
+            Assert.ThrowsException<Exception>(() => Core.EqualsFn(MalLListFrom(new Number(1), new Number(2), new Number(3))));
 
-            Assert.AreEqual(TrueV, Core.EqualsFn(LListFrom<MalType>(new Number(123), new Number(123))));
-            Assert.AreEqual(FalseV, Core.EqualsFn(LListFrom<MalType>(new Number(123), new Number(1230))));
-            Assert.AreEqual(FalseV, Core.EqualsFn(LListFrom<MalType>(new Number(123), new Str("123"))));
+            Assert.AreEqual(TrueV, Core.EqualsFn(MalLListFrom(new Number(123), new Number(123))));
+            Assert.AreEqual(FalseV, Core.EqualsFn(MalLListFrom(new Number(123), new Number(1230))));
+            Assert.AreEqual(FalseV, Core.EqualsFn(MalLListFrom(new Number(123), new Str("123"))));
 
-            Assert.AreEqual(TrueV, Core.EqualsFn(LListFrom<MalType>(
+            Assert.AreEqual(TrueV, Core.EqualsFn(MalLListFrom(
                 new List(new(new Number(4), null), ListType.Vector, NilV),
                 new List(new(new Number(4), null), ListType.Vector, NilV)
             )));
@@ -114,23 +114,23 @@ namespace Mal.Tests
             Func<double, double, bool> lessThen = (a, b) => a < b;
 
             Assert.ThrowsException<Exception>(() => Core.ExecuteComparisonFn(null, lessThen));
-            Assert.ThrowsException<Exception>(() => Core.ExecuteComparisonFn(LListFrom<MalType>(new Number(1)), lessThen));
-            Assert.ThrowsException<Exception>(() => Core.ExecuteComparisonFn(LListFrom<MalType>(new Number(1), new Number(2), new Number(3)), lessThen));
-            Assert.ThrowsException<Exception>(() => Core.ExecuteComparisonFn(LListFrom<MalType>(new Str("1"), new Str("2")), lessThen));
+            Assert.ThrowsException<Exception>(() => Core.ExecuteComparisonFn(MalLListFrom(new Number(1)), lessThen));
+            Assert.ThrowsException<Exception>(() => Core.ExecuteComparisonFn(MalLListFrom(new Number(1), new Number(2), new Number(3)), lessThen));
+            Assert.ThrowsException<Exception>(() => Core.ExecuteComparisonFn(MalLListFrom(new Str("1"), new Str("2")), lessThen));
 
-            Assert.AreEqual(TrueV, Core.ExecuteComparisonFn(LListFrom<MalType>(new Number(123), new Number(124)), lessThen));
-            Assert.AreEqual(FalseV, Core.ExecuteComparisonFn(LListFrom<MalType>(new Number(123), new Number(123)), lessThen));
+            Assert.AreEqual(TrueV, Core.ExecuteComparisonFn(MalLListFrom(new Number(123), new Number(124)), lessThen));
+            Assert.AreEqual(FalseV, Core.ExecuteComparisonFn(MalLListFrom(new Number(123), new Number(123)), lessThen));
         }
 
         [TestMethod]
         public void ReadStringFnTest()
         {
             Assert.ThrowsException<Exception>(() => Core.ReadStringFn(null));
-            Assert.ThrowsException<Exception>(() => Core.ReadStringFn(LListFrom<MalType>(new Number(1))));
-            Assert.ThrowsException<Exception>(() => Core.ReadStringFn(LListFrom<MalType>(new Str(""), new Str(""))));
+            Assert.ThrowsException<Exception>(() => Core.ReadStringFn(MalLListFrom(new Number(1))));
+            Assert.ThrowsException<Exception>(() => Core.ReadStringFn(MalLListFrom(new Str(""), new Str(""))));
 
-            Assert.AreEqual(new Number(123), Core.ReadStringFn(LListFrom<MalType>(new Str("123"))));
-            Assert.AreEqual(NilV, Core.ReadStringFn(LListFrom<MalType>(new Str(""))));
+            Assert.AreEqual(new Number(123), Core.ReadStringFn(MalLListFrom(new Str("123"))));
+            Assert.AreEqual(NilV, Core.ReadStringFn(MalLListFrom(new Str(""))));
         }
 
 
@@ -153,7 +153,7 @@ namespace Mal.Tests
                 (Number(var number1), (Number(var number2), null)) => new Number(number1 + number2),
                 _ => throw new Exception("")
             };
-            Assert.AreEqual(new Number(102), Core.SwapFn(LListM.LListFrom<MalType>(atom, new Fn(fn, NilV), new Number(100))));
+            Assert.AreEqual(new Number(102), Core.SwapFn(MalLListFrom(atom, new Fn(fn, NilV), new Number(100))));
         }
 
 
@@ -161,27 +161,27 @@ namespace Mal.Tests
         public void ConstTest()
         {
             Assert.ThrowsException<Exception>(() => Core.ConsFn(null));
-            Assert.ThrowsException<Exception>(() => Core.ConsFn(LListFrom<MalType>(new Number(1))));
-            Assert.ThrowsException<Exception>(() => Core.ConsFn(LListFrom<MalType>(new Number(1), new Number(2))));
+            Assert.ThrowsException<Exception>(() => Core.ConsFn(MalLListFrom(new Number(1))));
+            Assert.ThrowsException<Exception>(() => Core.ConsFn(MalLListFrom(new Number(1), new Number(2))));
 
             Assert.AreEqual(
-                new List(LListFrom<MalType>(new Number(1), new Number(2)), ListType.List, NilV),
-                Core.ConsFn(LListFrom<MalType>(new Number(1), new List(new(new Number(2), null), ListType.List, NilV))));
+                new List(MalLListFrom(new Number(1), new Number(2)), ListType.List, NilV),
+                Core.ConsFn(MalLListFrom(new Number(1), new List(new(new Number(2), null), ListType.List, NilV))));
         }
 
         [TestMethod]
         public void ConcatTest()
         {
-            Assert.ThrowsException<Exception>(() => Core.ConcatFn(LListFrom<MalType>(new Number(1))));
+            Assert.ThrowsException<Exception>(() => Core.ConcatFn(MalLListFrom(new Number(1))));
 
             Assert.AreEqual(new List(null, ListType.List, NilV), Core.ConcatFn(null));
             Assert.AreEqual(
-                new List(LListFrom<MalType>(new Number(1), new Number(2), new Number(3)), ListType.List, NilV),
-                Core.ConcatFn(LListFrom<MalType>(
+                new List(MalLListFrom(new Number(1), new Number(2), new Number(3)), ListType.List, NilV),
+                Core.ConcatFn(MalLListFrom(
                     new List(null, ListType.List, NilV),
-                    new List(LListFrom<MalType>(new Number(1), new Number(2)), ListType.List, NilV),
+                    new List(MalLListFrom(new Number(1), new Number(2)), ListType.List, NilV),
                     new List(null, ListType.List, NilV),
-                    new List(LListFrom<MalType>(new Number(3)), ListType.List, NilV),
+                    new List(MalLListFrom(new Number(3)), ListType.List, NilV),
                     new List(null, ListType.List, NilV)
                 )));
         }
@@ -189,16 +189,49 @@ namespace Mal.Tests
         [TestMethod]
         public void VecTest()
         {
-            Assert.ThrowsException<Exception>(() => Core.VecFn(LListFrom<MalType>(new Number(1))));
-            Assert.ThrowsException<Exception>(() => Core.VecFn(LListFrom<MalType>()));
+            Assert.ThrowsException<Exception>(() => Core.VecFn(MalLListFrom(new Number(1))));
+            Assert.ThrowsException<Exception>(() => Core.VecFn(MalLListFrom()));
 
             Assert.AreEqual(
-                new List(LListFrom<MalType>(new Number(1)), ListType.Vector, NilV),
-                Core.VecFn(new(new List(LListFrom<MalType>(new Number(1)), ListType.Vector, NilV), null)));
+                new List(MalLListFrom(new Number(1)), ListType.Vector, NilV),
+                Core.VecFn(new(new List(MalLListFrom(new Number(1)), ListType.Vector, NilV), null)));
             Assert.AreEqual(
-                new List(LListFrom<MalType>(new Number(1)), ListType.Vector, NilV),
-                Core.VecFn(new(new List(LListFrom<MalType>(new Number(1)), ListType.List, NilV), null)));
+                new List(MalLListFrom(new Number(1)), ListType.Vector, NilV),
+                Core.VecFn(new(new List(MalLListFrom(new Number(1)), ListType.List, NilV), null)));
 
         }
+
+        [TestMethod]
+        public void NthTest()
+        {
+            Assert.ThrowsException<Exception>(() => Core.NthFn(MalLListFrom(MalListFrom(), new Number(0))));
+
+            Assert.AreEqual(new Number(123),
+                Core.NthFn(MalLListFrom(MalListFrom(new Number(123), new Number(456)), new Number(0))));
+        }
+
+        [TestMethod]
+        public void FirstTest()
+        {
+            Assert.ThrowsException<Exception>(() => Core.FirstFn(MalLListFrom()));
+            Assert.ThrowsException<Exception>(() => Core.FirstFn(MalLListFrom(MalListFrom(), new Number(0))));
+
+            Assert.AreEqual(new Number(123), Core.FirstFn(MalLListFrom(MalListFrom(new Number(123), new Number(456)))));
+            Assert.AreEqual(NilV, Core.FirstFn(MalLListFrom(MalListFrom())));
+            Assert.AreEqual(NilV, Core.FirstFn(MalLListFrom(NilV)));
+        }
+
+
+        [TestMethod]
+        public void RestTest()
+        {
+            Assert.ThrowsException<Exception>(() => Core.RestFn(MalLListFrom()));
+            Assert.ThrowsException<Exception>(() => Core.RestFn(MalLListFrom(MalListFrom(), new Number(0))));
+
+            Assert.AreEqual(MalListFrom(new Number(456)), Core.RestFn(MalLListFrom(MalListFrom(new Number(123), new Number(456)))));
+            Assert.AreEqual(MalListFrom(), Core.RestFn(MalLListFrom(MalListFrom())));
+            Assert.AreEqual(MalListFrom(), Core.RestFn(MalLListFrom(NilV)));
+        }
+
     }
 }
