@@ -233,5 +233,71 @@ namespace Mal.Tests
             Assert.AreEqual(MalListFrom(), Core.RestFn(MalLListFrom(NilV)));
         }
 
+        [TestMethod]
+        public void ThrowTest()
+        {
+            Assert.ThrowsException<Exception>(() => Core.ThrowFn(MalLListFrom()));
+            Assert.ThrowsException<Exception>(() => Core.ThrowFn(MalLListFrom(new Number(0), new Number(0))));
+
+            Assert.ThrowsException<Core.MalException>(() => Core.ThrowFn(MalLListFrom(new Number(123))));
+        }
+
+        [TestMethod]
+        public void ApplyTest()
+        {
+            Assert.ThrowsException<Exception>(() => Core.ApplyFn(MalLListFrom()));
+            Assert.ThrowsException<Exception>(() => Core.ApplyFn(MalLListFrom(new Number(0), new Number(0))));
+
+            Assert.AreEqual(new Number(3), Core.ApplyFn(MalLListFrom(
+                new Fn(args => new Number(args.ToEnumerable().Max(mal => ((Number)mal).Value)), NilV), new Number(2), MalListFrom(new Number(3), new Number(1)))));
+        }
+
+        [TestMethod]
+        public void MapTest()
+        {
+            Assert.ThrowsException<Exception>(() => Core.MapFn(MalLListFrom()));
+            Assert.ThrowsException<Exception>(() => Core.MapFn(MalLListFrom(new Number(0), new Number(0))));
+
+            Assert.AreEqual(MalListFrom(new Number(4), new Number(2)), Core.MapFn(MalLListFrom(
+                new Fn(args => new Number(((Number)args!.Head).Value + 1), NilV), MalListFrom(new Number(3), new Number(1)))));
+        }
+
+        [TestMethod]
+        public void AssocTest()
+        {
+            Assert.ThrowsException<Exception>(() => Core.AssocFn(MalLListFrom()));
+            Assert.ThrowsException<Exception>(() => Core.AssocFn(MalLListFrom(new Number(0))));
+
+            var malMap = new Map(MalMapFrom(
+                (new Keyword("a") as Keyword, new Number(1)),
+                (new Keyword("b"), new Number(2))
+                ), NilV);
+
+            Assert.ThrowsException<Exception>(() => Core.AssocFn(MalLListFrom(malMap, new Keyword("c"))));
+
+            Assert.AreEqual(
+                malMap with { Value = malMap.Value.Add(new Keyword("c"), new Number(3)).Add(new Keyword("d"), new Number(4)) },
+                Core.AssocFn(MalLListFrom(malMap, new Keyword("c"), new Number(3), new Keyword("d"), new Number(4)))
+                );
+        }
+
+        [TestMethod]
+        public void DissocTest()
+        {
+            Assert.ThrowsException<Exception>(() => Core.DissocFn(MalLListFrom()));
+            Assert.ThrowsException<Exception>(() => Core.DissocFn(MalLListFrom(new Number(0))));
+
+            var malMap = new Map(MalMapFrom(
+                (new Keyword("a") as Keyword, new Number(1)),
+                (new Keyword("b"), new Number(2))
+                ), NilV);
+
+            Assert.AreEqual(
+                malMap with { Value = malMap.Value.Remove(new Keyword("c")) },
+                Core.DissocFn(MalLListFrom(malMap, new Keyword("c")))
+                );
+        }
+
+
     }
 }

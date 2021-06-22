@@ -1,18 +1,21 @@
 (def! e (atom {"+" +}))
 ;=>(atom {"+" #<function>})
 
-(swap! e assoc "-" -)
-;=>{"+" #<function> "-" #<function>}
+(do (swap! e assoc "-" -) nil)
+;;=>{"+" #<function> "-" #<function>}
+;=>nil
 ( (get @e "+") 7 8)
 ;=>15
 ( (get @e "-") 11 8)
 ;=>3
-(swap! e assoc "foo" (list))
-;=>{"+" #<function> "-" #<function> "foo" ()}
+(do (swap! e assoc "foo" (list)) nil)
+;;=>{"+" #<function> "-" #<function> "foo" ()}
+;=>nil
 (get @e "foo")
 ;=>()
-(swap! e assoc "bar" '(1 2 3))
-;=>{"+" #<function> "-" #<function> "foo" () "bar" (1 2 3)}
+(do (swap! e assoc "bar" '(1 2 3)) nil)
+;;=>{"+" #<function> "-" #<function> "foo" () "bar" (1 2 3)}
+;=>nil
 (get @e "bar")
 ;=>(1 2 3)
 

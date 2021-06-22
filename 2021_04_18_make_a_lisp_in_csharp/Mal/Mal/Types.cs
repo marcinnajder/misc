@@ -56,7 +56,7 @@ namespace Mal
 
         public static LList<MalType>? MalLListFrom(params MalType[] mals) => LListM.LListFrom(mals);
         public static List MalListFrom(params MalType[] mals) => new List(MalLListFrom(mals), ListType.List, NilV);
-
+        public static Map<MalType, MalType> MalMapFrom(params (MalType, MalType)[] mals) => MapM.MapFrom(mals);
 
 
         public static List ListFrom(params MalType[] mals) => new List(mals.ToLList(), ListType.List, NilV);

@@ -59,6 +59,12 @@ namespace Mal.Tests
 
         [TestMethod]
         public void Step8() => ExecuteFile("step8_macros.mal");
+
+        [TestMethod]
+        public void Step9() => ExecuteFile("step9_try.mal");
+
+        [TestMethod]
+        public void Step10() => ExecuteFile("stepA_mal.mal");
     }
 }
 

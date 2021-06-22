@@ -244,5 +244,26 @@ namespace Mal.Tests
 
         }
 
+
+        [TestMethod]
+        public void TryCatchTest()
+        {
+            var emptyEnv = EmptyEnv();
+
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyTryCatch(MalLListFrom(TrueV), emptyEnv));
+            Assert.ThrowsException<Exception>(() => EvalM.ApplyTryCatch(MalLListFrom(TrueV, MalListFrom(new Symbol("catch*", NilV), new Symbol("err", NilV), TrueV, FalseV)), emptyEnv));
+
+            Assert.AreEqual(TrueV, EvalM.ApplyTryCatch(
+                MalLListFrom(TrueV, MalListFrom(new Symbol("catch*", NilV), new Symbol("err", NilV), FalseV)), emptyEnv));
+
+            Assert.AreEqual(FalseV, EvalM.ApplyTryCatch(
+                MalLListFrom(new Symbol("xx", NilV), MalListFrom(new Symbol("catch*", NilV), new Symbol("err", NilV), FalseV)), emptyEnv));
+
+            var defaultEnv = DefaultEnv();
+
+            Assert.AreEqual(new Number(666), EvalM.ApplyTryCatch(
+                MalLListFrom(MalListFrom(new Symbol("throw", NilV), new Number(666)), MalListFrom(new Symbol("catch*", NilV), new Symbol("err", NilV), new Symbol("err", NilV))), defaultEnv));
+
+        }
     }
 }

@@ -236,6 +236,179 @@ namespace Mal
                 _ => ThrowError(args, "one argument of type 'list' or 'vector'")
             };
 
+        [MalFunction("throw")]
+        internal static FnDelegate ThrowFn = args
+            => args switch
+            {
+                (var Mal, null) => throw new MalException(Mal),
+                _ => ThrowError(args, "one argument")
+            };
+
+        [MalFunction("apply")]
+        internal static FnDelegate ApplyFn = args
+            => args switch
+            {
+                (Fn Fn, var Args) => Fn.Value(Args.SelectMany(arg => arg is List list ? list.Items : LListM.LListFrom(arg))),
+                _ => ThrowError(args, "at least one argument where the first must be of type 'fn'")
+            };
+
+        [MalFunction("map")]
+        internal static FnDelegate MapFn = args
+            => args switch
+            {
+                (Fn Fn, (List { Items: var Items }, null)) => new List(Items.Select(mal => Fn.Value(MalLListFrom(mal))), ListType.List, NilV),
+                _ => ThrowError(args, "two arguments where the first one must be of type 'fn' and the second of 'list' or 'vector'")
+            };
+
+
+        private static FnDelegate IsOfType<T>() => args => args is (T, null) ? TrueV : FalseV;
+
+        [MalFunction("nil?")] internal static FnDelegate IsNilFn = IsOfType<Nil>();
+        [MalFunction("true?")] internal static FnDelegate IsTrueFn = IsOfType<True>();
+        [MalFunction("false?")] internal static FnDelegate IsFalseFn = IsOfType<False>();
+        [MalFunction("symbol?")] internal static FnDelegate IsSymbplFn = IsOfType<Symbol>();
+        [MalFunction("keyword?")] internal static FnDelegate IsKeywordFn = IsOfType<Keyword>();
+        [MalFunction("map?")] internal static FnDelegate IsMapFn = IsOfType<Map>();
+        [MalFunction("string?")] internal static FnDelegate IsStringFn = IsOfType<Str>();
+        [MalFunction("number?")] internal static FnDelegate IsNmberFn = IsOfType<Number>();
+
+        [MalFunction("vector?")] internal static FnDelegate IsVectorFn = args => args is (List { ListType: ListType.Vector }, null) ? TrueV : FalseV;
+        [MalFunction("sequential?")] internal static FnDelegate IsSequentialFn = args => args is (List, null) ? TrueV : FalseV;
+
+        [MalFunction("fn?")]
+        internal static FnDelegate IsFnFn = args => args is (Fn { IsMacro: false }, null) ? TrueV : FalseV;
+        [MalFunction("macro?")]
+        internal static FnDelegate IsMacroFn = args => args is (Fn { IsMacro: true }, null) ? TrueV : FalseV;
+
+        [MalFunction("symbol")]
+        internal static FnDelegate SymbolFn = args
+            => args switch
+            {
+                (Str { Value: var StrValue }, null) => new Symbol(StrValue, NilV),
+                _ => ThrowError(args, "one argument of type 'string'")
+            };
+
+
+        [MalFunction("keyword")]
+        internal static FnDelegate KeywordFn = args
+            => args switch
+            {
+                (Keyword keyword, null) => keyword,
+                (Str { Value: var StrValue }, null) => new Keyword(StrValue),
+                _ => ThrowError(args, "one argument of type 'string'")
+            };
+
+
+        [MalFunction("vector")]
+        internal static FnDelegate VectorFn = args => new List(args, ListType.Vector, NilV);
+
+        [MalFunction("hash-map")]
+        internal static FnDelegate HashMapFn = args => Reader.MalsToMap(args);
+
+        [MalFunction("assoc")]
+        internal static FnDelegate AssocFn = args
+            => args switch
+            {
+                (Map { Value: var MapItems }, var NewItems) => new Map(Reader.MalsToMap(NewItems).Pipe(mapWithNewItems
+                    => mapWithNewItems.Value.EntriesL().Aggregate(MapItems, (map, kv) => map.Add(kv.Key, kv.Value))),
+                    NilV),
+                _ => ThrowError(args, "at least one argument of type 'map'")
+            };
+
+        [MalFunction("dissoc")]
+        internal static FnDelegate DissocFn = args
+            => args switch
+            {
+                (Map { Value: var MapItems }, var DeletedKeys) => new Map(
+                    DeletedKeys.Aggregate(MapItems, (map, key) => map.Remove(key)),
+                    NilV),
+                _ => ThrowError(args, "at least one argument of type 'map'")
+            };
+
+        [MalFunction("get")]
+        internal static FnDelegate GetFn = args
+            => args switch
+            {
+                (Nil, _) => NilV,
+                (Map { Value: var MapItems }, (var Key, null)) => MapItems.TryFind(Key, out var Value) ? Value : NilV,
+                _ => ThrowError(args, "two arguments where the first one must be of type 'map' and the second of type 'keyword' oraz 'string'")
+            };
+
+        [MalFunction("contains?")]
+        internal static FnDelegate ContainsFn = args
+            => args switch
+            {
+                (Map { Value: var MapItems }, (var Key, null)) => MapItems.ContainsKey(Key) ? TrueV : FalseV,
+                _ => ThrowError(args, "two arguments where the first one must be of type 'map' and the second of type 'keyword' oraz 'string'")
+            };
+
+        [MalFunction("keys")]
+        internal static FnDelegate KeysFn = args
+            => args switch
+            {
+                (Map { Value: var MapItems }, null) => new List(MapItems.EntriesL().Select(kv => kv.Key), ListType.List, NilV),
+                _ => ThrowError(args, "one argument of type 'map'")
+            };
+
+        [MalFunction("vals")]
+        internal static FnDelegate ValsFn = args
+            => args switch
+            {
+                (Map { Value: var MapItems }, null) => new List(MapItems.EntriesL().Select(kv => kv.Value), ListType.List, NilV),
+                _ => ThrowError(args, "one argument of type 'map'")
+            };
+
+
+        [MalFunction("time-ms")]
+        internal static FnDelegate TimeMsFn = args => new Number(DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond);
+
+        [MalFunction("conj")]
+        internal static FnDelegate ConjFn = args
+            => args switch
+            {
+                (List { ListType: ListType.List, Items: var Items }, var NewItems) =>
+                    new List(NewItems.Aggregate(Items, (agg, item) => new(item, agg)), ListType.List, NilV),
+                (List { ListType: ListType.Vector, Items: var Items }, var NewItems) =>
+                    new List(Items.Concat(NewItems), ListType.Vector, NilV),
+                _ => ThrowError(args, "at least one argument of type 'list' or 'vector'")
+            };
+
+
+        [MalFunction("seq")]
+        internal static FnDelegate SeqFn = args
+            => args switch
+            {
+                (List { Items: null } or Str { Value: "" }, null) => NilV,
+                (List { ListType: ListType.List } list, null) => list,
+                (List { ListType: ListType.Vector } vector, null) => vector with { ListType = ListType.List },
+                (Str { Value: var StrValue }, null) =>
+                    new List(StrValue.Select(c => new Str(c.ToString()) as MalType).ToLList(), ListType.List, NilV),
+                _ => ThrowError(args, "one argument of type 'list', 'vector' or 'string'")
+            };
+
+
+        [MalFunction("meta")]
+        internal static FnDelegate MetaFn = args
+            => args switch
+            {
+                (Fn { Meta: var Meta }, null) => Meta,
+                (List { Meta: var Meta }, null) => Meta,
+                (Map { Meta: var Meta }, null) => Meta,
+                _ => ThrowError(args, "one argument of type 'fn', 'vector', 'list or 'map'")
+            };
+
+        [MalFunction("with-meta")]
+        internal static FnDelegate WithMetaFn = args
+            => args switch
+            {
+                (Fn Mal, (var Meta, null)) => Mal with { Meta = Meta },
+                (List Mal, (var Meta, null)) => Mal with { Meta = Meta },
+                (Map Mal, (var Meta, null)) => Mal with { Meta = Meta },
+                _ => ThrowError(args, "two arguments where the first one must be of type 'fn', 'vector', 'list or 'map'")
+            };
+
+
+
         // private
 
         // 'Binding' is a property instead of a field because it is used during initialization of other static properties or fields
@@ -260,6 +433,10 @@ namespace Mal
                 select (new Symbol(attribute.Name, NilV), new Fn(fn, NilV) as MalType)
             ).ToLList();
 
-
+        internal class MalException : Exception
+        {
+            public MalType Mal { get; }
+            public MalException(MalType mal) => Mal = mal;
+        }
     }
 }

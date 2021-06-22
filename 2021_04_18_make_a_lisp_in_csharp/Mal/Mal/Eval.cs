@@ -29,6 +29,7 @@ namespace Mal
 
                 List { Items: (Symbol { Name: "defmacro!" }, var Tail) } => ApplyDefMacro(Tail, env),
                 List { Items: (Symbol { Name: "macroexpand" }, var Tail) } => ApplyMacroExpand(Tail, env),
+                List { Items: (Symbol { Name: "try*" }, var Tail) } => ApplyTryCatch(Tail, env),
 
                 List list => EvalAst(list, env) switch
                 {
@@ -196,6 +197,26 @@ namespace Mal
                 _ => throw new Exception($"'macroexpand' requires 1 argument, but got '{items.JoinMalTypes()}'")
             };
 
+        // (try* ... (catch* symbol ...))
+        internal static MalType ApplyTryCatch(LList<MalType>? items, Env env)
+            => items switch
+            {
+                (var TryBody, (List { Items: (Symbol("catch*", _), (Symbol CatchArg, (var CatchBody, null))) }, null)) =>
+                    TryBody.Pipe(tryBody =>
+                   {
+                       try
+                       {
+                           return Eval(tryBody, env);
+                       }
+                       catch (Exception exception)
+                       {
+                           return (exception is Core.MalException { Mal: var Error } ? Error! : new Str(exception.Message))
+                            .Pipe(error => new Env(MapM.MapFrom((CatchArg, error)), env))
+                            .Pipe(catchEnv => Eval(CatchBody, catchEnv));
+                       }
+                   }),
+                _ => throw new Exception($"'try*' requires structure '(try* ... (catch* symbol ...))', but got '{items.JoinMalTypes()}'")
+            };
 
     }
 }
