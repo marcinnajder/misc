@@ -163,6 +163,15 @@ namespace PowerFP
                 ((var Head, _), 0) => Head,
                 ((var Head, var Tail), _) => ElementAt(Tail, index - 1)
             };
+
+        public static bool SequenceEqual<T>(this LList<T>? llist1, LList<T>? llist2, Func<T, T, bool> equals) =>
+            (llist1, llist2) switch
+            {
+                (null, null) => true,
+                (null, _) or (_, null) => false,
+                ((var Head1, var Tail1), (var Head2, var Tail2)) => equals(Head1, Head2) && SequenceEqual(Tail1, Tail2, equals)
+            };
+
     }
 }
 

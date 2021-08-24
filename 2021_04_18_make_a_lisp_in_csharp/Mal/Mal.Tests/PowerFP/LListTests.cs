@@ -151,7 +151,6 @@ namespace Mal.Tests
         [TestMethod]
         public void ReverseTests()
         {
-
             Assert.AreEqual(new LList<int>(22, new(11, null)), new LList<int>(11, new(22, null)).Reverse());
             Assert.AreEqual(new LList<int>(11, null), new LList<int>(11, null).Reverse());
             Assert.AreEqual(null, (null as LList<int>).Reverse());
@@ -193,6 +192,23 @@ namespace Mal.Tests
         }
 
 
+        [TestMethod]
+        public void SequenceEqualTest()
+        {
+            Func<int, int, bool> equals = (x, y) => x == y;
+            var list123 = new LList<int>(1, new(2, new(3, null)));
+
+            Assert.IsTrue(((LList<int>?)null).SequenceEqual(null, equals));
+            Assert.IsTrue(list123.SequenceEqual(list123, equals));
+
+            Assert.IsFalse(list123.SequenceEqual(null, equals));
+            Assert.IsFalse(((LList<int>?)null).SequenceEqual(list123, equals));
+            Assert.IsFalse(list123.SequenceEqual(new(0, list123), equals));
+            Assert.IsFalse(list123.SequenceEqual(new LList<int>(1, new(2, new(3333, null))), equals));
+
+            // Assert.AreEqual(false, list123.Any(x => x > 3));
+            // Assert.AreEqual(false, (null as LList<int>).Any(x => false));
+        }
     }
 }
 

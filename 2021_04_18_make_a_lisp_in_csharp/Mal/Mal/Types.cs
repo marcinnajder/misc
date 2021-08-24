@@ -64,7 +64,8 @@ namespace Mal
         public static bool MalEqual(MalType mal1, MalType mal2) =>
             (mal1, mal2) switch
             {
-                // this case for lists is necessary because: list type (list vs vector) does not metter and lists can contain other lists
+                // this case for lists is necessary because: list type (list vs vector) does not matter during comparison process
+                // and additionary lists can contain other lists so we have to compare items recursively
                 (List list1, List list2) => MalEqual(list1.Meta, list2.Meta) &&
                     list1.Items.ToEnumerable().SequenceEqual(list2.Items.ToEnumerable(), MalTypeComparer.Instance),
                 _ => mal1.Equals(mal2)
