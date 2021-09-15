@@ -22,6 +22,7 @@ namespace PowerFP
     public record Map<K, V>
         where K : notnull
     {
+        // properties instead of primary constructor because we want to 'internal' visibility
         internal LList<(K Key, V Value)>? Items { get; }
         internal Map(LList<(K Key, V Value)>? items) => Items = items;
     }

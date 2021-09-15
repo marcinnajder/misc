@@ -10,6 +10,30 @@ namespace Mal.Tests
     [TestClass]
     public class LListTests
     {
+        // [TestMethod]
+        // public void PrintSamples()
+        // {
+        //     PrintValue(LListFrom("mama", "tata", "babcia").Count());
+        //     PrintList(LListFrom("mama", "tata", "babcia").Select(s => s.Length));
+        //     PrintList(LListFrom("mama", "tata", "babcia").Where(s => s.Length > 4));
+        //     PrintValue(LListFrom("mama", "tata", "babcia").Aggregate("", (agg, c) => agg + c));
+        //     PrintList(LListFrom("mama", "tata", "babcia").Take(2));
+        //     PrintList(LListFrom("mama", "tata", "babcia").Skip(1));
+        //     PrintList(LListFrom("mama", "tata", "babcia").Zip(LListFrom("dziadek", "ciocia"), (l, r) => l + "-" + r));
+        //     PrintList(LListFrom("mama", "tata", "babcia").SelectMany(s => s.ToLList()));
+
+        //     PrintValue(LListFrom("mama", "tata", "babcia").Aggregate((agg, c) => agg + c));
+        //     PrintList(LListFrom("mama", "tata", "babcia").SelectMany(s => s.ToLList(), (s, c) => s + "-" + c));
+        //     PrintValue(LListFrom("mama", "tata", "babcia").All(s => s.Contains("a")));
+        //     PrintValue(LListFrom("mama", "tata", "babcia").Any(s => s.Contains("x")));
+        //     PrintValue(LListFrom("mama", "tata", "babcia").ElementAt(1));
+        //     PrintValue(LListFrom("mama", "tata").SequenceEqual(LListFrom("mama", "tata"), (x, y) => x == y));
+        //     PrintList(LListFrom("mama", "tata", "babcia").Reverse());
+
+        //     static void PrintList<T>(LList<T>? list) => Console.WriteLine(string.Join(",", list.ToEnumerable()));
+        //     static void PrintValue<T>(T value) => Console.WriteLine(value);
+        // }
+
         [TestMethod]
         public void ToEnumerableTest()
         {
@@ -205,9 +229,6 @@ namespace Mal.Tests
             Assert.IsFalse(((LList<int>?)null).SequenceEqual(list123, equals));
             Assert.IsFalse(list123.SequenceEqual(new(0, list123), equals));
             Assert.IsFalse(list123.SequenceEqual(new LList<int>(1, new(2, new(3333, null))), equals));
-
-            // Assert.AreEqual(false, list123.Any(x => x > 3));
-            // Assert.AreEqual(false, (null as LList<int>).Any(x => false));
         }
     }
 }
