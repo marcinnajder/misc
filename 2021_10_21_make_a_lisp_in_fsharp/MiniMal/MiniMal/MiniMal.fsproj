@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <WarnOn>3390;$(WarnOn)</WarnOn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Types.fs" />
+    <Compile Include="Printer.fs" />
+    <Compile Include="Reader.fs" />
+    <Compile Include="Env.fs" />
+    <Compile Include="Core.fs" />
+    <Compile Include="Eval.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+</Project>

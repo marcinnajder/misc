@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="TestUtils.fs" />
+    <Compile Include="TypesTests.fs" />
+    <Compile Include="PrinterTests.fs" />
+    <Compile Include="ReaderTests.fs" />
+    <Compile Include="EnvTests.fs" />
+    <Compile Include="CoreTests.fs" />
+    <Compile Include="EvalTests.fs" />
+    <Compile Include="Tests.fs" />    
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
+    <PackageReference Include="coverlet.collector" Version="3.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MiniMal\MiniMal.fsproj" />
+  </ItemGroup>
+
+</Project>
