@@ -14,6 +14,10 @@ let assertThrowsException f =
     Assert.ThrowsException<Exception>(fun () -> f () |> ignore)
     |> ignore
 
+let assertThrowsArgumentException f =
+    Assert.ThrowsException<ArgumentException>(fun () -> f () |> ignore)
+    |> ignore
+
 let assertMalNotEquals expected actual =
     Assert.IsFalse((malEquals expected actual), $"Expected:<{expected}>. Actual:<{actual}>.")
 

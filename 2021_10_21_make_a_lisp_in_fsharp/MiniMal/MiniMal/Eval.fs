@@ -5,6 +5,7 @@ open Printer
 open Env
 
 let rec eval mal (env: Env) =
+    let mal = macroExpand mal env
     match mal with
     | MalList (items, ListType.List) ->
         match items with
@@ -13,6 +14,15 @@ let rec eval mal (env: Env) =
         | Symbol ("let*") :: tail -> applyLet tail env
         | Symbol ("do") :: tail -> applyDo tail env
         | Symbol ("if") :: tail -> applyIf tail env
+        | Symbol ("fn*") :: tail -> applyFn tail env
+
+        | Symbol ("quote") :: tail -> applyQuote tail env
+        | Symbol ("quasiquoteexpand") :: tail -> applyQuasiquoteExpand tail env
+        | Symbol ("quasiquote") :: tail -> applyQuasiquote tail env
+
+        | Symbol ("macroexpand") :: tail -> applyMacroExpand tail env
+        | Symbol ("defmacro!") :: tail -> applyDefMacro tail env
+
         | _ ->
             match (evalAst mal env) with
             | MalList (Fn (fn, _) :: args, _) -> fn args
@@ -87,23 +97,96 @@ and internal applyIf items env =
     | _ -> failwith $"'if' requires 2 or 3 arguments but got '{joinWithSeparator items None}'"
 
 
-// // (if (...) (...) (...) )
-// internal static MalType ApplyIf(LList<MalType>? items, Env env)
-//     => items switch
-//     {
-//         (var If, (var Then, (null or (_, null))) ThenElse) => Eval(If, env).Pipe(@if => @if switch
-//        {
-//            not (Nil or False) => Eval(Then, env),
-//            _ => ThenElse.Tail == null ? NilV : Eval(ThenElse.Tail.Head, env)
-//        }),
-//         _ => throw new Exception($"'if' requires 2 or 3 arguments but got '{items.JoinWithSeparator()}'")
-//     };
+// (fn* (...) ...)
+and internal applyFn items env =
+    match items with
+    | [ MalList (argNames, List); body ] ->
+        Fn((fun argValues -> eval body (Env(Map(bindFunctionArguments argNames argValues), Some env))), false)
+    | _ ->
+        failwith
+            $"'fn*' requires 2 arguments where the first one must be a 'list', but got '{joinWithSeparator items None}'"
 
-// // (fn* (...) ...)
-// internal static MalType ApplyFn(LList<MalType>? items, Env env)
-//      => items switch
-//      {
-//          (List { Items: var ArgNames }, (var Body, null)) =>
-//             new Fn(argsValues => Eval(Body, new Env(MapM.MapFrom(BindFunctionArguments(ArgNames, argsValues)), env))),
-//          _ => throw new Exception($"'fn*' requires 2 arguments where the first one must be a 'list', but got '{items.JoinWithSeparator()}'")
-//      };
+and internal bindFunctionArguments names values =
+    match (names, values) with
+    | [], _ -> []
+    | Symbol ("&") :: Symbol (argName) :: _, argValues -> [ argName, MalList(argValues, List) ]
+    | Symbol (argName) :: restNames, argValue :: restValues ->
+        (argName, argValue)
+        :: bindFunctionArguments restNames restValues
+    | _ ->
+        failwith
+            $"Cannot bind function arguments, names: '{joinWithSeparator names None}' , values: '{joinWithSeparator values None}'"
+
+
+// (quote ...)
+and internal applyQuote items env =
+    match items with
+    | [ first ] -> first
+    | _ -> failwith $"'quote' requires one argument, but got '{joinWithSeparator items None}'"
+
+// (quasiquote (...))
+and internal applyQuasiquote items env =
+    match items with
+    | [ first ] ->
+        let t = transformQuasiquote first
+        eval t env
+    | _ -> failwith $"'quasiquote' requires one argument, but got '{joinWithSeparator items None}'"
+
+// (quasiquoteexpand (...))
+and internal applyQuasiquoteExpand items env =
+    match items with
+    | [ first ] -> transformQuasiquote first
+    | _ -> failwith $"'quasiquoteexpand' requires one argument, but got '{joinWithSeparator items None}'"
+
+and internal transformQuasiquote mal =
+    match mal with
+    | MalList ([ Symbol ("unquote"); unquotedMal ], _) -> unquotedMal
+    | MalList ([], _) -> MalList([], List)
+    | MalList (head :: tail, _) ->
+        let r =
+            transformQuasiquote (MalList(tail, List))
+        match head with
+        | MalList ([ Symbol ("splice-unquote"); unquotedMal ], _) -> MalList([ Symbol("concat"); unquotedMal; r ], List)
+        | _ -> MalList([ Symbol("cons"); transformQuasiquote head; r ], List)
+    | MalMap (_)
+    | Symbol (_) -> MalList([ Symbol("quote"); mal ], List)
+    | _ -> mal
+
+// (defmacro! ...)
+and internal applyDefMacro items env =
+    match items with
+    | [ Symbol (varName); MalList (Symbol ("fn*") :: _, _) as varValue ] ->
+        match (eval varValue env) with
+        | Fn (func, _) as fn -> env.Set varName (Fn(func, true))
+        | _ -> noWayIAmHere ()
+    | _ ->
+        failwith
+            $"'defmacro!' requires 2 arguments where the first argument must be of type 'symbol' and the second of type 'fn', but got '{joinWithSeparator items None}'"
+
+and internal isMacroCall mal (env: Env) =
+    match mal with
+    | MalList ([ Symbol (key) ], _) ->
+        match (env.Get key) with
+        | Fn (_, true) -> true
+        | _ -> false
+    | _ -> false
+
+
+and internal macroExpand mal (env: Env) =
+    match mal with
+    | MalList ((Symbol (funcName)) :: args, _) ->
+        let funcBody =
+            try
+                env.Get funcName
+            with
+            | _ -> Nil
+        match funcBody with
+        | Fn (funcCall, true) -> macroExpand (funcCall (args)) env
+        | _ -> mal
+    | _ -> mal
+
+// (macroexpand ...)
+and internal applyMacroExpand items env =
+    match items with
+    | [ mal ] -> macroExpand mal env
+    | _ -> failwith $"'macroexpand' requires 1 argument, but got '{joinWithSeparator items None}'"

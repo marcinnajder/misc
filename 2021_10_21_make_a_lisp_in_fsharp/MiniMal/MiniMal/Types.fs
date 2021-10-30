@@ -19,7 +19,7 @@ type MalType =
 
 and FnDelegate = MalType list -> MalType
 
-let rec private compareLists l1 l2 f =
+let rec internal compareLists l1 l2 f =
     match l1, l2 with
     | [], [] -> true
     | x :: xs, y :: ys -> f x y && compareLists xs ys f
@@ -38,3 +38,6 @@ let rec malEquals mal1 mal2 =
     | Number (s1), Number (s2) -> s1 = s2
     | Symbol (s1), Symbol (s2) -> s1 = s2
     | _ -> false
+
+let internal noWayIAmHere () =
+    failwith "no way this code is being executed, this pattern should never be met"
