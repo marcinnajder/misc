@@ -10,9 +10,9 @@
     <Compile Include="Types.fs" />
     <Compile Include="Printer.fs" />
     <Compile Include="Reader.fs" />
-    <Compile Include="Env.fs" />
-    <Compile Include="Core.fs" />
+    <Compile Include="Env.fs" />    
     <Compile Include="Eval.fs" />
+    <Compile Include="Core.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

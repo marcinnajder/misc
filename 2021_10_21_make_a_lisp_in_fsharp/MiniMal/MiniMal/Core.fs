@@ -12,12 +12,12 @@ let internal executeArithmeticFn args operation =
     | _ :: _ :: _ ->
         List.reduce
             (fun totalMal nextMal ->
-                match (totalMal, nextMal) with
-                | (Number (total), Number (next)) -> Number(operation total next)
+                match totalMal, nextMal with
+                | (Number total, Number next) -> Number(operation total next)
                 | _ ->
                     let m =
                         match totalMal with
-                        | Number (_) -> nextMal
+                        | Number _ -> nextMal
                         | _ -> totalMal
                     failwith
                         $"""All arguments of arithmetic operations must be of the 'Number' type, but got an argument '{(printStr m)}' in {joinWithSeparator args (Some(","))}""")
@@ -29,7 +29,7 @@ let internal executeArithmeticFn args operation =
 
 let internal executeComparisonFn args comparison =
     match args with
-    | [ Number (value1); Number (value2) ] -> if comparison value1 value2 then True else False
+    | [ Number value1; Number value2 ] -> if comparison value1 value2 then True else False
     | _ ->
         failwith
             $"""Number comparison operation requires two arguments of type 'Number', but got {joinWithSeparator args (Some(","))}"""
@@ -48,7 +48,7 @@ let rec internal concatFn args =
     match args with
     | [] -> MalList([], List)
     | MalList (items, _) :: restArgs ->
-        match (concatFn restArgs) with
+        match concatFn restArgs with
         | MalList (restItems, _) -> MalList(items @ restItems, List)
         | _ -> noWayIAmHere ()
     | _ -> throwError "concat" args "all arguments to be of type 'list'"
@@ -87,7 +87,7 @@ let internal restFn args =
 
 let internal nthFn args =
     match args with
-    | [ MalList (items, _); Number (n) ] -> List.item (int n) items
+    | [ MalList (items, _); Number n ] -> List.item (int n) items
     | _ -> throwError "nth" args "two arguments where the first one is of type 'list' and the second of type 'number'"
 
 let internal isEmptyFn args =
@@ -112,10 +112,10 @@ let internal vecFn args =
 
 let internal assocFn args =
     match args with
-    | MalMap (currentMap) :: newItems ->
+    | MalMap currentMap :: newItems ->
         let newMap =
-            match (listToMap newItems) with
-            | MalMap (m) -> m
+            match listToMap newItems with
+            | MalMap m -> m
             | _ -> noWayIAmHere ()
         newMap
         |> Map.fold (fun c key value -> Map.add key value c) currentMap
@@ -124,12 +124,12 @@ let internal assocFn args =
 
 let internal dissocFn args =
     match args with
-    | MalMap (currentMap) :: deletedItems ->
+    | MalMap currentMap :: deletedItems ->
         deletedItems
         |> List.fold
             (fun c keyMal ->
                 match keyMal with
-                | Str (s) -> Map.remove s c
+                | Str s -> Map.remove s c
                 | _ -> failwith $"all keys passed to 'dissoc' must be of type 'Str', but got {(printStr keyMal)}")
             currentMap
         |> MalMap
@@ -138,18 +138,18 @@ let internal dissocFn args =
 let internal getFn args =
     match args with
     | [ Nil ] -> Nil
-    | [ MalMap (map); Str (s) ] ->
-        match (Map.tryFind s map) with
-        | Some (value) -> value
+    | [ MalMap map; Str s ] ->
+        match Map.tryFind s map with
+        | Some value -> value
         | None -> Nil
     | _ ->
         throwError "get" args "two arguments where the first one must be of type 'map' and the second of type 'string'"
 
 let internal containsFn args =
     match args with
-    | [ MalMap (map); Str (s) ] ->
-        match (Map.tryFind s map) with
-        | Some (_) -> True
+    | [ MalMap map; Str s ] ->
+        match Map.tryFind s map with
+        | Some _ -> True
         | None -> False
     | _ ->
         throwError
@@ -160,7 +160,7 @@ let internal containsFn args =
 
 let internal keysFn args =
     match args with
-    | [ MalMap (map) ] ->
+    | [ MalMap map ] ->
         MalList(
             (map
              |> Map.toList
@@ -172,7 +172,7 @@ let internal keysFn args =
 
 let internal valsFn args =
     match args with
-    | [ MalMap (map) ] ->
+    | [ MalMap map ] ->
         MalList(
             (map
              |> Map.toList
@@ -183,6 +183,91 @@ let internal valsFn args =
 
 
 let internal hashMapFn args = listToMap args
+
+// ** utils
+
+let internal equalsFn args =
+    match args with
+    | [ mal1; mal2 ] -> if malEquals mal1 mal2 then True else False
+    | _ -> throwError "=" args "two arguments"
+
+let internal strFn args = Str(joinWithSeparator args None)
+
+let internal printLnFn args =
+    let str = joinWithSeparator args None
+    System.Console.WriteLine(str)
+    Nil
+
+let internal isVectorFn args =
+    match args with
+    | [ MalList (_, Vector) ] -> True
+    | _ -> False
+
+let internal isSequentialFn args =
+    match args with
+    | [ MalList (_) ] -> True
+    | _ -> False
+
+let internal isMapFn args =
+    match args with
+    | [ MalMap (_) ] -> True
+    | _ -> False
+
+let internal isFnFn args =
+    match args with
+    | [ Fn (_, false) ] -> True
+    | _ -> False
+
+let internal isMacroFn args =
+    match args with
+    | [ Fn (_, true) ] -> True
+    | _ -> False
+
+let internal isTrueFn args =
+    match args with
+    | [ True ] -> True
+    | _ -> False
+
+let internal isFalseFn args =
+    match args with
+    | [ False ] -> True
+    | _ -> False
+
+let internal isNilFn args =
+    match args with
+    | [ Nil ] -> True
+    | _ -> False
+
+let internal isSymbolFn args =
+    match args with
+    | [ Symbol _ ] -> True
+    | _ -> False
+
+let internal isStrFn args =
+    match args with
+    | [ Str _ ] -> True
+    | _ -> False
+
+let internal isNumberFn args =
+    match args with
+    | [ Number _ ] -> True
+    | _ -> throwError "read-string" args "one argument of type 'string'"
+
+
+// ** interpreter
+
+let internal readStringFn args =
+    match args with
+    | [ Str (s) ] ->
+        match (readText s) with
+        | Some mal -> mal
+        | None -> Nil
+    | _ -> throwError "read-string" args "one argument of type 'string'"
+
+let internal createEval env args =
+    match args with
+    | [ mal ] -> Eval.eval mal env
+    | _ -> throwError "eval" args "one argument"
 
 
 let ns =
@@ -199,7 +284,7 @@ let ns =
           ("list", Fn(listFn, false))
           ("vector", Fn(vectorFn, false))
 
-          ("const", Fn(constFn, false))
+          ("cons", Fn(constFn, false))
           ("concat", Fn(concatFn, false))
           ("conj", Fn(conjFn, false))
           ("count", Fn(countFn, false))
@@ -219,61 +304,17 @@ let ns =
           ("vals", Fn(valsFn, false))
           ("hash-map", Fn(hashMapFn, false))
 
-           ]
-
-// ** utils
-
-
-//         // ** utils
-
-//         internal static FnDelegate EqualsFn = args
-//             => args switch
-//             {
-//                 (var Mal1, (var Mal2, null)) => Types.MalEqual(Mal1, Mal2) ? TrueV : FalseV,
-//                 _ => ThrowError("=", args, "two arguments"),
-
-//             };
-
-//         internal static FnDelegate StrFn = args => new Str(args.JoinWithSeparator());
-
-//         internal static FnDelegate PrintLnFn = args => args.JoinWithSeparator().Pipe(text =>
-//         {
-//             Console.WriteLine(text);
-//             return NilV;
-//         });
-
-//         private static FnDelegate IsOfType<T>() => args => args is (T, null) ? TrueV : FalseV;
-
-//         internal static FnDelegate IsVectorFn = args => args is (List { ListType: ListType.Vector }, null) ? TrueV : FalseV;
-
-//         internal static FnDelegate IsSequentialFn = args => args is (List, null) ? TrueV : FalseV;
-
-//         internal static FnDelegate IsFnFn = args => args is (Fn { IsMacro: false }, null) ? TrueV : FalseV;
-
-//         internal static FnDelegate IsMacroFn = args => args is (Fn { IsMacro: true }, null) ? TrueV : FalseV;
-
-//         // ** interpreter
-
-//         internal static FnDelegate ReadStringFn = args
-//             => args switch
-//             {
-//                 (Str { Value: var strValue }, null) => Reader.ReadText(strValue) ?? NilV,
-//                 _ => ThrowError("read-string", args, "one argument of type 'string'")
-//             };
-
-//         internal static FnDelegate CreateEval(EnvM.Env env) =>
-//             args => args switch
-//             {
-//                 (var Mal, null) => EvalM.Eval(Mal, env),
-//                 _ => ThrowError("eval", args, "one argument")
-//             };
-
-
-//         // private
-
-//         private static MalType ThrowError(string functionName, LList<MalType>? args, string message)
-//         {
-//             throw new Exception($"'{functionName}' function requires {message}, but got {args.JoinWithSeparator(",")}");
-//         }
-//     }
-// }
+          ("str", Fn(strFn, false))
+          ("println", Fn(printLnFn, false))
+          ("=", Fn(equalsFn, false))
+          ("nil?", Fn(isNilFn, false))
+          ("true?", Fn(isTrueFn, false))
+          ("false?", Fn(isFalseFn, false))
+          ("symbol?", Fn(isSymbolFn, false))
+          ("number?", Fn(isNumberFn, false))
+          ("string?", Fn(isStrFn, false))
+          ("fn?", Fn(isFnFn, false))
+          ("sequential?", Fn(isSequentialFn, false))
+          ("map?", Fn(isMapFn, false))
+          ("vector?", Fn(isVectorFn, false))
+          ("read-string", Fn(readStringFn, false)) ]

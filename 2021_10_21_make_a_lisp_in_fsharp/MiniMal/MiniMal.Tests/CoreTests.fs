@@ -157,25 +157,41 @@ type CoreTests() =
         let newMalType = dissocFn [ malMap; Str("b") ]
         assertMalEquals (MalMap(map.Remove("b"))) newMalType
 
+    [<TestMethod>]
+    member this.EqualsFnTest() =
+        assertThrowsException (fun () -> equalsFn [])
+        assertThrowsException (fun () -> equalsFn [ Number(1.) ])
+        assertThrowsException
+            (fun () ->
+                equalsFn [ Number(1.)
+                           Number(2.)
+                           Number(3.) ])
 
-//         [TestMethod]
-//         public void EqualsFnTest()
-//         {
-//             Assert.ThrowsException<Exception>(() => Core.EqualsFn(null));
-//             Assert.ThrowsException<Exception>(() => Core.EqualsFn(MalLListFrom(new Number(1))));
-//             Assert.ThrowsException<Exception>(() => Core.EqualsFn(MalLListFrom(new Number(1), new Number(2), new Number(3))));
+        assertMalEquals True (equalsFn [ Number(123.); Number(123.) ])
+        assertMalEquals False (equalsFn [ Number(123.); Number(1230.) ])
+        assertMalEquals False (equalsFn [ Number(123.); Str("123") ])
 
-//             Assert.AreEqual(TrueV, Core.EqualsFn(MalLListFrom(new Number(123), new Number(123))));
-//             Assert.AreEqual(FalseV, Core.EqualsFn(MalLListFrom(new Number(123), new Number(1230))));
-//             Assert.AreEqual(FalseV, Core.EqualsFn(MalLListFrom(new Number(123), new Str("123"))));
-
-//             Assert.AreEqual(TrueV, Core.EqualsFn(MalLListFrom(
-//                 new List(new(new Number(4), null), ListType.Vector),
-//                 new List(new(new Number(4), null), ListType.Vector)
-//             )));
-//         }
+        assertMalEquals
+            True
+            (equalsFn [ MalList([ Number(4.) ], List)
+                        MalList([ Number(4.) ], List) ])
 
 
+    [<TestMethod>]
+    member this.ReadStringFnTest() =
+        assertThrowsException (fun () -> readStringFn [])
+        assertThrowsException (fun () -> readStringFn [ Number(1.) ])
+        assertThrowsException (fun () -> readStringFn [ Str(""); Str("") ])
+
+        assertMalEquals (Number(123.)) (readStringFn [ Str("123") ])
+        assertMalEquals Nil (readStringFn [ Str("") ])
+// assertMalEquals False (equalsFn [ Number(123.); Number(1230.) ])
+// assertMalEquals False (equalsFn [ Number(123.); Str("123") ])
+
+// assertMalEquals
+//     True
+//     (equalsFn [ MalList([ Number(4.) ], List)
+//                 MalList([ Number(4.) ], List) ])
 
 
 //         [TestMethod]

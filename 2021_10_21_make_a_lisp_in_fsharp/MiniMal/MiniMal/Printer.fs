@@ -8,16 +8,16 @@ let rec printStr mal =
     | Nil -> "nil"
     | True -> "true"
     | False -> "false"
-    | Str (value) -> $"\"%s{value}\""
-    | Number (value) -> value.ToString()
-    | Symbol (name) -> name
+    | Str value -> $"\"%s{value}\""
+    | Number value -> value.ToString()
+    | Symbol name -> name
     | MalList (items, listType) ->
         let opening, closing =
             if listType = List then "(", ")" else "[", "]"
         let content =
             String.Join(" ", items |> List.map printStr)
         $"{opening}{content}{closing}"
-    | MalMap (value) ->
+    | MalMap value ->
         let content =
             String.Join(
                 " ",
@@ -26,13 +26,13 @@ let rec printStr mal =
                 |> List.map (fun (key, value) -> $"\"{key}\" {printStr value}")
             )
         $"{{%s{content}}}"
-    | Fn (_) -> "#<function>"
+    | Fn _ -> "#<function>"
 
 
 let joinWithSeparator mals separator =
     String.Join(
         (match separator with
          | None -> ""
-         | Some (sep) -> sep),
+         | Some sep -> sep),
         mals |> List.map printStr
     )

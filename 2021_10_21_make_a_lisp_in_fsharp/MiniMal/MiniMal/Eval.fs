@@ -7,24 +7,24 @@ open Env
 let rec eval mal (env: Env) =
     let mal = macroExpand mal env
     match mal with
-    | MalList (items, ListType.List) ->
+    | MalList (items, List) ->
         match items with
         | [] -> mal
-        | Symbol ("def!") :: tail -> applyDef tail env
-        | Symbol ("let*") :: tail -> applyLet tail env
-        | Symbol ("do") :: tail -> applyDo tail env
-        | Symbol ("if") :: tail -> applyIf tail env
-        | Symbol ("fn*") :: tail -> applyFn tail env
+        | Symbol "def!" :: tail -> applyDef tail env
+        | Symbol "let*" :: tail -> applyLet tail env
+        | Symbol "do" :: tail -> applyDo tail env
+        | Symbol "if" :: tail -> applyIf tail env
+        | Symbol "fn*" :: tail -> applyFn tail env
 
-        | Symbol ("quote") :: tail -> applyQuote tail env
-        | Symbol ("quasiquoteexpand") :: tail -> applyQuasiquoteExpand tail env
-        | Symbol ("quasiquote") :: tail -> applyQuasiquote tail env
+        | Symbol "quote" :: tail -> applyQuote tail env
+        | Symbol "quasiquoteexpand" :: tail -> applyQuasiquoteExpand tail env
+        | Symbol "quasiquote" :: tail -> applyQuasiquote tail env
 
-        | Symbol ("macroexpand") :: tail -> applyMacroExpand tail env
-        | Symbol ("defmacro!") :: tail -> applyDefMacro tail env
+        | Symbol "macroexpand" :: tail -> applyMacroExpand tail env
+        | Symbol "defmacro!" :: tail -> applyDefMacro tail env
 
         | _ ->
-            match (evalAst mal env) with
+            match evalAst mal env with
             | MalList (Fn (fn, _) :: args, _) -> fn args
             | MalList (first :: _, _) -> failwith $"First element in a list should be 'fn' but it is '{printStr first}'"
             | m -> failwith $"Element type should be a 'list' but it is '{m}'"
@@ -32,9 +32,9 @@ let rec eval mal (env: Env) =
 
 and evalAst mal (env: Env) =
     match mal with
-    | Symbol (name) -> env.Get name
+    | Symbol name -> env.Get name
     | MalList (items, listType) -> MalList(items |> List.map (fun m -> eval m env), listType)
-    | MalMap (map) ->
+    | MalMap map ->
         MalMap(
             map
             |> Map.toSeq
@@ -46,7 +46,7 @@ and evalAst mal (env: Env) =
 // (def! a 1)
 and internal applyDef items env =
     match items with
-    | [ Symbol (varName); varValue ] -> eval varValue env |> env.Set varName
+    | [ Symbol varName; varValue ] -> eval varValue env |> env.Set varName
     | _ ->
         failwith
             $"'def!' requires 2 arguments where the first argument must be 'symbol', but got '{joinWithSeparator items None}'"
@@ -65,7 +65,7 @@ and internal applyLet items env =
 and internal applyBindings items env =
     match items with
     | [] -> env
-    | Symbol (key) :: value :: restItems ->
+    | Symbol key :: value :: restItems ->
         eval value env
         |> env.Set key
         |> (fun _ -> applyBindings restItems env)
@@ -87,7 +87,7 @@ and internal applyIf items env =
     match items with
     | [ if_; then_; _ ]
     | [ if_; then_ ] ->
-        match (eval if_ env) with
+        match eval if_ env with
         | False
         | Nil ->
             match items with
@@ -109,8 +109,8 @@ and internal applyFn items env =
 and internal bindFunctionArguments names values =
     match (names, values) with
     | [], _ -> []
-    | Symbol ("&") :: Symbol (argName) :: _, argValues -> [ argName, MalList(argValues, List) ]
-    | Symbol (argName) :: restNames, argValue :: restValues ->
+    | Symbol "&" :: Symbol (argName) :: _, argValues -> [ argName, MalList(argValues, List) ]
+    | Symbol argName :: restNames, argValue :: restValues ->
         (argName, argValue)
         :: bindFunctionArguments restNames restValues
     | _ ->
@@ -140,22 +140,22 @@ and internal applyQuasiquoteExpand items env =
 
 and internal transformQuasiquote mal =
     match mal with
-    | MalList ([ Symbol ("unquote"); unquotedMal ], _) -> unquotedMal
+    | MalList ([ Symbol "unquote"; unquotedMal ], _) -> unquotedMal
     | MalList ([], _) -> MalList([], List)
     | MalList (head :: tail, _) ->
         let r =
             transformQuasiquote (MalList(tail, List))
         match head with
-        | MalList ([ Symbol ("splice-unquote"); unquotedMal ], _) -> MalList([ Symbol("concat"); unquotedMal; r ], List)
-        | _ -> MalList([ Symbol("cons"); transformQuasiquote head; r ], List)
-    | MalMap (_)
-    | Symbol (_) -> MalList([ Symbol("quote"); mal ], List)
+        | MalList ([ Symbol "splice-unquote"; unquotedMal ], _) -> MalList([ Symbol "concat"; unquotedMal; r ], List)
+        | _ -> MalList([ Symbol "cons"; transformQuasiquote head; r ], List)
+    | MalMap _
+    | Symbol _ -> MalList([ Symbol "quote"; mal ], List)
     | _ -> mal
 
 // (defmacro! ...)
 and internal applyDefMacro items env =
     match items with
-    | [ Symbol (varName); MalList (Symbol ("fn*") :: _, _) as varValue ] ->
+    | [ Symbol varName; MalList (Symbol "fn*" :: _, _) as varValue ] ->
         match (eval varValue env) with
         | Fn (func, _) as fn -> env.Set varName (Fn(func, true))
         | _ -> noWayIAmHere ()
@@ -165,7 +165,7 @@ and internal applyDefMacro items env =
 
 and internal isMacroCall mal (env: Env) =
     match mal with
-    | MalList ([ Symbol (key) ], _) ->
+    | MalList ([ Symbol key ], _) ->
         match (env.Get key) with
         | Fn (_, true) -> true
         | _ -> false
@@ -174,7 +174,7 @@ and internal isMacroCall mal (env: Env) =
 
 and internal macroExpand mal (env: Env) =
     match mal with
-    | MalList ((Symbol (funcName)) :: args, _) ->
+    | MalList ((Symbol funcName) :: args, _) ->
         let funcBody =
             try
                 env.Get funcName

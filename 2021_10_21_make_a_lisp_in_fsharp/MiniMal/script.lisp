@@ -20,7 +20,7 @@
 (true? true)                                ; -> true
 (false? false)                              ; -> true
 
-(list? (list (1 2 )))                       ; -> true
+(list? (list 1 2 ))                       ; -> true
 (vector? [1 2])                             ; -> true
 (map? {})                                   ; -> true
 

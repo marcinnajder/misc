@@ -12,7 +12,7 @@ let private numberFormat =
 let rec internal malsToKeyValuesPairs mals =
     match mals with
     | [] -> []
-    | Str (key) :: value :: rest -> (key, value) :: malsToKeyValuesPairs rest
+    | Str key :: value :: rest -> (key, value) :: malsToKeyValuesPairs rest
     | _ -> failwith $"Invalid Map '{joinWithSeparator mals None}', odd number of elements or key is not a 'Str' type"
 
 let internal listToMap mals = MalMap(Map(malsToKeyValuesPairs mals))
@@ -51,7 +51,7 @@ let rec internal readForm tokens : ReadResult =
 and internal readList tokens endOfListToken : ReadListResult =
     match (readForm tokens) with
     | { Result = None } -> failwith $"List is not closed"
-    | { Result = Some (Symbol (name))
+    | { Result = Some (Symbol name)
         RestTokens = restTokens } when name = endOfListToken -> { Result = []; RestTokens = restTokens }
     | { Result = Some (mal)
         RestTokens = restTokens } ->
