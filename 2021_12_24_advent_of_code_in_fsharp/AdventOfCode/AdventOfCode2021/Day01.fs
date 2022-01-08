@@ -2,6 +2,7 @@ module AdventOfCode2021.Day1
 
 open System
 
+
 let parseInput (input: string) = input.Split Environment.NewLine |> Array.map Int32.Parse
 
 let countIncreases numbers = numbers |> Seq.pairwise |> Seq.filter (fun (prev, next) -> next > prev) |> Seq.length

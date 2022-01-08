@@ -1,13 +1,5 @@
 module AdventOfCode2021.Day8
 
-// #load "/Volumes/data/bitbucket/fsharp/net/AdventOfCode/AdventOfCode2021/Common.fs"
-// let input =
-//     System.IO.Path.Combine(AdventOfCode2021.Common.ProjectFolderPath, $"AdventOfCode2021/Data/2021_day08.txt")
-//     |> System.IO.File.ReadAllText
-
-
-// ******************************************************************************
-
 open System
 open System.Linq
 
@@ -68,16 +60,17 @@ let SegmentsToDigits =
           Segment.BottomLeft |> removeSegments, 9 ]
 
 let findSegmentsMapping (digits: string []) =
-    let d1 = digits |> Seq.filter (fun d -> d.Length = 2) |> Seq.exactlyOne
-    let d7 = digits |> Seq.filter (fun d -> d.Length = 3) |> Seq.exactlyOne
-    let d8 = digits |> Seq.filter (fun d -> d.Length = 7) |> Seq.exactlyOne
-    let d4 = digits |> Seq.filter (fun d -> d.Length = 4) |> Seq.exactlyOne
-    let d3 = digits |> Seq.filter (fun d -> d.Length = 5 && d.Intersect(d1).Count() = 2) |> Seq.exactlyOne
-    let d5 = digits |> Seq.filter (fun d -> d.Length = 5 && d <> d3 && d.Intersect(d4).Count() = 3) |> Seq.exactlyOne
-    let d2 = digits |> Seq.filter (fun d -> d.Length = 5 && d <> d3 && d <> d5) |> Seq.exactlyOne
-    let d6 = digits |> Seq.filter (fun d -> d.Length = 6 && d.Intersect(d1).Count() = 1) |> Seq.exactlyOne
-    let d9 = digits |> Seq.filter (fun d -> d.Length = 6 && d.Intersect(d4).Count() = 4) |> Seq.exactlyOne
-    let d0 = digits |> Seq.filter (fun d -> d.Length = 6 && d <> d6 && d <> d9) |> Seq.exactlyOne
+    let digitsByLength = digits |> Seq.groupBy (fun d -> d.Length) |> Map
+    let d1 = digitsByLength.[2] |> Seq.exactlyOne
+    let d7 = digitsByLength.[3] |> Seq.exactlyOne
+    let d8 = digitsByLength.[7] |> Seq.exactlyOne
+    let d4 = digitsByLength.[4] |> Seq.exactlyOne
+    let d3 = digitsByLength.[5] |> Seq.filter (fun d -> d.Intersect(d1).Count() = 2) |> Seq.exactlyOne
+    let d5 = digitsByLength.[5] |> Seq.filter (fun d -> d <> d3 && d.Intersect(d4).Count() = 3) |> Seq.exactlyOne
+    let d2 = digitsByLength.[5] |> Seq.filter (fun d -> d <> d3 && d <> d5) |> Seq.exactlyOne
+    let d6 = digitsByLength.[6] |> Seq.filter (fun d -> d.Intersect(d1).Count() = 1) |> Seq.exactlyOne
+    let d9 = digitsByLength.[6] |> Seq.filter (fun d -> d.Intersect(d4).Count() = 4) |> Seq.exactlyOne
+    let d0 = digitsByLength.[6] |> Seq.filter (fun d -> d <> d6 && d <> d9) |> Seq.exactlyOne
     let top = d7.Except(d1).Single()
     Map [ top, Segment.Top
           d8.Except(d0).Single(), Segment.Middle
