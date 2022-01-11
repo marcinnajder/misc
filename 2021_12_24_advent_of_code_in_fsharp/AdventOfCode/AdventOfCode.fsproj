@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Compile Include="AdventOfCode2021/*.fs" />
-    
     <Compile Include="Program.fs" />    
   </ItemGroup>
 

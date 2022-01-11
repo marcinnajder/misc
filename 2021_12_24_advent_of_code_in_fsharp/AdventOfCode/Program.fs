@@ -13,7 +13,9 @@ let main argv =
           (Day6.puzzle1, Day6.puzzle2)
           (Day7.puzzle1, Day7.puzzle2)
           (Day8.puzzle1, Day8.puzzle2)
-          (Day9.puzzle1, Day9.puzzle2) ]
+          (Day9.puzzle1, Day9.puzzle2)
+          (Day10.puzzle1, Day10.puzzle2)
+          (Day11.puzzle1, Day11.puzzle2) ]
 
     puzzles
     |> Seq.iteri

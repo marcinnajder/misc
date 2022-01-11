@@ -1,14 +1,5 @@
 module AdventOfCode2021.Day9
 
-// #load "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2021/Common.fs"
-
-let input =
-    System.IO.File.ReadAllText
-        "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2021/Day09.txt"
-
-
-// ******************************************************************************
-
 open System
 open System.Collections.Generic
 
@@ -28,7 +19,6 @@ let findLowPoints (data: int [,]) =
                    && (y = 0 || value < data.[x, y - 1])
                    && (y = yUperBound || value < data.[x, y + 1]) then
                     yield (value)
-
     }
 
 let puzzle1 (input: string) =
@@ -74,7 +64,7 @@ let numberLines (lines: seq<ResizeArray<Line>>) =
             |> Seq.toList)
     |> Seq.toArray
 
-let findCrossingLinesNumbers2 y (yLine: Line) (xLines: (NumberedLine list) []) =
+let findCrossingLinesNumbers y (yLine: Line) (xLines: (NumberedLine list) []) =
     seq { yLine.Index .. (yLine.Index + yLine.Count - 1) }
     |> Seq.choose
         (fun i ->
@@ -97,7 +87,6 @@ let mergeSets (sets: seq<int []>) =
             uniqueSets.Add(overlappingSets |> Seq.concat |> Seq.append set |> HashSet)
     uniqueSets
 
-
 let moveToY y (xLines: (NumberedLine list) []) =
     for x = 0 to xLines.Length - 1 do
         let lines = xLines.[x]
@@ -110,7 +99,6 @@ let puzzle2 (input: string) =
     let data = loadData input
     let yLines = seq { 0 .. data.GetLength(1) - 1 } |> Seq.map (fun i -> getLines data.[*, i])
     let xLines = seq { 0 .. data.GetLength(0) - 1 } |> Seq.map (fun i -> getLines data.[i, *])
-
     let xLinesNumbered = xLines |> numberLines
     let xLinesNumberedMovedToY = xLinesNumbered |> Array.copy
     let mergedSets =
@@ -118,7 +106,7 @@ let puzzle2 (input: string) =
         |> Seq.mapi
             (fun y yLines ->
                 moveToY y xLinesNumberedMovedToY
-                yLines |> Seq.map (fun yLine -> findCrossingLinesNumbers2 y yLine xLinesNumberedMovedToY))
+                yLines |> Seq.map (fun yLine -> findCrossingLinesNumbers y yLine xLinesNumberedMovedToY))
         |> Seq.concat
         |> mergeSets
     let linesByNumber = xLinesNumbered |> Seq.concat |> Seq.toArray
