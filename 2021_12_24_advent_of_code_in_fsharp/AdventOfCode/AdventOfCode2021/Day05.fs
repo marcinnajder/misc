@@ -22,7 +22,6 @@ let getRange from to' =
     elif from < to' then seq { from .. 1 .. to' }
     else seq { from .. -1 .. to' }
 
-
 let getPoints line =
     if line.Start = line.End then
         [ line.Start ] :> seq<_>

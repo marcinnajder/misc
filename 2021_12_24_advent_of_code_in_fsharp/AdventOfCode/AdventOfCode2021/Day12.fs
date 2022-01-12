@@ -1,76 +1,54 @@
 module AdventOfCode2021.Day12
 
-// #load "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2021/Common.fs"
-
-let input =
-    System.IO.File.ReadAllText
-        "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2021/Day12.txt"
-
-
-// ******************************************************************************
-
-
 open System
 
 let loadData (input: string) =
     let lines = input.Split Environment.NewLine
-    lines |> Seq.map (fun line -> line |> Seq.map (fun c -> c.ToString() |> Int32.Parse)) |> array2D
+    lines
+    |> Seq.map
+        (fun line ->
+            let parts = line.Split("-")
+            parts.[0], parts.[1])
 
-// let eachXY (data: int [,]) =
-//     seq {
-//         let xUperBound = data.GetLength(0) - 1
-//         let yUperBound = data.GetLength(1) - 1
-//         for x = 0 to xUperBound do
-//             for y = 0 to yUperBound do
-//                 yield x, y
-//     }
+let isStart node = node = "start"
+let isEnd node = node = "end"
+let isSmall node = node |> Seq.forall Char.IsLower
 
-// let increment (data: int [,]) = data |> eachXY |> Seq.iter (fun (x, y) -> data.[x, y] <- data.[x, y] + 1)
-
-// let flash (data: int [,]) =
-//     let xUperBound = data.GetLength(0) - 1
-//     let yUperBound = data.GetLength(1) - 1
-//     let xys = data |> eachXY |> Seq.filter (fun (x, y) -> data.[x, y] > 9)
-//     let mutable wasFlash = false
-//     for (x, y) in xys do
-//         data.[x, y] <- Int32.MinValue
-//         wasFlash <- true
-//         let xxyys =
-//             Seq.allPairs
-//                 (seq { max (x - 1) 0 .. min (x + 1) xUperBound })
-//                 (seq { max (y - 1) 0 .. min (y + 1) yUperBound })
-//             |> Seq.filter (fun (xx, yy) -> (xx, yy) <> (x, y))
-//         for (xx, yy) in xxyys do
-//             data.[xx, yy] <- data.[xx, yy] + 1
-//     wasFlash
-
-// let zero (data: int [,]) =
-//     data
-//     |> eachXY
-//     |> Seq.filter (fun (x, y) -> data.[x, y] < 0)
-//     |> Seq.map (fun (x, y) -> data.[x, y] <- 0)
-//     |> Seq.length
+let processEdges edges =
+    edges
+    |> Seq.collect
+        (fun ((from, to') as edge) ->
+            if isStart from then [ edge ]
+            elif isStart to' then [ (to', from) ]
+            elif isEnd to' then [ edge ]
+            elif isEnd from then [ (to', from) ]
+            else [ edge; (to', from) ])
+    |> Seq.groupBy (fun (from, _) -> from)
+    |> Seq.map (fun (key, values) -> key, values |> Seq.map snd |> Seq.toArray)
+    |> Map
 
 
-
-// let step (data: int [,]) =
-//     increment data
-//     while flash data do
-//         ()
-//     zero data
-
-// let puzzle1 (input: string) =
-//     let data = loadData input
-//     let result = seq { 1 .. 100 } |> Seq.sumBy (fun _ -> step data)
-//     result |> string
-
-// let puzzle2 (input: string) =
-//     let data = loadData input
-//     let result = seq { 1 .. Int32.MaxValue } |> Seq.findIndex (fun _ -> step data = data.Length)
-//     result + 1 |> string
+let rec move node edges path isSmallTwice =
+    seq {
+        if isEnd node then
+            yield node :: path
+        else
+            yield!
+                edges
+                |> Map.tryFind node
+                |> Option.defaultValue Array.empty
+                |> Seq.filter (fun to' -> not (isSmall to') || not (path |> List.contains to') || not isSmallTwice)
+                |> Seq.collect
+                    (fun to' ->
+                        move to' edges (node :: path) (isSmallTwice || (isSmall to' && path |> List.contains to')))
+    }
 
 
-// // let print (data: int [,]) =
-// //     seq { 0 .. (data.GetLength(0) - 1) }
-// //     |> Seq.map (fun i -> String.Join("", data.[i, *]))
-// //     |> (fun x -> String.Join(Environment.NewLine, x))
+
+let puzzle (input: string) isSmallTwice =
+    let data = loadData input |> processEdges
+    let result = move "start" data [] isSmallTwice |> Seq.length
+    result |> string
+
+let puzzle1 (input: string) = puzzle input true
+let puzzle2 (input: string) = puzzle input false
