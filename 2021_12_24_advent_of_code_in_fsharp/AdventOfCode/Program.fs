@@ -18,7 +18,9 @@ let main argv =
           (Day11.puzzle1, Day11.puzzle2)
           (Day12.puzzle1, Day12.puzzle2)
           (Day13.puzzle1, Day13.puzzle2)
-          (Day14.puzzle1, Day14.puzzle2) ]
+          (Day14.puzzle1, Day14.puzzle2)
+          (Day15.puzzle1, Day15.puzzle2)
+          (Day16.puzzle1, Day16.puzzle2) ]
 
     puzzles
     |> Seq.iteri
@@ -30,4 +32,6 @@ let main argv =
             printfn "2021/Day%s/Puzzle01:  %s" dayStr (puzle1 input)
             printfn "2021/Day%s/Puzzle02:  %s" dayStr (puzle2 input)
             ())
+
+    // Day16.test () |> ignore
     0

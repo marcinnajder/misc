@@ -22,21 +22,16 @@ let getRange from to' =
     elif from < to' then seq { from .. 1 .. to' }
     else seq { from .. -1 .. to' }
 
+
 let getPoints line =
     if line.Start = line.End then
-        [ line.Start ] :> seq<_>
+        line.Start |> Seq.singleton
     else
         Seq.zip (getRange line.Start.X line.End.X) (getRange line.Start.Y line.End.Y)
         |> Seq.map (fun (x, y) -> { X = x; Y = y })
 
-
 let countAtTeastTwoLinesOverlapping lines =
-    lines
-    |> Seq.collect getPoints
-    |> Seq.groupBy id
-    |> Seq.filter (fun (key, points) -> Seq.length points > 1)
-    |> Seq.length
-
+    lines |> Seq.collect getPoints |> Seq.countBy id |> Seq.filter (fun (key, points) -> points > 1) |> Seq.length
 
 let puzzle1 (input: string) =
     let data = loadData input |> Seq.filter (fun l -> l.Start.X = l.End.X || l.Start.Y = l.End.Y) |> List.ofSeq

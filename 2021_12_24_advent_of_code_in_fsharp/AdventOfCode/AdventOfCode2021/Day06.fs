@@ -14,7 +14,7 @@ let executeStep (items: int64 []) =
 
 let countItemsAfterNIteration input n =
     let data = loadData input
-    let map = data |> Seq.groupBy id |> Seq.map (fun (key, values) -> key, Seq.length values) |> Map.ofSeq
+    let map = data |> Seq.countBy id |> Map
     let items = Array.init 9 (fun index -> Map.tryFind index map |> Option.defaultValue 0 |> int64)
     for i = 0 to (n - 1) do
         executeStep items

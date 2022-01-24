@@ -5,264 +5,183 @@ module AdventOfCode2021.Day15
 
 let input =
     System.IO.File.ReadAllText
-        "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2021/Day14.txt"
+        "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2021/Day15.txt"
 
 // ******************************************************************************
-
 
 open System
 open System.Collections.Generic
 
-
-type Input =
-    { Template: string
-      Mapping: (string * string) [] }
-
 let loadData (input: string) =
     let lines = input.Split Environment.NewLine
-    let template = lines.[0]
-    let mapping =
-        lines
-        |> Seq.skip 2
-        |> Seq.map
-            (fun line ->
-                let parts = line.Split " -> "
-                parts.[0], parts.[1])
-        |> Seq.toArray
-    { Template = template
-      Mapping = mapping }
+    lines |> Seq.map (fun line -> line |> Seq.map (fun c -> c.ToString() |> Int32.Parse)) |> array2D
 
-type MappingMap = Map<char, Map<char, char>>
+let min3 a b c = min (min a b) c
 
-[<Literal>]
-let ACharIndex = 65 // 'A' |> int
+let fill' (data: int [,]) =
+    let size = data.GetLength(0)
+    let mins = Array2D.zeroCreate size size
+    mins.[0, 0] <- data.[0, 0]
+    for i = 1 to size - 1 do
 
-let indexOfChar (c: char) = (c |> int) - ACharIndex
+        let minUpper1 = mins.[0, i - 1]
+        let minUpper1Next = mins.[1, i - 1]
+        let value1Next = data.[1, i]
+        mins.[0, i] <- data.[0, i] + if i = 1 then minUpper1 else min minUpper1 (minUpper1Next + value1Next)
 
-let toMappingMap (mapping: (string * string) []) : MappingMap =
-    mapping
-    |> Seq.fold
-        (fun a (from, to') ->
-            a
-            |> Map.change
-                (from.[0])
-                (function
-                | None -> [ from.[1], to'.[0] ] |> Map |> Some
-                | Some map -> map |> Map.add from.[1] to'.[0] |> Some))
-        Map.empty
+        let minUpper2 = mins.[i - 1, 0]
+        let minUpper2Next = mins.[i - 1, 1]
+        let value2Next = data.[i, 1]
+        mins.[i, 0] <- data.[i, 0] + if i = 1 then minUpper2 else min minUpper2 (minUpper2Next + value2Next)
 
-// let template = data.Template
-// let step template mappingMap =
-//     Seq.append template [ '-' ]
-//     |> Seq.pairwise
-//     |> Seq.collect
-//         (fun (a, b) ->
-//             let mapped = mappingMap |> Map.tryFind a |> Option.bind (Map.tryFind b)
-//             match mapped with
-//             | None -> [ a ]
-//             | Some c -> [ a; c ])
+        for j = 1 to i - 1 do
+
+            let minUpper1v1 = mins.[i - 1, j]
+            let minUpper1v2 = mins.[i, j - 1]
+            let minUpper1v3 = mins.[i - 1, j + 1]
+            let value1vNext = data.[i, j + 1]
+            mins.[i, j] <-
+                data.[i, j]
+                + if j = i - 1 then
+                      min minUpper1v1 minUpper1v2
+                  else
+                      min3 minUpper1v1 minUpper1v2 (minUpper1v3 + value1vNext)
 
 
+            let minUpper2v1 = mins.[j - 1, i]
+            let minUpper2v2 = mins.[j, i - 1]
+            let minUpper2v3 = mins.[j + 1, i - 1]
+            let value2vNext = data.[j + 1, i]
+            mins.[j, i] <-
+                data.[j, i]
+                + if j = i - 1 then
+                      min minUpper2v1 minUpper2v2
+                  else
+                      min3 minUpper2v1 minUpper2v2 (minUpper2v3 + value2vNext)
 
-// let step2 template (mappingMap: MappingMap) =
-//     seq {
-//         for (a, b) in Seq.append template [ '-' ] |> Seq.pairwise do
-//             yield a
-//             if b <> '-' then yield mappingMap.[a].[b]
-//     }
+        let minUpper5v1 = mins.[i - 1, i]
+        let minUpper5v2 = mins.[i, i - 1]
+        mins.[i, i] <- data.[i, i] + min minUpper5v1 minUpper5v2
+    mins
 
+let moveByOne (data: int [,]) =
+    let size = data.GetLength(0)
+    for x = 0 to size - 1 do
+        for y = 0 to size - 1 do
+            let value = data.[x, y]
+            data.[x, y] <- if value = 9 then 1 else value + 1
 
-
-// // let template = data.Template
-// let rec insertNew (mappingMap: MappingMap) (counter: int64 []) steps (a, b) step =
-//     let n = mappingMap.[a].[b]
-//     let nIndex = indexOfChar n
-//     counter.[nIndex] <- counter.[nIndex] + 1L
-//     // printfn "%d %A -> %A" step (a, b) n
-//     if step < steps then
-//         insertNew mappingMap counter steps (a, n) (step + 1)
-//         insertNew mappingMap counter steps (n, b) (step + 1)
-
-
-
-
-type Result = Map<char, int64>
-
-type Cache = Dictionary<int * char * char, Result>
-
-
-
-let mergeMaps (maps: seq<Result>) =
-    maps
-    |> Seq.reduce
-        (fun map1 map2 ->
-            map2
-            |> Map.toSeq
-            |> Seq.fold
-                (fun map (key, value) ->
-                    map
-                    |> Map.change
-                        key
-                        (function
-                        | None -> Some value
-                        | Some v -> Some(v + value)))
-                map1)
+let rippleEffect () =
+    seq { 0 .. 8 }
+    |> Seq.map (fun i -> i, seq { 0 .. i } |> Seq.map (fun j -> j, i - j) |> Seq.filter (fun (x, y) -> x < 5 && y < 5))
 
 
-// mergeMaps' [(Map [(1,3);(2,2);]); (Map [(1,3);(5,3);])]
-// let args = (1, 'N', 'N')
+let replicateData (data: int [,]) =
+    let size = data.GetLength(0)
+    let result = Array2D.zeroCreate (size * 5) (size * 5)
+    for index, positions in rippleEffect () do
+        if index > 0 then moveByOne data
+        for x, y in positions do
+            result.[(x * size)..(x * size + size - 1), (y * size)..(y * size + size - 1)] <- data
+    result
 
-let rec run args (mappingMap: MappingMap) (cache: Cache) =
-    match cache.TryGetValue args with
-    | true, result -> result
-    | false, _ ->
-        let (step, a, b) = args
-        let n = mappingMap.[a].[b]
-        let result =
-            if step > 1 then
-                let map1 = run (step - 1, a, n) mappingMap cache
-                let map2 = run (step - 1, n, b) mappingMap cache
-                mergeMaps [ map1; map2 ]
-                |> Map.change
-                    n
-                    (function
-                    | None -> Some 1L
-                    | Some v -> Some(v + 1L))
-            else
-                Map [ n, 1L ]
-        cache.Add(args, result)
-        result
+
+let puzzle (data: int [,]) =
+    let result = fill' data
+    let size = data.GetLength(0)
+    let r = result.[size - 1, size - 1] - result.[0, 0]
+    r |> string
+
+let puzzle1 (input: string) = loadData input |> puzzle
+
+let puzzle2 (input: string) = loadData input |> replicateData |> puzzle
 
 
 
-//     let data = loadData input
-//     let mappingMap = toMappingMap data.Mapping
-// let template = data.Template
-// let steps = 40
+// **
+// 2882 my result, 2879  correct result :)
+// http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html
+// https://www.redblobgames.com/pathfinding/a-star/introduction.html
+
+let rec enqueue priority item queue =
+    match queue with
+    | head :: tail -> if priority < fst head then (priority, item) :: queue else head :: enqueue priority item tail
+    | [] -> [ priority, item ]
+
+let neighbors (x, y) upperBound =
+    seq {
+        if x > 0 then x - 1, y
+        if y > 0 then x, y - 1
+        if x < upperBound then x + 1, y
+        if y < upperBound then x, y + 1
+    }
+
+let search (data: int [,]) =
+    let size = data.GetLength(0)
+    let upperBound = size - 1
+    let theEnd = (upperBound, upperBound)
+
+    let mutable queue = enqueue 0 (0, 0) []
+    // let cameFrom = Dictionary<int * int, int * int>()
+    let costSoFar = Dictionary<int * int, int>()
+    costSoFar.[(0, 0)] <- 0
+
+    let mutable result = 0
+    while (result = 0) && not (List.isEmpty queue) do
+
+        let (_, current) = List.head queue
+        queue <- List.tail queue
+        printfn "%A" current
+
+        if current = theEnd then
+            printfn " --> %d" costSoFar.Count
+            result <- costSoFar.[current]
+        else
+            for next in neighbors current upperBound do
+                let newCost = costSoFar.[current] + data.[fst next, snd next]
+                let nextCostExists, nextCost = costSoFar.TryGetValue next
+                if not nextCostExists || newCost < nextCost then
+                    costSoFar.[next] <- newCost
+                    //cameFrom.[next] <- current
+                    // queue <- queue |> addToPriorityQueue newCost next // Dijkstra’s algorithm
+                    let distance = (upperBound - fst next) + (upperBound - snd next)
+                    // printfn $"{distance}"
+                    queue <- queue |> enqueue (newCost + distance) next // A* algorithm
+    result
 
 
-let start (template: string) (mappingMap: MappingMap) steps =
-    let cache = Cache()
-    let map1 = template |> Seq.pairwise |> Seq.map (fun (a, b) -> run (steps, a, b) mappingMap cache) |> mergeMaps
-
-    let map2 = template |> Seq.groupBy id |> Seq.map (fun (key, values) -> key, Seq.length values |> int64) |> Map
-
-    let map = mergeMaps [ map1; map2 ]
-    let min'', max'' =
-        map
-        |> Map.toSeq
-        |> Seq.map snd
-        |> Seq.fold (fun (min', max') c -> min min' c, max max' c) (Int64.MaxValue, Int64.MinValue)
-    max'' - min''
-
-// while not (List.isEmpty stack) do
-//     match stack with
-//     | (step, (a, b)) :: tail ->
-//         let n = mappingMap.[a].[b]
-//         let nIndex = indexOfChar n
-//         counter.[nIndex] <- counter.[nIndex] + 1L
-//         stack <- if step < steps then (step + 1, (a, n)) :: (step + 1, (n, b)) :: tail else tail
-//     | _ -> ()
-
-// let min'', max'' =
-//     counter
-//     |> Seq.filter (fun x -> x > 0L)
-//     |> Seq.fold (fun (min', max') c -> min min' c, max max' c) (Int64.MaxValue, Int64.MinValue)
-// max'' - min''
+//    for next in graph.neighbors(current):
+//       new_cost = cost_so_far[current] + graph.cost(current, next)
+//       if next not in cost_so_far or new_cost < cost_so_far[next]:
+//          cost_so_far[next] = new_cost
+//          priority = new_cost
+//          frontier.put(next, priority)
+//          came_from[next] = current
 
 
 
-
-
-// ************************************************************
-// let start template (mappingMap: MappingMap) steps =
-//     let counter = Array.create (indexOfChar 'Z' + 1) 0L
-//     template |> Seq.map indexOfChar |> Seq.iter (fun i -> counter.[i] <- counter.[i] + 1L)
-
-//     let mutable stack = template |> Seq.pairwise |> Seq.map (fun pair -> 1, pair) |> Seq.toList
-//     while not (List.isEmpty stack) do
-//         match stack with
-//         | (step, (a, b)) :: tail ->
-//             let n = mappingMap.[a].[b]
-//             let nIndex = indexOfChar n
-//             counter.[nIndex] <- counter.[nIndex] + 1L
-//             stack <- if step < steps then (step + 1, (a, n)) :: (step + 1, (n, b)) :: tail else tail
-//         | _ -> ()
-
-//     let min'', max'' =
-//         counter
-//         |> Seq.filter (fun x -> x > 0L)
-//         |> Seq.fold (fun (min', max') c -> min min' c, max max' c) (Int64.MaxValue, Int64.MinValue)
-//     max'' - min''
-
-
-// ************************************************************
-// let start template (mappingMap: MappingMap) steps =
-//     let counter = Array.create (indexOfChar 'Z' + 1) 0L
-//     template |> Seq.map indexOfChar |> Seq.iter (fun i -> counter.[i] <- counter.[i] + 1L)
-//     template
-//     |> Seq.pairwise
-//     |> Seq.iter
-//         (fun pair ->
-//             printfn "%A" pair
-//             insertNew mappingMap counter steps pair 1)
-
-
-//     let min'', max'' =
-//         counter
-//         |> Seq.filter (fun x -> x > 0L)
-//         |> Seq.fold (fun (min', max') c -> min min' c, max max' c) (Int64.MaxValue, Int64.MinValue)
-//     max'' - min''
+let puzzle3 () =
+    let input =
+        System.IO.File.ReadAllText
+            "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2021/Day15.txt"
+    let data = loadData input
+    //let data = loadData input |> replicateData
+    search data
 
 
 
 
 
-
-
-// Seq.append template [ '-' ]
-// |> Seq.pairwise
-// |> Seq.collect
-//     (fun (a, b) ->
-//         let mapped = mappingMap |> Map.tryFind a |> Option.bind (Map.tryFind b)
-//         match mapped with
-//         | None -> [ a ]
-//         | Some c -> [ a; c ])
-
-
-
-// let groupBy' items =
-//     items
-//     |> Seq.fold
-//         (fun a item ->
-//             a
-//             |> Map.change
-//                 item
-//                 (function
-//                 | None -> Some 1L
-//                 | Some value -> Some(value + 1L)))
-//         Map.empty
-
-
-
-
-// let puzzle (input: string) steps =
-//     let data = loadData input
-//     let mappingMap = toMappingMap data.Mapping
-//     let template =
-//         seq { 1 .. 20 } |> Seq.fold (fun template _ -> step2 template mappingMap) (data.Template :> seq<char>)
-//     let min'', max'' =
-//         template
-//         |> groupBy'
-//         |> Map.toSeq
-//         |> Seq.map snd
-//         //|> Seq.groupBy id
-//         //|> Seq.map (fun (_, values) -> Seq.length values |> int64)
-//         |> Seq.fold (fun (min', max') c -> min min' c, max max' c) (Int64.MaxValue, Int64.MinValue)
-//     let result = max'' - min''
-//     result |> string
-
-
-// let puzzle1 (input: string) = puzzle input 10
-
-// let puzzle2 (input: string) = puzzle input 40
+// let rec walk (data: int [,]) upperBound (x, y) sum (minSum: int ref) =
+//     let sum' = sum + data.[x, y]
+//     if sum' < minSum.Value then
+//         if x = upperBound && y = upperBound then
+//             minSum := sum'
+//         else
+//             let goFurther =
+//                 if x < upperBound then
+//                     walk data upperBound (x + 1, y) sum' minSum
+//                     sum' < minSum.Value
+//                 else
+//                     true
+//             if goFurther && y < upperBound then walk data upperBound (x, y + 1) sum' minSum

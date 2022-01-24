@@ -85,7 +85,7 @@ let puzzle input steps =
     let mappingMap = toMappingMap data.Mapping
     let cache = Cache()
     let map1 = data.Template |> Seq.pairwise |> Seq.map (fun (a, b) -> go (steps, a, b) mappingMap cache) |> mergeMaps
-    let map2 = data.Template |> Seq.groupBy id |> Seq.map (fun (key, values) -> key, Seq.length values |> int64) |> Map
+    let map2 = data.Template |> Seq.countBy id |> Seq.map (fun (key, length) -> key, length |> int64) |> Map
     let map = mergeMaps [ map1; map2 ]
     let min'', max'' =
         map

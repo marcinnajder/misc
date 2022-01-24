@@ -9,15 +9,15 @@ let loadData (input: string) =
 
 let findLowPoints (data: int [,]) =
     seq {
-        let xUperBound = data.GetLength(0) - 1
-        let yUperBound = data.GetLength(1) - 1
-        for x = 0 to xUperBound do
-            for y = 0 to yUperBound do
+        let xUpperBound = data.GetLength(0) - 1
+        let yUpperBound = data.GetLength(1) - 1
+        for x = 0 to xUpperBound do
+            for y = 0 to yUpperBound do
                 let value = data.[x, y]
                 if (x = 0 || value < data.[x - 1, y])
-                   && (x = xUperBound || value < data.[x + 1, y])
+                   && (x = xUpperBound || value < data.[x + 1, y])
                    && (y = 0 || value < data.[x, y - 1])
-                   && (y = yUperBound || value < data.[x, y + 1]) then
+                   && (y = yUpperBound || value < data.[x, y + 1]) then
                     yield (value)
     }
 

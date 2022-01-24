@@ -8,18 +8,18 @@ let loadData (input: string) =
 
 let eachXY (data: int [,]) =
     seq {
-        let xUperBound = data.GetLength(0) - 1
-        let yUperBound = data.GetLength(1) - 1
-        for x = 0 to xUperBound do
-            for y = 0 to yUperBound do
+        let xUpperBound = data.GetLength(0) - 1
+        let yUpperBound = data.GetLength(1) - 1
+        for x = 0 to xUpperBound do
+            for y = 0 to yUpperBound do
                 yield x, y
     }
 
 let increment (data: int [,]) = data |> eachXY |> Seq.iter (fun (x, y) -> data.[x, y] <- data.[x, y] + 1)
 
 let flash (data: int [,]) =
-    let xUperBound = data.GetLength(0) - 1
-    let yUperBound = data.GetLength(1) - 1
+    let xUpperBound = data.GetLength(0) - 1
+    let yUpperBound = data.GetLength(1) - 1
     let xys = data |> eachXY |> Seq.filter (fun (x, y) -> data.[x, y] > 9)
     let mutable wasFlash = false
     for (x, y) in xys do
@@ -27,8 +27,8 @@ let flash (data: int [,]) =
         wasFlash <- true
         let xxyys =
             Seq.allPairs
-                (seq { max (x - 1) 0 .. min (x + 1) xUperBound })
-                (seq { max (y - 1) 0 .. min (y + 1) yUperBound })
+                (seq { max (x - 1) 0 .. min (x + 1) xUpperBound })
+                (seq { max (y - 1) 0 .. min (y + 1) yUpperBound })
             |> Seq.filter (fun (xx, yy) -> (xx, yy) <> (x, y))
         for (xx, yy) in xxyys do
             data.[xx, yy] <- data.[xx, yy] + 1
