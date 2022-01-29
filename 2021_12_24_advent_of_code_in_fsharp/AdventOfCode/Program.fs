@@ -33,5 +33,5 @@ let main argv =
             printfn "2021/Day%s/Puzzle02:  %s" dayStr (puzle2 input)
             ())
 
-    // Day16.test () |> ignore
+    // Day15.puzzle3 () |> ignore
     0

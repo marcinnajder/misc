@@ -12,7 +12,12 @@ let input =
 open System
 open System.Collections.Generic
 
+// object o = new String(); ... :>  ...
 
+// string s = (string) o;   ... :?> ...
+// let a  = [ [ '0' ]; [ '1' ] ]
+
+// AF5 -> 0011 1100 1100
 let rec bin n =
     if n = 1 then
         [ [ '0' ]; [ '1' ] ] :> seq<_>
@@ -59,10 +64,10 @@ let rec readOperator reader =
     if lengthTypeId = '0' then
         let bitsCount = reader |> Seq.take 15 |> bitsToInt
         let newReader = reader |> Seq.take bitsCount |> shareSequence // !
-        readManyPackages newReader |> Seq.toList
+        newReader |> readManyPackages |> Seq.toList
     else
         let packageCount = reader |> Seq.take 11 |> bitsToInt
-        readManyPackages (reader) |> Seq.take packageCount |> Seq.toList
+        reader |> readManyPackages |> Seq.take packageCount |> Seq.toList
 
 and tryReadPackage reader =
     let first3Bits = reader |> Seq.truncate 3 |> ResizeArray

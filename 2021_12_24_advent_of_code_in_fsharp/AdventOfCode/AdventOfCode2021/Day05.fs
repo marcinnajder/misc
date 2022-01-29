@@ -31,7 +31,7 @@ let getPoints line =
         |> Seq.map (fun (x, y) -> { X = x; Y = y })
 
 let countAtTeastTwoLinesOverlapping lines =
-    lines |> Seq.collect getPoints |> Seq.countBy id |> Seq.filter (fun (key, points) -> points > 1) |> Seq.length
+    lines |> Seq.collect getPoints |> Seq.countBy id |> Seq.filter (fun (point, count) -> count > 1) |> Seq.length
 
 let puzzle1 (input: string) =
     let data = loadData input |> Seq.filter (fun l -> l.Start.X = l.End.X || l.Start.Y = l.End.Y) |> List.ofSeq
