@@ -1,23 +1,7 @@
 module AdventOfCode2021.Day16
 
-// #load "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2021/Common.fs"
-
-
-let input =
-    System.IO.File.ReadAllText
-        "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2021/Day16.txt"
-
-// ******************************************************************************
-
 open System
-open System.Collections.Generic
 
-// object o = new String(); ... :>  ...
-
-// string s = (string) o;   ... :?> ...
-// let a  = [ [ '0' ]; [ '1' ] ]
-
-// AF5 -> 0011 1100 1100
 let rec bin n =
     if n = 1 then
         [ [ '0' ]; [ '1' ] ] :> seq<_>
@@ -63,7 +47,7 @@ let rec readOperator reader =
     let lengthTypeId = reader |> Seq.head
     if lengthTypeId = '0' then
         let bitsCount = reader |> Seq.take 15 |> bitsToInt
-        let newReader = reader |> Seq.take bitsCount |> shareSequence // !
+        let newReader = reader |> Seq.take bitsCount |> shareSequence // shareSequence !!!
         newReader |> readManyPackages |> Seq.toList
     else
         let packageCount = reader |> Seq.take 11 |> bitsToInt

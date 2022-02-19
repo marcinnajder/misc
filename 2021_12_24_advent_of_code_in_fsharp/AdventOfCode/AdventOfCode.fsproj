@@ -6,9 +6,9 @@
     <WarnOn>3390;$(WarnOn)</WarnOn>
   </PropertyGroup>
 
-    <ItemGroup><PackageReference Include="FSharpx.Collections" Version="3.0.1" />
-    
+  <ItemGroup><PackageReference Include="FSharpx.Collections" Version="3.0.1" />    
   </ItemGroup>
+
 
   <ItemGroup>
     <Compile Include="AdventOfCode2021/*.fs" />

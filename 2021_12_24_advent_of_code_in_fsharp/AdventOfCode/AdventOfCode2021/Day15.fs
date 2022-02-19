@@ -1,8 +1,5 @@
 module AdventOfCode2021.Day15
 
-// #load "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2021/Common.fs"
-// #r "nuget:FSharpx.Collections, 3.0.1"
-
 open System
 open System.Collections.Generic
 open FSharpx.Collections
@@ -118,11 +115,6 @@ let puzzle2 (input: string) = loadData input |> replicateData |> search |> strin
 
 
 // experiments
-
-let input =
-    System.IO.File.ReadAllText
-        "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2021/Day15.txt"
-
 
 
 // this solution is extremely slow, works only for smallest data sets
