@@ -40,10 +40,7 @@ let getLines (items: seq<int>) =
                 match n, isInsideBasin with
                 | 9, false -> state
                 | 9, true ->
-                    lines.Add(
-                        { Index = basinBeginningIndex
-                          Count = index - basinBeginningIndex }
-                    )
+                    lines.Add({ Index = basinBeginningIndex; Count = index - basinBeginningIndex })
                     (false, 0, lines)
                 | _, false -> (true, index, lines)
                 | _, true -> state)
@@ -56,12 +53,7 @@ let numberLines (lines: seq<ResizeArray<Line>>) =
     |> Seq.skip 1
     |> Seq.map
         (fun (i, lines) ->
-            lines
-            |> Seq.mapi
-                (fun ii line ->
-                    { Number = i - lines.Count + ii
-                      Line = line })
-            |> Seq.toList)
+            lines |> Seq.mapi (fun ii line -> { Number = i - lines.Count + ii; Line = line }) |> Seq.toList)
     |> Seq.toArray
 
 let findCrossingLinesNumbers y (yLine: Line) (xLines: (NumberedLine list) []) =

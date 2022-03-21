@@ -6,13 +6,9 @@ open System.Linq
 
 type Cell = { Value: int; mutable IsChecked: bool }
 
-type Board =
-    { Cells: Cell [,]
-      mutable IsChecked: bool }
+type Board = { Cells: Cell [,]; mutable IsChecked: bool }
 
-type Data =
-    { Numbers: int list
-      Boards: Board list }
+type Data = { Numbers: int list; Boards: Board list }
 
 [<Literal>]
 let BoardSize = 5
@@ -31,8 +27,7 @@ let loadData (input: string) =
             >> (fun cells -> { Cells = cells; IsChecked = false })
         )
         |> Seq.toList
-    { Numbers = (lines.[0] |> parseNumbers ',' |> Array.toList)
-      Boards = boards }
+    { Numbers = (lines.[0] |> parseNumbers ',' |> Array.toList); Boards = boards }
 
 
 let getRowsAndColumns (b: Board) =

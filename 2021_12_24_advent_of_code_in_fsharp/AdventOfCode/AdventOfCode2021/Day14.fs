@@ -3,9 +3,7 @@ module AdventOfCode2021.Day14
 open System
 open System.Collections.Generic
 
-type Input =
-    { Template: string
-      Mapping: (string * string) [] }
+type Input = { Template: string; Mapping: (string * string) [] }
 
 type MappingMap = Map<char, Map<char, char>>
 
@@ -25,8 +23,7 @@ let loadData (input: string) =
                 let parts = line.Split " -> "
                 parts.[0], parts.[1])
         |> Seq.toArray
-    { Template = template
-      Mapping = mapping }
+    { Template = template; Mapping = mapping }
 
 
 let toMappingMap (mapping: (string * string) []) : MappingMap =

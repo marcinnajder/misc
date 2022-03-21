@@ -1,17 +1,11 @@
 module AdventOfCode2021.Day18
 
-// let input =
-//     System.IO.File.ReadAllText
-//         "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2021/Day18.txt"
-
-
 open System
 
 type Number = NumberItem * NumberItem
 and NumberItem =
     | Value of int
     | Number of Number
-
 
 let rec printNumber numberItem =
     match numberItem with

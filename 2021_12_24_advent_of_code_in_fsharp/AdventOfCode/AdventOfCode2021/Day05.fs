@@ -14,8 +14,7 @@ let loadData (input: string) =
             let parts = line.Split([| "->" |], StringSplitOptions.RemoveEmptyEntries)
             let p1 = parseNumbers ',' parts.[0]
             let p2 = parseNumbers ',' parts.[1]
-            { Start = { X = p1.[0]; Y = p1.[1] }
-              End = { X = p2.[0]; Y = p2.[1] } })
+            { Start = { X = p1.[0]; Y = p1.[1] }; End = { X = p2.[0]; Y = p2.[1] } })
 
 let getRange from to' =
     if from = to' then Seq.initInfinite (fun _ -> from)

@@ -10,7 +10,6 @@ let loadData (input: string) =
     lines |> Seq.map (fun line -> line |> Seq.map (fun c -> c.ToString() |> Int32.Parse)) |> array2D
 
 
-
 type QueueItem = (int * (int * int))
 
 type IPriorityQueueApi<'T, 'Q> =

@@ -28,23 +28,14 @@ let puzzle1 (input: string) =
         |> Array.fold
             (fun state direction ->
                 match direction with
-                | Forward value ->
-                    { state with
-                          Horizontal = state.Horizontal + value }
-                | Down value ->
-                    { state with
-                          Depth = state.Depth + value }
-                | Up value ->
-                    { state with
-                          Depth = state.Depth - value })
+                | Forward value -> { state with Horizontal = state.Horizontal + value }
+                | Down value -> { state with Depth = state.Depth + value }
+                | Up value -> { state with Depth = state.Depth - value })
             { Horizontal = 0; Depth = 0 }
     let result = finalPosition.Horizontal * finalPosition.Depth
     result |> string
 
-type Position2 =
-    { Horizontal: int
-      Depth: int
-      Aim: int }
+type Position2 = { Horizontal: int; Depth: int; Aim: int }
 
 let puzzle2 (input: string) =
     let directions = loadData input

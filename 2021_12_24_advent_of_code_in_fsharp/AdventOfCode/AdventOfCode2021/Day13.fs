@@ -10,9 +10,7 @@ type Fold =
     | X of int
     | Y of int
 
-type Input =
-    { Points: (int * int) []
-      Folds: Fold [] }
+type Input = { Points: (int * int) []; Folds: Fold [] }
 
 let loadData (input: string) =
     let lines = input.Split Environment.NewLine

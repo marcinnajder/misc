@@ -9,17 +9,11 @@ let loadData (input: string) =
     let parts = input.Substring("target area: ".Length).Split([| "," |], StringSplitOptions.TrimEntries)
     let xParts = parts.[0].Substring("x=".Length).Split("..") |> Array.map Int32.Parse
     let yParts = parts.[1].Substring("y=".Length).Split("..") |> Array.map Int32.Parse
-    { X = { Min = xParts.[0]; Max = xParts.[1] }
-      Y = { Min = yParts.[1]; Max = yParts.[0] } }
+    { X = { Min = xParts.[0]; Max = xParts.[1] }; Y = { Min = yParts.[1]; Max = yParts.[0] } }
 
 // 0, 1, 3, 6, 10, 15, ...
-let sums = Seq.unfold (fun (sum, index) -> let sum' = sum + index in Some(sum', (sum', index + 1))) (0, 0)
-
-
-let puzzle1 (input: string) =
-    let data = loadData input
-    let result = Seq.item (abs data.Y.Max - 1) sums
-    result |> string
+// let sums = Seq.unfold (fun (sum, index) -> let sum' = sum + index in Some(sum', (sum', index + 1))) (0, 0)
+let sums = seq { 1 .. Int32.MaxValue } |> Seq.scan (+) 0
 
 
 let shoot (velocity: int * int) =
@@ -43,6 +37,11 @@ let shootTarget (velocity: int * int) (ta: TargetArea) =
         | _ -> None)
 
 let findMinXVelocity minX = sums |> Seq.takeWhile (fun s -> s < minX) |> Seq.length
+
+let puzzle1 (input: string) =
+    let data = loadData input
+    let result = Seq.item (abs data.Y.Max - 1) sums
+    result |> string
 
 let puzzle2 (input: string) =
     let data = loadData input
