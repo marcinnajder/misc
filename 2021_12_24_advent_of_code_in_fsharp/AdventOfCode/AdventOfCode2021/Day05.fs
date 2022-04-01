@@ -18,8 +18,8 @@ let loadData (input: string) =
 
 let getRange from to' =
     if from = to' then Seq.initInfinite (fun _ -> from)
-    elif from < to' then seq { from .. 1 .. to' }
-    else seq { from .. -1 .. to' }
+    elif from < to' then { from .. 1 .. to' }
+    else { from .. -1 .. to' }
 
 
 let getPoints line =

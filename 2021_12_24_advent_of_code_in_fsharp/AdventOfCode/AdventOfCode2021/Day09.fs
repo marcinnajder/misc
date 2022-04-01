@@ -57,7 +57,7 @@ let numberLines (lines: seq<ResizeArray<Line>>) =
     |> Seq.toArray
 
 let findCrossingLinesNumbers y (yLine: Line) (xLines: (NumberedLine list) []) =
-    seq { yLine.Index .. (yLine.Index + yLine.Count - 1) }
+    { yLine.Index .. (yLine.Index + yLine.Count - 1) }
     |> Seq.choose
         (fun i ->
             xLines.[i]
@@ -89,8 +89,8 @@ let moveToY y (xLines: (NumberedLine list) []) =
 
 let puzzle2 (input: string) =
     let data = loadData input
-    let yLines = seq { 0 .. data.GetLength(1) - 1 } |> Seq.map (fun i -> getLines data.[*, i])
-    let xLines = seq { 0 .. data.GetLength(0) - 1 } |> Seq.map (fun i -> getLines data.[i, *])
+    let yLines = { 0 .. data.GetLength(1) - 1 } |> Seq.map (fun i -> getLines data.[*, i])
+    let xLines = { 0 .. data.GetLength(0) - 1 } |> Seq.map (fun i -> getLines data.[i, *])
     let xLinesNumbered = xLines |> numberLines
     let xLinesNumberedMovedToY = xLinesNumbered |> Array.copy
     let mergedSets =
@@ -127,7 +127,7 @@ let puzzle2 (input: string) =
 //         let lines = set |> Seq.map (fun item -> linesByNumber.[item])
 //         for line in lines do
 //             let y =
-//                 seq { 0 .. (xLinesNumbered.Length - 1) }
+//                 { 0 .. (xLinesNumbered.Length - 1) }
 //                 |> Seq.find (fun yy -> xLinesNumbered.[yy] |> List.exists (fun l -> l.Number = line.Number))
 //             for x = line.Line.Index to (line.Line.Index + line.Line.Count - 1) do
 //                 data1.[y, x] <- ((line.Number % 10) |> string).[0]
@@ -135,7 +135,7 @@ let puzzle2 (input: string) =
 //     // data1.[y, x] <- (200 + setId) |> char
 
 //     let text =
-//         seq { 0 .. (data1.GetLength(0) - 1) }
+//         { 0 .. (data1.GetLength(0) - 1) }
 //         |> Seq.map (fun x -> String.Join("", data1.[x, *]))
 //         |> Seq.reduce (fun p c -> p + Environment.NewLine + c)
 

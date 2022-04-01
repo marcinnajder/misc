@@ -12,6 +12,7 @@ let executeStep (items: int64 []) =
     items.[8] <- zeroLengthCount
     ()
 
+
 let countItemsAfterNIteration input n =
     let data = loadData input
     let map = data |> Seq.countBy id |> Map

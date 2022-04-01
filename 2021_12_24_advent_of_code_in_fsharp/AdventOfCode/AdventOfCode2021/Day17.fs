@@ -13,8 +13,7 @@ let loadData (input: string) =
 
 // 0, 1, 3, 6, 10, 15, ...
 // let sums = Seq.unfold (fun (sum, index) -> let sum' = sum + index in Some(sum', (sum', index + 1))) (0, 0)
-let sums = seq { 1 .. Int32.MaxValue } |> Seq.scan (+) 0
-
+let sums = { 1 .. Int32.MaxValue } |> Seq.scan (+) 0
 
 let shoot (velocity: int * int) =
     Seq.unfold
@@ -45,8 +44,8 @@ let puzzle1 (input: string) =
 
 let puzzle2 (input: string) =
     let data = loadData input
-    let xs = seq { findMinXVelocity data.X.Min .. data.X.Max }
-    let ys = seq { data.Y.Max .. abs data.Y.Max - 1 }
+    let xs = { findMinXVelocity data.X.Min .. data.X.Max }
+    let ys = { data.Y.Max .. abs data.Y.Max - 1 }
     let result =
         Seq.allPairs xs ys
         |> Seq.map (fun position -> shootTarget position data)
@@ -61,7 +60,7 @@ let puzzle2 (input: string) =
 
 
 // let findXRange (targetArea: TargetArea) =
-//     seq { 1 .. Int32.MaxValue }
+//      { 1 .. Int32.MaxValue }
 //     |> Seq.scan (fun (_, s) x -> (x, (s + x))) (0, 0)
 //     |> Seq.skipWhile (fun (_, s) -> s < targetArea.X.Min)
 //     |> Seq.takeWhile (fun (_, s) -> s <= targetArea.X.Max)
@@ -71,7 +70,7 @@ let puzzle2 (input: string) =
 // let sumUpTo n =
 //     if n >= sumsCache.Count then
 //         let initValue = if sumsCache.Count = 0 then 0 else sumsCache.[sumsCache.Count - 1]
-//         let newSums = seq { sumsCache.Count .. n } |> Seq.scan (+) initValue |> Seq.skip 1
+//         let newSums = { sumsCache.Count .. n } |> Seq.scan (+) initValue |> Seq.skip 1
 //         sumsCache.AddRange(newSums)
 //     sumsCache.[n]
 
@@ -90,5 +89,5 @@ let puzzle2 (input: string) =
 //         -(sumUpTo (n - (yVelocity + 1)) - sumUpTo (yVelocity))
 
 
-// seq { 0 .. 10 } |> Seq.map (fun n -> calculateY 3 n) |> Seq.toArray
+//  { 0 .. 10 } |> Seq.map (fun n -> calculateY 3 n) |> Seq.toArray
 // calculateY 1 8

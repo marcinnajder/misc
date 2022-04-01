@@ -55,8 +55,8 @@ let moveByOne (data: int [,]) =
             data.[x, y] <- if value = 9 then 1 else value + 1
 
 let rippleEffect () =
-    seq { 0 .. 8 }
-    |> Seq.map (fun i -> i, seq { 0 .. i } |> Seq.map (fun j -> j, i - j) |> Seq.filter (fun (x, y) -> x < 5 && y < 5))
+    { 0 .. 8 }
+    |> Seq.map (fun i -> i, { 0 .. i } |> Seq.map (fun j -> j, i - j) |> Seq.filter (fun (x, y) -> x < 5 && y < 5))
 
 
 let replicateData (data: int [,]) =

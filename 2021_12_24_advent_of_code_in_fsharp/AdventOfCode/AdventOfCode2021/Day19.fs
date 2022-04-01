@@ -1,9 +1,5 @@
 module AdventOfCode2021.Day19
 
-// let input =
-//     System.IO.File.ReadAllText
-//         "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2021/Day19.txt"
-
 open System
 
 type Point = int * int * int

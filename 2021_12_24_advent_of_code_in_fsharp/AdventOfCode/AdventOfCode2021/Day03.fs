@@ -2,16 +2,13 @@ module AdventOfCode2021.Day3
 
 open System
 
-type Direction =
-    | Forward of int
-    | Down of int
-    | Up of int
 
 let loadData (input: string) = input.Split Environment.NewLine
 
+let binaryStringToIntArray str = str |> Seq.map (fun c -> if c = '1' then 1 else -1) |> Seq.toArray
+
 let puzzle1 (input: string) =
     let binaryStrings = loadData input
-    let binaryStringToIntArray = fun bs -> bs |> Seq.map (fun c -> if c = '1' then 1 else -1) |> Seq.toArray
     let sum =
         binaryStrings
         |> Seq.map binaryStringToIntArray

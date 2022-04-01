@@ -54,7 +54,7 @@ let print (points: (int * int) []) =
     let screen = Array2D.create (maxX + 1) (maxY + 1) '.'
     points |> Seq.iter (fun (x, y) -> screen.[x, y] <- '#')
     let text =
-        seq { 0 .. (screen.GetLength(0) - 1) }
+        { 0 .. (screen.GetLength(0) - 1) }
         |> Seq.map (fun x -> String.Join("", screen.[x, *]))
         |> Seq.reduce (fun p c -> p + Environment.NewLine + c)
     text

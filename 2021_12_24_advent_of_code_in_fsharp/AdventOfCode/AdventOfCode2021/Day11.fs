@@ -26,9 +26,7 @@ let flash (data: int [,]) =
         data.[x, y] <- Int32.MinValue
         wasFlash <- true
         let xxyys =
-            Seq.allPairs
-                (seq { max (x - 1) 0 .. min (x + 1) xUpperBound })
-                (seq { max (y - 1) 0 .. min (y + 1) yUpperBound })
+            Seq.allPairs { max (x - 1) 0 .. min (x + 1) xUpperBound } { max (y - 1) 0 .. min (y + 1) yUpperBound }
             |> Seq.filter (fun (xx, yy) -> (xx, yy) <> (x, y))
         for (xx, yy) in xxyys do
             data.[xx, yy] <- data.[xx, yy] + 1
@@ -49,10 +47,10 @@ let step (data: int [,]) =
 
 let puzzle1 (input: string) =
     let data = loadData input
-    let result = seq { 1 .. 100 } |> Seq.sumBy (fun _ -> step data)
+    let result = { 1 .. 100 } |> Seq.sumBy (fun _ -> step data)
     result |> string
 
 let puzzle2 (input: string) =
     let data = loadData input
-    let result = seq { 1 .. Int32.MaxValue } |> Seq.findIndex (fun _ -> step data = data.Length)
+    let result = { 1 .. Int32.MaxValue } |> Seq.findIndex (fun _ -> step data = data.Length)
     result + 1 |> string
