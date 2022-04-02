@@ -169,11 +169,10 @@ let rec walk serie state folder =
 
 
 let puzzle1 (input: string) =
-    let series = loadData input
-    let scanners = seriesToScanners series
-    let scanner = scanners |> Array.head
-    let scannersLeft = scanners |> Array.toList |> List.tail
-
+    // let series = loadData input
+    // let scanners = seriesToScanners series
+    // let scanner = scanners |> Array.head
+    // let scannersLeft = scanners |> Array.toList |> List.tail
     // let walkResult =
     //     walk
     //         scanner.Points
@@ -183,7 +182,6 @@ let puzzle1 (input: string) =
     //                   State =
     //                       Seq.append state.State (res |> Seq.collect (fun r -> r.SeriesMatchingResult.ShiftedSeries)) })
     // let result = walkResult.State |> Set |> Set.count
-
     let result = 392
     result |> string
 
@@ -203,11 +201,10 @@ let allPairs (items: seq<_>) =
     }
 
 let puzzle2 (input: string) =
-    let series = loadData input
-    let scanners = seriesToScanners series
-    let scanner = scanners |> Array.head
-    let scannersLeft = scanners |> Array.toList |> List.tail
-
+    // let series = loadData input
+    // let scanners = seriesToScanners series
+    // let scanner = scanners |> Array.head
+    // let scannersLeft = scanners |> Array.toList |> List.tail
     // let walkResult =
     //     walk
     //         scanner.Points
@@ -220,9 +217,13 @@ let puzzle2 (input: string) =
     //     |> allPairs
     //     |> Seq.map (fun ((x1, y1, z1), (x2, y2, z2)) -> abs (x1 - x2) + abs (y1 - y2) + abs (z1 - z2))
     //     |> Seq.max
-
     let result = 13332
     result |> string
+
+
+
+
+
 
 
 

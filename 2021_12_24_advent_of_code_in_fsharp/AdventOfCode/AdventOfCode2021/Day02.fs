@@ -25,7 +25,7 @@ let puzzle1 (input: string) =
     let directions = loadData input
     let finalPosition =
         directions
-        |> Array.fold
+        |> Seq.fold
             (fun state direction ->
                 match direction with
                 | Forward value -> { state with Horizontal = state.Horizontal + value }
