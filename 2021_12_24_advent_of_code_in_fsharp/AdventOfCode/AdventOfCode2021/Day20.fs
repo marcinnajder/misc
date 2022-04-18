@@ -31,12 +31,9 @@ let expandImage expandingChar (image: _ [,]) =
     let size = Array2D.length1 image
     let expandedBy = 1
     let newSize = size + expandedBy * 2
-    Array2D.init
-        newSize
-        newSize
-        (fun x y ->
-            let xx, yy = x - expandedBy, y - expandedBy
-            if xx < 0 || yy < 0 || xx >= size || yy >= size then expandingChar else image.[xx, yy])
+    Array2D.init newSize newSize (fun x y ->
+        let xx, yy = x - expandedBy, y - expandedBy
+        if xx < 0 || yy < 0 || xx >= size || yy >= size then expandingChar else image.[xx, yy])
 
 let toSeq array2D =
     seq {
@@ -49,7 +46,7 @@ let toSeq array2D =
 
 let countLitPixelsAfterNIteration n data =
     let (finalImage, _) =
-        seq { 1 .. n }
+        seq { 1..n }
         |> Seq.fold
             (fun (image, expandingChar) _ ->
                 (image |> expandImage expandingChar |> enhanceImage expandingChar data.ImageAlgorithm,

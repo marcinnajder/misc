@@ -29,8 +29,7 @@ type ShootingResult =
 
 let shootTarget (velocity: int * int) (ta: TargetArea) =
     shoot velocity
-    |> Seq.pick
-        (function
+    |> Seq.pick (function
         | x, y when x >= ta.X.Min && x <= ta.X.Max && y <= ta.Y.Min && y >= ta.Y.Max -> Some(Hit(x, y))
         | x, y when x > ta.X.Max || y < ta.Y.Max -> Some(Miss(x, y))
         | _ -> None)
@@ -49,8 +48,7 @@ let puzzle2 (input: string) =
     let result =
         Seq.allPairs xs ys
         |> Seq.map (fun position -> shootTarget position data)
-        |> Seq.filter
-            (function
+        |> Seq.filter (function
             | Hit _ -> true
             | Miss _ -> false)
         |> Seq.length

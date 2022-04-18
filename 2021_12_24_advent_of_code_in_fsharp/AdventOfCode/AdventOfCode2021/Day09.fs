@@ -51,19 +51,17 @@ let numberLines (lines: seq<ResizeArray<Line>>) =
     lines
     |> Seq.scan (fun (i, _) lines -> (i + lines.Count, lines)) (0, ResizeArray<Line>())
     |> Seq.skip 1
-    |> Seq.map
-        (fun (i, lines) ->
-            lines |> Seq.mapi (fun ii line -> { Number = i - lines.Count + ii; Line = line }) |> Seq.toList)
+    |> Seq.map (fun (i, lines) ->
+        lines |> Seq.mapi (fun ii line -> { Number = i - lines.Count + ii; Line = line }) |> Seq.toList)
     |> Seq.toArray
 
 let findCrossingLinesNumbers y (yLine: Line) (xLines: (NumberedLine list) []) =
     { yLine.Index .. (yLine.Index + yLine.Count - 1) }
-    |> Seq.choose
-        (fun i ->
-            xLines.[i]
-            |> List.tryHead
-            |> Option.filter (fun line -> y >= line.Line.Index && y < line.Line.Index + line.Line.Count)
-            |> Option.map (fun line -> line.Number))
+    |> Seq.choose (fun i ->
+        xLines.[i]
+        |> List.tryHead
+        |> Option.filter (fun line -> y >= line.Line.Index && y < line.Line.Index + line.Line.Count)
+        |> Option.map (fun line -> line.Number))
     |> Seq.toArray
 
 
@@ -95,10 +93,9 @@ let puzzle2 (input: string) =
     let xLinesNumberedMovedToY = xLinesNumbered |> Array.copy
     let mergedSets =
         yLines
-        |> Seq.mapi
-            (fun y yLines ->
-                moveToY y xLinesNumberedMovedToY
-                yLines |> Seq.map (fun yLine -> findCrossingLinesNumbers y yLine xLinesNumberedMovedToY))
+        |> Seq.mapi (fun y yLines ->
+            moveToY y xLinesNumberedMovedToY
+            yLines |> Seq.map (fun yLine -> findCrossingLinesNumbers y yLine xLinesNumberedMovedToY))
         |> Seq.concat
         |> mergeSets
     let linesByNumber = xLinesNumbered |> Seq.concat |> Seq.toArray

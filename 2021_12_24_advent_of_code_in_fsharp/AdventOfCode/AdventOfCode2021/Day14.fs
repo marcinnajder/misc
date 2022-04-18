@@ -18,10 +18,9 @@ let loadData (input: string) =
     let mapping =
         lines
         |> Seq.skip 2
-        |> Seq.map
-            (fun line ->
-                let parts = line.Split " -> "
-                parts.[0], parts.[1])
+        |> Seq.map (fun line ->
+            let parts = line.Split " -> "
+            parts.[0], parts.[1])
         |> Seq.toArray
     { Template = template; Mapping = mapping }
 
@@ -31,28 +30,23 @@ let toMappingMap (mapping: (string * string) []) : MappingMap =
     |> Seq.fold
         (fun a (from, to') ->
             a
-            |> Map.change
-                (from.[0])
-                (function
+            |> Map.change (from.[0]) (function
                 | None -> [ from.[1], to'.[0] ] |> Map |> Some
                 | Some map -> map |> Map.add from.[1] to'.[0] |> Some))
         Map.empty
 
 let mergeMaps (maps: seq<Result>) =
     maps
-    |> Seq.reduce
-        (fun map1 map2 ->
-            map2
-            |> Map.toSeq
-            |> Seq.fold
-                (fun map (key, value) ->
-                    map
-                    |> Map.change
-                        key
-                        (function
-                        | None -> Some value
-                        | Some v -> Some(v + value)))
-                map1)
+    |> Seq.reduce (fun map1 map2 ->
+        map2
+        |> Map.toSeq
+        |> Seq.fold
+            (fun map (key, value) ->
+                map
+                |> Map.change key (function
+                    | None -> Some value
+                    | Some v -> Some(v + value)))
+            map1)
 
 
 let rec go args (mappingMap: MappingMap) (cache: Cache) =
@@ -66,9 +60,7 @@ let rec go args (mappingMap: MappingMap) (cache: Cache) =
                 let map1 = go (step - 1, a, n) mappingMap cache
                 let map2 = go (step - 1, n, b) mappingMap cache
                 mergeMaps [ map1; map2 ]
-                |> Map.change
-                    n
-                    (function
+                |> Map.change n (function
                     | None -> Some 1L
                     | Some v -> Some(v + 1L))
             else

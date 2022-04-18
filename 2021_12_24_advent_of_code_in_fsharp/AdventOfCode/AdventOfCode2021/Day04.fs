@@ -47,18 +47,16 @@ let checkBoard n (board: Board) =
 
 let findWinningBoards (data: Data) =
     data.Numbers
-    |> Seq.collect
-        (fun n ->
-            data.Boards |> Seq.filter (fun b -> not b.IsChecked) |> Seq.filter (checkBoard n) |> Seq.map (fun b -> n, b))
+    |> Seq.collect (fun n ->
+        data.Boards |> Seq.filter (fun b -> not b.IsChecked) |> Seq.filter (checkBoard n) |> Seq.map (fun b -> n, b))
 
 let countScoreForBoard (board: Board) =
     board.Cells
     |> Enumerable.OfType<Cell>
-    |> Seq.choose
-        (fun cell ->
-            match cell with
-            | { IsChecked = true } -> None
-            | { Value = value } -> Some value)
+    |> Seq.choose (fun cell ->
+        match cell with
+        | { IsChecked = true } -> None
+        | { Value = value } -> Some value)
     |> Seq.sum
 
 let puzzle1 (input: string) =

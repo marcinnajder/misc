@@ -9,15 +9,14 @@ type Direction =
 
 let loadData (input: string) =
     input.Split Environment.NewLine
-    |> Array.map
-        (fun line ->
-            let parts = line.Split(' ')
-            let value = Int32.Parse(parts.[1])
-            match parts.[0] with
-            | "forward" -> Forward value
-            | "down" -> Down value
-            | "up" -> Up value
-            | unknownDirection -> failwith $"Unknown direction '{unknownDirection}' found in data")
+    |> Array.map (fun line ->
+        let parts = line.Split(' ')
+        let value = Int32.Parse(parts.[1])
+        match parts.[0] with
+        | "forward" -> Forward value
+        | "down" -> Down value
+        | "up" -> Up value
+        | unknownDirection -> failwith $"Unknown direction '{unknownDirection}' found in data")
 
 type Position1 = { Horizontal: int; Depth: int }
 
@@ -46,8 +45,8 @@ let puzzle2 (input: string) =
                 match direction with
                 | Forward value ->
                     { state with
-                          Position2.Horizontal = state.Horizontal + value
-                          Depth = state.Depth + (state.Aim * value) }
+                        Position2.Horizontal = state.Horizontal + value
+                        Depth = state.Depth + (state.Aim * value) }
                 | Down value -> { state with Aim = state.Aim + value }
                 | Up value -> { state with Aim = state.Aim - value })
             { Horizontal = 0; Depth = 0; Aim = 0 }

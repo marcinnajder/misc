@@ -9,16 +9,15 @@ type Line = { Start: Point; End: Point }
 let loadData (input: string) =
     let lines = input.Split Environment.NewLine
     lines
-    |> Seq.map
-        (fun line ->
-            let parts = line.Split([| "->" |], StringSplitOptions.RemoveEmptyEntries)
-            let p1 = parseNumbers ',' parts.[0]
-            let p2 = parseNumbers ',' parts.[1]
-            { Start = { X = p1.[0]; Y = p1.[1] }; End = { X = p2.[0]; Y = p2.[1] } })
+    |> Seq.map (fun line ->
+        let parts = line.Split([| "->" |], StringSplitOptions.RemoveEmptyEntries)
+        let p1 = parseNumbers ',' parts.[0]
+        let p2 = parseNumbers ',' parts.[1]
+        { Start = { X = p1.[0]; Y = p1.[1] }; End = { X = p2.[0]; Y = p2.[1] } })
 
 let getRange from to' =
     if from = to' then Seq.initInfinite (fun _ -> from)
-    elif from < to' then { from .. 1 .. to' }
+    elif from < to' then { from..1..to' }
     else { from .. -1 .. to' }
 
 
@@ -32,10 +31,10 @@ let getPoints line =
 let countAtTeastTwoLinesOverlapping lines =
     lines |> Seq.collect getPoints |> Seq.countBy id |> Seq.filter (fun (point, count) -> count > 1) |> Seq.length
 
+
 let puzzle1 (input: string) =
     let data = loadData input |> Seq.filter (fun l -> l.Start.X = l.End.X || l.Start.Y = l.End.Y) |> List.ofSeq
     countAtTeastTwoLinesOverlapping data |> string
-
 
 let puzzle2 (input: string) =
     let data = loadData input

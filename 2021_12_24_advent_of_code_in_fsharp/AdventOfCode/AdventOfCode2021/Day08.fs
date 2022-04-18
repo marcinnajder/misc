@@ -8,12 +8,11 @@ type Entry = { Left: string []; Right: string [] }
 let loadData (input: string) =
     let lines = input.Split Environment.NewLine
     lines
-    |> Seq.map
-        (fun line ->
-            let parts = line.Split([| "|" |], StringSplitOptions.RemoveEmptyEntries)
-            let p1 = parts.[0].Split([| " " |], StringSplitOptions.RemoveEmptyEntries)
-            let p2 = parts.[1].Split([| " " |], StringSplitOptions.RemoveEmptyEntries)
-            { Left = p1; Right = p2 })
+    |> Seq.map (fun line ->
+        let parts = line.Split([| "|" |], StringSplitOptions.RemoveEmptyEntries)
+        let p1 = parts.[0].Split([| " " |], StringSplitOptions.RemoveEmptyEntries)
+        let p2 = parts.[1].Split([| " " |], StringSplitOptions.RemoveEmptyEntries)
+        { Left = p1; Right = p2 })
     |> Seq.toArray
 
 
@@ -22,14 +21,13 @@ let puzzle1 (input: string) =
     let result =
         data
         |> Seq.collect (fun entry -> entry.Right)
-        |> Seq.filter
-            (fun text ->
-                match text.Length with
-                | 2
-                | 3
-                | 4
-                | 7 -> true
-                | _ -> false)
+        |> Seq.filter (fun text ->
+            match text.Length with
+            | 2
+            | 3
+            | 4
+            | 7 -> true
+            | _ -> false)
         |> Seq.length
     result |> string
 
@@ -83,14 +81,12 @@ let findSegmentsMapping (digits: string []) =
 let puzzle2 (input: string) =
     let data = loadData input
     data
-    |> Seq.sumBy
-        (fun e ->
-            let mapping = findSegmentsMapping e.Left
-            let digits =
-                e.Right
-                |> Seq.map
-                    (fun n ->
-                        let segments = n |> Seq.map (fun c -> Map.find c mapping) |> Seq.reduce (|||)
-                        Map.find segments SegmentsToDigits)
-            String.Join("", digits) |> Int32.Parse)
+    |> Seq.sumBy (fun e ->
+        let mapping = findSegmentsMapping e.Left
+        let digits =
+            e.Right
+            |> Seq.map (fun n ->
+                let segments = n |> Seq.map (fun c -> Map.find c mapping) |> Seq.reduce (|||)
+                Map.find segments SegmentsToDigits)
+        String.Join("", digits) |> Int32.Parse)
     |> string

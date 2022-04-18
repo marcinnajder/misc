@@ -17,28 +17,25 @@ let loadData (input: string) =
     let points =
         lines
         |> Seq.takeWhile (fun line -> line <> "")
-        |> Seq.map
-            (fun line ->
-                let parts = line |> Common.parseNumbers ','
-                parts.[0], parts.[1])
+        |> Seq.map (fun line ->
+            let parts = line |> Common.parseNumbers ','
+            parts.[0], parts.[1])
         |> Seq.toArray
     let folds =
         lines
         |> Seq.skip (points.Length + 1)
-        |> Seq.map
-            (fun line ->
-                let position = line.Substring(FoldYPrefix.Length) |> Int32.Parse
-                if line.StartsWith(FoldYPrefix) then Y position else X position)
+        |> Seq.map (fun line ->
+            let position = line.Substring(FoldYPrefix.Length) |> Int32.Parse
+            if line.StartsWith(FoldYPrefix) then Y position else X position)
         |> Seq.toArray
     { Points = points; Folds = folds }
 
 let foldPaper (points: (int * int) []) f =
     points
-    |> Seq.map
-        (fun ((x, y) as p) ->
-            match f with
-            | Y foldY -> if y < foldY then p else (x, y - (2 * (y - foldY)))
-            | X foldX -> if x < foldX then p else (x - (2 * (x - foldX)), y))
+    |> Seq.map (fun ((x, y) as p) ->
+        match f with
+        | Y foldY -> if y < foldY then p else (x, y - (2 * (y - foldY)))
+        | X foldX -> if x < foldX then p else (x - (2 * (x - foldX)), y))
     |> Seq.toArray
 
 

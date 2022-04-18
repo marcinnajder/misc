@@ -55,8 +55,7 @@ let puzzle1 (input: string) =
         data
         |> Seq.choose (
             processText
-            >> Seq.tryPick
-                (function
+            >> Seq.tryPick (function
                 | Corrupted c -> Some c
                 | _ -> None)
         )
@@ -69,12 +68,10 @@ let puzzle2 (input: string) =
         data
         |> Seq.choose (
             processText
-            >> Seq.tryPick
-                (function
+            >> Seq.tryPick (function
                 | Processing _ -> None
                 | state -> Some state)
-            >> Option.bind
-                (function
+            >> Option.bind (function
                 | Completed item -> Some item
                 | _ -> None)
         )

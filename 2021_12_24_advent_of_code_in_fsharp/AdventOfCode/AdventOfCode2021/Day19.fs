@@ -57,16 +57,15 @@ type Scanner = { Points: Point []; AllOrientations: Point [] [] }
 
 let seriesToScanners (series: Point [] []) =
     series
-    |> Array.map
-        (fun s ->
-            { Points = s
-              AllOrientations =
-                  s
-                  |> Seq.collect (findAllOrientations >> Seq.indexed)
-                  |> Seq.groupBy (fun (index, _) -> index)
-                  |> Seq.sortBy (fun (index, _) -> index)
-                  |> Seq.map (fun (index, points) -> points |> Seq.map snd |> Seq.toArray)
-                  |> Seq.toArray })
+    |> Array.map (fun s ->
+        { Points = s
+          AllOrientations =
+            s
+            |> Seq.collect (findAllOrientations >> Seq.indexed)
+            |> Seq.groupBy (fun (index, _) -> index)
+            |> Seq.sortBy (fun (index, _) -> index)
+            |> Seq.map (fun (index, points) -> points |> Seq.map snd |> Seq.toArray)
+            |> Seq.toArray })
 
 
 
@@ -87,14 +86,13 @@ let MinMatchingPoints = 12
 let matchSeries (serie1: Set<Point>) (serie2: Point []) =
     let len = serie1.Count
     Seq.allPairs serie1 serie2
-    |> Seq.tryPick
-        (fun ((x1, y1, z1), (x2, y2, z2)) ->
-            let (xx, yy, zz) as shift = x1 - x2, y1 - y2, z1 - z2
-            let shifted = serie2 |> Seq.map (fun (x, y, z) -> x + xx, y + yy, z + zz) |> Seq.cache
-            if existsAtLeastXItems shifted len (fun p -> Set.contains p serie1) MinMatchingPoints then
-                Some { Shift = shift; ShiftedSeries = shifted |> Seq.toArray }
-            else
-                None)
+    |> Seq.tryPick (fun ((x1, y1, z1), (x2, y2, z2)) ->
+        let (xx, yy, zz) as shift = x1 - x2, y1 - y2, z1 - z2
+        let shifted = serie2 |> Seq.map (fun (x, y, z) -> x + xx, y + yy, z + zz) |> Seq.cache
+        if existsAtLeastXItems shifted len (fun p -> Set.contains p serie1) MinMatchingPoints then
+            Some { Shift = shift; ShiftedSeries = shifted |> Seq.toArray }
+        else
+            None)
 
 
 type ScannersMatchingResult =
@@ -107,11 +105,9 @@ type ScannersMatchingResult =
 let matchScanners serie1 scanner2 =
     let serie1Map = serie1 |> Set
     scanner2.AllOrientations
-    |> Seq.tryPick
-        (fun serie2 ->
-            matchSeries serie1Map serie2
-            |> Option.map
-                (fun r -> { SerieFrom = serie1; SerieTo = serie2; ScannerTo = scanner2; SeriesMatchingResult = r }))
+    |> Seq.tryPick (fun serie2 ->
+        matchSeries serie1Map serie2
+        |> Option.map (fun r -> { SerieFrom = serie1; SerieTo = serie2; ScannerTo = scanner2; SeriesMatchingResult = r }))
 
 
 
@@ -169,21 +165,20 @@ let rec walk serie state folder =
 
 
 let puzzle1 (input: string) =
-    // let series = loadData input
-    // let scanners = seriesToScanners series
-    // let scanner = scanners |> Array.head
-    // let scannersLeft = scanners |> Array.toList |> List.tail
-    // let walkResult =
-    //     walk
-    //         scanner.Points
-    //         { State = scanner.Points :> seq<_>; ScannersLeft = scannersLeft }
-    //         (fun state res ->
-    //             { state with
-    //                   State =
-    //                       Seq.append state.State (res |> Seq.collect (fun r -> r.SeriesMatchingResult.ShiftedSeries)) })
-    // let result = walkResult.State |> Set |> Set.count
-    let result = 392
-    result |> string
+    let fromCache = true
+    if fromCache then
+        "392"
+    else
+        let series = loadData input
+        let scanners = seriesToScanners series
+        let scanner = scanners |> Array.head
+        let scannersLeft = scanners |> Array.toList |> List.tail
+        let walkResult =
+            walk scanner.Points { State = scanner.Points :> seq<_>; ScannersLeft = scannersLeft } (fun state res ->
+                { state with
+                    State = Seq.append state.State (res |> Seq.collect (fun r -> r.SeriesMatchingResult.ShiftedSeries)) })
+        let result = walkResult.State |> Set |> Set.count
+        result |> string
 
 
 
@@ -201,24 +196,23 @@ let allPairs (items: seq<_>) =
     }
 
 let puzzle2 (input: string) =
-    // let series = loadData input
-    // let scanners = seriesToScanners series
-    // let scanner = scanners |> Array.head
-    // let scannersLeft = scanners |> Array.toList |> List.tail
-    // let walkResult =
-    //     walk
-    //         scanner.Points
-    //         { State = (Seq.singleton (0, 0, 0)); ScannersLeft = scannersLeft }
-    //         (fun state res ->
-    //             { state with
-    //                   State = Seq.append state.State (res |> Seq.map (fun r -> r.SeriesMatchingResult.Shift)) })
-    // let result =
-    //     walkResult.State
-    //     |> allPairs
-    //     |> Seq.map (fun ((x1, y1, z1), (x2, y2, z2)) -> abs (x1 - x2) + abs (y1 - y2) + abs (z1 - z2))
-    //     |> Seq.max
-    let result = 13332
-    result |> string
+    let fromCache = true
+    if fromCache then
+        "13332"
+    else
+        let series = loadData input
+        let scanners = seriesToScanners series
+        let scanner = scanners |> Array.head
+        let scannersLeft = scanners |> Array.toList |> List.tail
+        let walkResult =
+            walk scanner.Points { State = (Seq.singleton (0, 0, 0)); ScannersLeft = scannersLeft } (fun state res ->
+                { state with State = Seq.append state.State (res |> Seq.map (fun r -> r.SeriesMatchingResult.Shift)) })
+        let result =
+            walkResult.State
+            |> allPairs
+            |> Seq.map (fun ((x1, y1, z1), (x2, y2, z2)) -> abs (x1 - x2) + abs (y1 - y2) + abs (z1 - z2))
+            |> Seq.max
+        result |> string
 
 
 

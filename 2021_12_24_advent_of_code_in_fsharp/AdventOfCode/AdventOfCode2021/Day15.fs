@@ -13,10 +13,10 @@ let loadData (input: string) =
 type QueueItem = (int * (int * int))
 
 type IPriorityQueueApi<'T, 'Q> =
-    abstract member Empty : 'Q
-    abstract member IsEmpty : queue: 'Q -> bool
-    abstract member Enqueue : item: 'T * queue: 'Q -> 'Q
-    abstract member Dequeue : queue: 'Q -> 'T * 'Q
+    abstract Empty : 'Q
+    abstract IsEmpty : queue: 'Q -> bool
+    abstract Enqueue : item: 'T * queue: 'Q -> 'Q
+    abstract Dequeue : queue: 'Q -> 'T * 'Q
 
 let fsharpxPriorityQueueApi =
     { new IPriorityQueueApi<QueueItem, IPriorityQueue<QueueItem>> with

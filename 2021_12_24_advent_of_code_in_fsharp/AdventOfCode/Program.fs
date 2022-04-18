@@ -24,17 +24,17 @@ let main argv =
           (Day17.puzzle1, Day17.puzzle2)
           (Day18.puzzle1, Day18.puzzle2)
           (Day19.puzzle1, Day19.puzzle2)
-          (Day20.puzzle1, Day20.puzzle2) ]
+          (Day20.puzzle1, Day20.puzzle2)
+          (Day21.puzzle1, Day21.puzzle2) ]
 
     puzzles
-    |> Seq.iteri
-        (fun i puzzle ->
-            let day = i + 1
-            let dayStr = $"""{if day < 10 then "0" else ""}{day}"""
-            let input = Path.Combine(Common.ProjectFolderPath, $"AdventOfCode2021/Day{dayStr}.txt") |> File.ReadAllText
-            let puzle1, puzle2 = puzzle
-            printfn "2021/Day%s/Puzzle01:  %s" dayStr (puzle1 input)
-            printfn "2021/Day%s/Puzzle02:  %s" dayStr (puzle2 input)
-            ())
+    |> Seq.iteri (fun i puzzle ->
+        let day = i + 1
+        let dayStr = $"""{if day < 10 then "0" else ""}{day}"""
+        let input = Path.Combine(Common.ProjectFolderPath, $"AdventOfCode2021/Day{dayStr}.txt") |> File.ReadAllText
+        let puzle1, puzle2 = puzzle
+        printfn "2021/Day%s/Puzzle01:  %s" dayStr (puzle1 input)
+        printfn "2021/Day%s/Puzzle02:  %s" dayStr (puzle2 input)
+        ())
 
     0

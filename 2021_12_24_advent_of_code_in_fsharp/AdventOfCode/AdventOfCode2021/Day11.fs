@@ -47,7 +47,7 @@ let step (data: int [,]) =
 
 let puzzle1 (input: string) =
     let data = loadData input
-    let result = { 1 .. 100 } |> Seq.sumBy (fun _ -> step data)
+    let result = { 1..100 } |> Seq.sumBy (fun _ -> step data)
     result |> string
 
 let puzzle2 (input: string) =
