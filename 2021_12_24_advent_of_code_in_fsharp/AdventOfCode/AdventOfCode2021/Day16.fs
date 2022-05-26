@@ -82,11 +82,6 @@ let rec sumVersions packages =
     | Operator (version, _, packages) -> version + (packages |> Seq.sumBy sumVersions)
 
 
-let puzzle1 (input: string) =
-    let data = loadData input
-    let reader = data |> shareSequence
-    let result = reader |> tryReadPackage |> Option.get |> sumVersions
-    result |> string
 
 
 let rec calculate package =
@@ -105,8 +100,11 @@ let rec calculate package =
         | _ -> failwith $"Unknown package typeId={typeId}"
 
 
-let puzzle2 (input: string) =
+let puzzle (input: string) calculateResult =
     let data = loadData input
     let reader = data |> shareSequence
-    let result = reader |> tryReadPackage |> Option.get |> calculate
+    let result = reader |> tryReadPackage |> Option.get |> calculateResult
     result |> string
+
+let puzzle1 (input: string) = puzzle input sumVersions
+let puzzle2 (input: string) = puzzle input calculate

@@ -4,6 +4,9 @@ open AdventOfCode2021
 
 [<EntryPoint>]
 let main argv =
+    // let a = [| 12; 123; 123123; 132123 |][0]
+    // printfn "%A" a
+
     let puzzles =
         [ (Day1.puzzle1, Day1.puzzle2)
           (Day2.puzzle1, Day2.puzzle2)

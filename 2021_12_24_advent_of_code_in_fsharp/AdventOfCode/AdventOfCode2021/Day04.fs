@@ -16,7 +16,7 @@ let BoardSize = 5
 let loadData (input: string) =
     let lines = input.Split Environment.NewLine
     let boards =
-        input.Split Environment.NewLine
+        lines
         |> Seq.skip 2
         |> Seq.filter (fun line -> line.Length > 0)
         |> Seq.chunkBySize BoardSize
