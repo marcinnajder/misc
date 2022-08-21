@@ -10,6 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Common/Common.fs" />
+    <Compile Include="AdventOfCode2015/*.fs" />
     <Compile Include="AdventOfCode2021/*.fs" />
     <Compile Include="Program.fs" />    
   </ItemGroup>

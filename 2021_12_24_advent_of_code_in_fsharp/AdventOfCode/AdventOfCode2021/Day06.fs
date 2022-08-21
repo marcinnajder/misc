@@ -1,6 +1,6 @@
-module AdventOfCode2021.Day6
+module AdventOfCode2021.Day06
 
-open AdventOfCode2021.Common
+open Common
 
 let loadData (input: string) = parseNumbers ',' input
 

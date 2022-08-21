@@ -13,10 +13,10 @@ let loadData (input: string) =
 type QueueItem = (int * (int * int))
 
 type IPriorityQueueApi<'T, 'Q> =
-    abstract Empty : 'Q
-    abstract IsEmpty : queue: 'Q -> bool
-    abstract Enqueue : item: 'T * queue: 'Q -> 'Q
-    abstract Dequeue : queue: 'Q -> 'T * 'Q
+    abstract Empty: 'Q
+    abstract IsEmpty: queue: 'Q -> bool
+    abstract Enqueue: item: 'T * queue: 'Q -> 'Q
+    abstract Dequeue: queue: 'Q -> 'T * 'Q
 
 let fsharpxPriorityQueueApi =
     { new IPriorityQueueApi<QueueItem, IPriorityQueue<QueueItem>> with
@@ -55,8 +55,8 @@ let moveByOne (data: int [,]) =
             data.[x, y] <- if value = 9 then 1 else value + 1
 
 let rippleEffect () =
-    { 0 .. 8 }
-    |> Seq.map (fun i -> i, { 0 .. i } |> Seq.map (fun j -> j, i - j) |> Seq.filter (fun (x, y) -> x < 5 && y < 5))
+    { 0..8 }
+    |> Seq.map (fun i -> i, { 0..i } |> Seq.map (fun j -> j, i - j) |> Seq.filter (fun (x, y) -> x < 5 && y < 5))
 
 
 let replicateData (data: int [,]) =
@@ -65,9 +65,8 @@ let replicateData (data: int [,]) =
     for index, positions in rippleEffect () do
         if index > 0 then moveByOne data
         for x, y in positions do
-            result.[(x * size)..(x * size + size - 1), (y * size)..(y * size + size - 1)] <- data
+            result.[(x * size) .. (x * size + size - 1), (y * size) .. (y * size + size - 1)] <- data
     result
-
 
 
 let neighbors (x, y) upperBound =

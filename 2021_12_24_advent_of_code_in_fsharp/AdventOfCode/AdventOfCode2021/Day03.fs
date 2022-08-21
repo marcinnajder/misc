@@ -1,4 +1,4 @@
-module AdventOfCode2021.Day3
+module AdventOfCode2021.Day03
 
 open System
 

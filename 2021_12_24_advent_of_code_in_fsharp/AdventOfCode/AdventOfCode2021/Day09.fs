@@ -1,4 +1,4 @@
-module AdventOfCode2021.Day9
+module AdventOfCode2021.Day09
 
 open System
 open System.Collections.Generic

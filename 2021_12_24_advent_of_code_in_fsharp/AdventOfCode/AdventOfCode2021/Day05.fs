@@ -1,6 +1,6 @@
-module AdventOfCode2021.Day5
+module AdventOfCode2021.Day05
 
-open AdventOfCode2021.Common
+open Common
 open System
 
 type Point = { X: int; Y: int }

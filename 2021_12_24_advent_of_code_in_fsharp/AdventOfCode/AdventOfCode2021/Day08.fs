@@ -1,4 +1,4 @@
-module AdventOfCode2021.Day8
+module AdventOfCode2021.Day08
 
 open System
 open System.Linq

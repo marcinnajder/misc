@@ -1,0 +1,28 @@
+{
+  "name": "typesscript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc",
+    "tsc-watch": "tsc -w",
+    "repl": "ts-node",
+    "del-dist": "shx rm -rf ./dist"
+  },
+  "author": "Marcin Najder",
+  "license": "ISC",
+  "dependencies": {
+    "powerseq": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^16.0.0",
+    "shx": "^0.3.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.3"
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=16.0.0"
+  }
+}
