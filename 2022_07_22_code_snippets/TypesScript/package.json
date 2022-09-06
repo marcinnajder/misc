@@ -13,6 +13,8 @@
   "author": "Marcin Najder",
   "license": "ISC",
   "dependencies": {
+    "dayjs": "1.10.7",
+    "powerfp": "^0.0.3",
     "powerseq": "^1.0.4"
   },
   "devDependencies": {
