@@ -1,0 +1,105 @@
+<#@ output extension=".cs" #>
+<#@ import namespace="System.Linq" #>
+// this code is generated automatically from 'AsyncMethodBuilders.generated.tt', do not change it manually
+#nullable enable
+
+using System.Runtime.CompilerServices;
+
+namespace MonadsInCSharp;
+
+<#
+    // - restore T4 dotnet global tool
+    // dotnet tool restore
+
+    // - execute T4 tamplate
+    // dotnet tool run t4 ./MonadsInCSharp/AsyncMethodBuilder/AsyncMethodBuilders.generated.tt 
+
+    var monadTypes = new [] { ("Optional","O"), ("TTask","TT"), ("IO","IO") };
+
+    foreach(var (name, shortcut) in monadTypes)
+    {
+#>
+// ** <#= name #> **
+public static partial class AwaiterExtensions
+{
+    public static <#= name #>Awaiter<T> GetAwaiter<T>(this <#= name #><T> monad) => new <#= name #>Awaiter<T>(monad);
+}
+
+internal interface I<#= name #>Awaiter
+{
+    <#= name #><object> MoveNext(Action moveNext, Func<<#= name #><object>> getNextMonad);
+}
+
+public class <#= name #>Awaiter<T> : INotifyCompletion, I<#= name #>Awaiter
+{
+    public bool IsCompleted => false;
+    public void OnCompleted(Action continuation) { }
+    protected T result = default!;
+    public T GetResult() => result;
+
+    // ***********************************
+
+    private <#= name #><T> monad;
+    public <#= name #>Awaiter(<#= name #><T> monad) => this.monad = monad;
+
+    <#= name #><object> I<#= name #>Awaiter.MoveNext(Action moveNext, Func<<#= name #><object>> getNextMonad)
+    {
+        return monad.SelectMany(t =>
+        {
+            result = t;
+            moveNext();
+            return getNextMonad();
+        });
+    }
+}
+
+public class <#= name #>MethodBuilder<T>
+{
+    public void Start<TSM>(ref TSM stateMachine) where TSM : IAsyncStateMachine => stateMachine.MoveNext();
+
+    public void SetStateMachine(IAsyncStateMachine stateMachine) { }
+    public void SetException(Exception exception) { }
+    public void AwaitUnsafeOnCompleted<TA, TSM>(ref TA awaiter, ref TSM stateMachine)
+        where TA : ICriticalNotifyCompletion where TSM : IAsyncStateMachine
+    { }
+
+    // ***********************************
+
+    private bool isFirstCall = true;
+    private <#= name #><object>? currentTask;
+    public <#= name #><T>? Task { get; private set; }
+
+    public static <#= name #>MethodBuilder<T> Create() => new <#= name #>MethodBuilder<T>();
+
+    public void AwaitOnCompleted<TA, TSM>(ref TA awaiter, ref TSM stateMachine)
+        where TA : INotifyCompletion where TSM : IAsyncStateMachine
+    {
+        if (awaiter is I<#= name #>Awaiter awaiter<#= shortcut #>)
+        {
+            var wasFirstCall = isFirstCall;
+            isFirstCall = false;
+
+            currentTask = awaiter<#= shortcut #>.MoveNext(stateMachine.MoveNext, () => currentTask!);
+
+            if (wasFirstCall)
+            {
+                Task = currentTask.Select(v => (T)v);
+            }
+        }
+    }
+
+    public void SetResult(T result)
+    {
+        if (isFirstCall)
+        {
+            Task = Monad.Return<#= shortcut #>(result);
+        }
+        else
+        {
+            currentTask = Monad.Return<#= shortcut #><object>(result!);
+        }
+    }
+}
+<#
+    }
+#>

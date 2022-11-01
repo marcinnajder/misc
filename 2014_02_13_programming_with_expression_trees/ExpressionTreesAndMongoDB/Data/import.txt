@@ -1,0 +1,2 @@
+mongoimport --db zipcodes --collection zipcodes --file zips.json
+# imported 29353 documents
