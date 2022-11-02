@@ -129,7 +129,7 @@ for (const n of numbers.filter(n => n > 0) {
 }
 ```
 
-For me the second approach is definitely better. In the fist approach we filter collection of items using `for/of` loop.  The loop is a very primitive and general purpose structure, we can do anything with it. It's like a reverse engineering, we have to read every loop carefully to understand the intent of the programmer. In the second case, we immediately see what we are trying to achieve. But there is a small issue with this approach too. We call `filter` method and that creates a new temporary array in memory only to iterate over it once. To eliminate this small waste of resources, we can implement our own `filter` function based on JavaScript generators.
+For me the second approach is definitely better. In the fist approach we filter collection of items using `for/of` loop.  The loop is a very primitive and general purpose structure, we can do anything with it. It's like a reverse engineering, we have to read every loop carefully to understand the intent of the programmer. In the second case, we immediately see what we are trying to achieve. But there is a small issue with this approach too. We call `filter` method and that creates a new temporary array in memory only to iterate over it once. This array has to be cleaned up by the garbage collector. To eliminate this small waste of resources, we can implement our own `filter` function based on JavaScript generators.
 
 ```javascript
 function* filter(items, f) {
@@ -145,7 +145,7 @@ for (const n of filter(numbers, n => n > 0)) {
 }
 ```
 
-Now the code is readable and doesn't create unnecessary array anymore.
+Now, the code is readable and doesn't introduce unnecessary array anymore.
 
 #### map
 
@@ -169,7 +169,7 @@ for (const of positiveCurrencies) {
 
 #### pipe
 
-The final result looks like a SQL query, `filter` operator is a `WHERE` clause, `map` operator is a `SELECT` clause. We can image many additional operators like `distinct`, `max`, `join` and so on. You could be wondering, is there any simple way to avoid introducing temporary variables like `positiveNumbers` or `positiveCurrencies`? Let's introduce `pipe` function 
+The final result looks like a SQL query, `filter` operator is a `WHERE` clause, `map` operator is a `SELECT` clause. We can image many additional operators like `distinct`, `max`, `join` and so on. You could be wondering, is there any simple way to avoid introducing temporary variables like `positiveNumbers` or `positiveCurrencies`? Yes, it is and it's very simple thanks to `pipe` function 
 
 ```javascript
 function pipe(value, ...funcs) {
@@ -179,7 +179,7 @@ function pipe(value, ...funcs) {
 pipe(10, v => v + 1, v => v * 10, v => v.toString()); // -> "110"    
 ```
 
-`pipe` function takes a `value` and any number of functions `funcs`, each function takes one argument and returns one result. `pipe` calls the first function passing the `value`, the returned result is passed to the second function, and so on and so forth. The final result is returned from `pipe` function. In many programming languages like OCaml, F#, ELM `pipe` function is available as an `|>` infix operator and it is crucial part of any piece of code. One day it will be available also in JavaScript language. Now let's look how `pipe` function can help us with our example
+`pipe` function takes a `value` and any number of functions `funcs`, each function takes one argument and returns one result. `pipe` function calls the first function from `funcs` collection passing the `value` argument, returned result is passed to the second function, and so on and so forth. The final result becomes the result returned from `pipe` function. In many programming languages like OCaml, F#, ELM `pipe` function is available as an `|>` infix operator and it is crucial part of any piece of code. One day it will be also available in (JavaScript language)[https://github.com/tc39/proposal-pipeline-operator]. Now let's look how `pipe` function can help us with our previous example
 
 ```javascript
 const positiveCurrencies = pipe(numbers,
@@ -187,7 +187,7 @@ const positiveCurrencies = pipe(numbers,
 	x => map(x, n => `${n} zl`) );
 ```
 
-Its slightly better because we don't have to introduce temporary variable and the whole piece of code is a one, single expression. Previously there were two separated statements declaring and initializing new variables. But still it does not look like perfect, we can do better. Let's change the implementation of `filter` and `map` to support two overloads for each of operators.
+It's slightly better because we don't have to introduce temporary variables and the whole piece of code is a one single expression. Previously, there were two separated statements, declaration and initialization two variables. But still it doesn't look perfect, we can do better. Let's change the implementation of `filter` and `map` functions to support new overloads 
 
 ```javascript
 function filter(...args) {
@@ -219,11 +219,11 @@ function map(...args) {
 const positiveCurrencies = pipe(numbers, filter(n => n > 0), map(n => `${n} zl`) );
 ```
 
-Now we can use those operators in one of two ways: as a stand-alone operator passing two arguments or as an operator composed with other operators inside `pipe` call passing one argument. We have also introduced an additional feature, we pass optional  `index` argument next to the item of sequence to `f` function.
+Now we can use those operators in one of two ways: as a stand-alone operator passing two arguments or as an operator used inside`pipe` call passing one argument. We have also introduced small additional feature, we pass optional  `index` argument next to the `item` argument to function `f` .
 
 #### toarray
 
-In our example we print to the console positive numbers in a currency format, but maybe we would like to create an array containing the final result. Let's introduce a helper function called `toarray`
+In our example we have printed to the console positive numbers in a currency format, but maybe we would like to create an array containing the final result. Let's introduce a helper function called `toarray`
 
 ```javascript
 function toarray(...args) {
@@ -240,7 +240,7 @@ pipe(numbers, filter(n => n > 0), map(n => `${n} zl`), toarray() );
 
 #### take
 
-At the end let's introduce the last operator called `take`. It takes two arguments, the sequence of items and the number `n`, it returns a new sequence containing `n`  first items from the original sequence. So it's like a `TOP` operator in SQL.
+At the end let's add final operator called `take`. It takes two arguments, the sequence of items and the number `n`.  It returns a new sequence containing `n`  first items from the original sequence. So it's like a `TOP` operator in SQL.
 
 ```javascript
 function take(...args) {
@@ -259,23 +259,47 @@ function take(...args) {
     }
 }
 
+const numbers = [1, 5, 3, 9, -1, 5, -12, 0, 44, 12, -100];
 [...take(numbers, 4)]; // -> [ 1, 5, 3, 9 ]
 ```
 
 #### The power of lazy evaluation
 
-I have implemented few operators and now we try to write some query using them.  
-
-Let's look at two implementations side by side, the first one is using our custom operators and the second one is using builtin `Array` function. As we said before, in case of `Array` builtin methods the processing code is executed immediately and a new temporary array is returned. Our operators are lazy, it means that there are not executed until some terminating action (like loop or `toarray` call) is executed. What is also very important, the operators are just a regular functions, we can write them as many as we want and compose them using `pipe` function. With `Array` methods 
-
-
-#### take
-
-#### Summary
-
+The code below compares side by side two implementation of the same task. The first one is using builtin `Array` methods, the second one is using our functions implemented previously.
 
 ```javascript
 const numbers = [1, 5, 3, 9, -1, 5, -12, 0, 44, 12, -100];
 
-numbers.filter(n => n > 0).map(n => `${n} zl`) // using builtin Array functions
+// 1. using builtin Array methods
+var result = numbers
+    .filter(n => n > 0)
+    .map(n => `${n} zl`)
+    .slice(0, 5);
+// -> [ '1 zl', '5 zl', '3 zl', '9 zl', '5 zl' ]
+
+// 2. using functions based on sequences
+var result = pipe(numbers,
+    filter(n => n > 0),
+    map(n => `${n} zl`),
+    take(5),
+    toarray()
+); // -> [ '1 zl', '5 zl', '3 zl', '9 zl', '5 zl' ]
 ```
+The final result is exactly the same. In terms of the number of lines of code, the first one is even shorter. But what is the difference during the execution ?
+
+In case of the first query, new array is created after each step, after `filter` and `map`  two new arrays are created completely unnecessary. But what is even worse, lambda functions passed to the methods are executed for all items stored  in arrays. In our example, input array contains 11 items, function passed to `filter` is executed 11 times (for all items), function passed to `map` is executed 8 times (for all items returned by `filter`). Just think how many times those functions would be executed for input array containing 1000 items when in fact we need only first 5 items?
+
+In case of the second query, operators like `filter`, `map` and `take` are lazy. The last operator `toarray` kicks off the execution. Firstly, code inside `take` function is executed,  `take` pulls item from `map`,  `map` pulls item from `filter`. `filter` takes the first number `1` and calls predicate function `n => n > 0`. `1` is greater than `0` so it's returned further to `map`, `map` calls converter function ``n => `${n} zl` ``. Value `1 zl` is returned to `take` which is returned as a first element of the final result. So to produce the first value, the lambda functions had to be called only twice. If we analyze the execution process further we will see that the lambda functions are called minimum number of times necessary to produce the final collection. In addition, no temporary array that needs to be cleaned up is created in the meantime.
+
+#### Summary
+
+Let's recap what we have learned:
+- starting with ES6 iterator pattern is supported directly in JavaScript as an API of iterable objects and a new kind of loop `for/of`, generator function `function*` was also introduced and it is a very convenient way of implementing iterable objects
+- a typical imperative code contains variables, loops, ifs, ... and very often we can write the same code using functions like `filter`, `map`, `reduce`, such a declarative code is easer to read, understand and maintain 
+- builtin type `Array` provides a few functions like `filter`, `map`, `reduce` ... but it can be not enough, especially once you had an experience with some functional programming languages, there is no elegant way do add a new operators to existing `Array` type
+- we can write our own lazy operators using generator function `map`, `filter`, ... and combine them using `pipe` function in a very composable way
+- lazy evaluation helps us write more performant code, but also let us divide a problem into smaller reusable functions and glue them together at the end as a final solution, it's because the consumer of sequence decides how and when the sequence will be executed
+- finally, [powerseq](https://github.com/marcinnajder/powerseq) is a set of operators working with lazy sequences, the API is based on [LINQ](https://en.wikipedia.org/wiki/Language_Integrated_Query)  which is based on functional programming like Haskell and OCaml, it is not coincident why those operators are so powerful, the are "standing on the shoulders of giants"
+
+In the next articles we will take a look closer to a new kind of operators and we will solve some real word problems using this declarative style of programming. 
+

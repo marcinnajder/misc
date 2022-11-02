@@ -323,6 +323,35 @@ var r0 = [...take(numbers, 4)]; // -> [ 1, 5, 3, 9 ]
 var r1 = [...pipe([1, 2, 3], take(2))];
 var r2 = [...take([1, 2, 3], 2)];
 
+// ---------------------------------------------------------------------------------------------------------
+// - one big query, power of lazy evaluation
+// ---------------------------------------------------------------------------------------------------------
+
+var numbers = [1, 5, 3, 9, -1, 5, -12, 0, 44, 12, -100];
+// numbers.length
+
+
+// using builtin Array methods
+var result = numbers
+    .filter(n => n > 0)
+    .map(n => `${n} zl`)
+    .slice(0, 5);
+// -> [ '1 zl', '5 zl', '3 zl', '9 zl', '5 zl' ]
+
+// using functions based on sequences
+var result = pipe(numbers,
+    filter(n => n > 0),
+    map(n => `${n} zl`),
+    take(5),
+    toarray()
+); // -> [ '1 zl', '5 zl', '3 zl', '9 zl', '5 zl' ]
+
+
+
+
+
+
+
 
 // ---------------------------------------------------------------------------------------------------------
 // - sample data, list of products
