@@ -457,7 +457,7 @@ var uniqueProductNames = pipe(map(products, p => p.name), distinct(), toarray())
 // powerseq version of 'distinct' operator provides additional overload
 // var uniqueProductNames = pipe(distinct(p => p.name), toarray()); 
 
-// for(var productName in distinct(products, p => p.name)){ }
+// for(var productName of distinct(products, p => p.name)){ }
 
 
 
@@ -583,12 +583,30 @@ for (const p of products) {
 }
 
 
-var { groupby } = require("powerseq");
+for (var [key, value] of Object.entries(groupByCompany)) {
+    console.log(key, "->", value);
+}
 
-var q = pipe(products,
-    groupby(p => p.categories.includes("Apple") ? "apple" : (p.categories.includes("Samsung") ? "samsung" : "other")),
-    toobject(gr => gr.key, gr => [...gr])
-);
+var { groupby, map, pipe, count, filter, toarray } = require("powerseq");
+
+var groupByCompany = groupby(products,
+    p => p.categories.includes("Apple") ? "apple" : (p.categories.includes("Samsung") ? "samsung" : "other"));
+
+for (var group of groupByCompany) {
+    console.log(group.key, "->", [...group]);
+}
+
+
+
+// var q = pipe(products,
+//     groupby(p => p.categories.includes("Apple") ? "apple" : (p.categories.includes("Samsung") ? "samsung" : "other")),
+//     toobject(gr => gr.key, gr => [...gr])
+// );
+
+// var q = pipe(products,
+//     groupby(p => p.categories.includes("Apple") ? "apple" : (p.categories.includes("Samsung") ? "samsung" : "other")),
+//     toobject(gr => gr.key, gr => [...gr])
+// );
 
 [...pipe(
     products,
@@ -596,6 +614,25 @@ var q = pipe(products,
     groupby(p => p.name),
     map(gr => ({ name: gr.key, count: count(gr) })))]
 //map(gr => ({ name: gr.key, items: toarray(gr) })))
+
+
+
+var result = [...pipe(
+    products,
+    groupby(p => p.name),
+    map(gr => ({ name: gr.key, count: count(gr) })),
+    filter(({ count }) => count > 1)
+)];
+
+
+var productsWithTheSameNames = pipe(
+    products,
+    groupby(p => p.name),
+    filter(gr => count(gr) > 1),
+    map(gr => gr.key),
+    toarray()
+);
+
 
 
 // note: powerseq operators are just regular functions, we can always add our own functions 
