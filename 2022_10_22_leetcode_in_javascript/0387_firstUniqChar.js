@@ -2,7 +2,6 @@
 
 var { findindex, every, range } = require("powerseq");
 
-
 function firstUniqChar(s) {
     return findindex(s, (c, i) => every(range(0, s.length), j => i === j || c !== s[j])) ?? -1;
 }

@@ -3,7 +3,6 @@
 
 var { pipe, expand, takewhile, count } = require("powerseq");
 
-
 function numberOfSteps(num) {
     return pipe(
         [num],

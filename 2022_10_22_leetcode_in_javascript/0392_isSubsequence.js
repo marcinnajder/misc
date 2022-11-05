@@ -1,7 +1,7 @@
 ﻿
 // https://leetcode.com/problems/is-subsequence/
 
-var { pipe, scan, every } = require("powerseq");
+var { pipe, scan, every, find, range } = require("powerseq");
 
 function isSubsequence(s, t) {
     return pipe(

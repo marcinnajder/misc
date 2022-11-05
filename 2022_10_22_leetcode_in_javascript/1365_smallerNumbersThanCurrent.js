@@ -1,6 +1,6 @@
 ﻿// https://leetcode.com/problems/how-many-numbers-are-smaller-than-the-current-number/
 
-var { pipe, expand, takewhile, count } = require("powerseq");
+var { pipe, count, map, toarray, range } = require("powerseq");
 
 function smallerNumbersThanCurrent(numbers) {
     return pipe(
