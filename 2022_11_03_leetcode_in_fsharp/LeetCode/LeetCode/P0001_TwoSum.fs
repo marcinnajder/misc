@@ -2,22 +2,11 @@
 
 module LeetCode.P0001_TwoSum
 
-// open System
+let twoSum nums target =
+    { 0 .. Array.length nums - 1 }
+    |> Seq.collect (fun i -> { 0 .. i - 1 } |> Seq.map (fun j -> (j, i)))
+    |> Seq.find (fun (j, i) -> nums.[i] + nums.[j] = target)
 
-// let loadData (input: string) = input.Split Environment.NewLine |> Array.map Int32.Parse
-
-// let countIncreases numbers = numbers |> Seq.pairwise |> Seq.filter (fun (prev, next) -> next > prev) |> Seq.length
-
-// let puzzle1 (input: string) =
-//     let numbers = loadData input
-//     let increases = countIncreases numbers
-//     string increases
-
-// let puzzle2 (input: string) =
-//     let numbers = loadData input
-//     let addedNumbers = numbers |> Seq.windowed 3 |> Seq.map Array.sum
-//     let increases = countIncreases addedNumbers
-//     increases |> string
-
-
-let run () = printfn "aadaasd"
+let _ = twoSum [| 2; 7; 11; 15 |] 9 // -> [0, 1]
+let _ = twoSum [| 3; 2; 4 |] 6 // -> [ 1, 2 ]
+let _ = twoSum [| 3; 3 |] 6 // -> [ 0, 1 ]

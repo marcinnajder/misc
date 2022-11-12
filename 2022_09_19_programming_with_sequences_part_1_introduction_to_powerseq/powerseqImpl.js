@@ -350,9 +350,6 @@ var result = pipe(numbers,
 
 
 
-
-
-
 // ---------------------------------------------------------------------------------------------------------
 // - sample data, list of products
 // ---------------------------------------------------------------------------------------------------------
@@ -645,6 +642,8 @@ var productsWithTheSameNames = pipe(
 
 var { concat } = require("powerseq");
 
+
 for (var p of concat(mongoProducts, externalSystemProducts)) {
     console.log(p.name);
 }
+
