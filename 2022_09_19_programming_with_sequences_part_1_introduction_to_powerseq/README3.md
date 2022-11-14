@@ -83,7 +83,7 @@ firstUniqChar("aabb") // -> -1
 
 We introduced two new operators. `findIndex` works almost the same as `find` but instead of returning found item, it returns the index the found item. `every` operator returns `true` if all items of the sequence matches passed predicate function, the first item for which the lambda returns `false` stops the execution returning `false` result.
 
-#### firstUniqChar (scan)
+#### isSubsequence (scan)
 
 This time the function takes two strings and returns `true` if the first string is a subsequence of the second string. `"abc"` string is a subsequence of `"ahbgdc"` because even if we omit few characters in `"ahbgdc"` we can still find `"abc"` characters in that order. `"axc"` is not a subsequence of `"ahbgdc"` string because `"x"` character can not be found in `"ahbgdc"`.
 
