@@ -1,13 +1,13 @@
 ﻿
 // https://leetcode.com/problems/is-subsequence/
 
-var { pipe, scan, find, range } = require("powerseq");
+var { pipe, scan, find, range, every } = require("powerseq");
 
 function isSubsequence(s, t) {
     return pipe(
         s,
         scan((i, c) => find(range(i + 1, t.length - (i + 1)), j => t[j] === c) ?? -1, -1),
-        toarray()
+        every(i => i !== -1)
     );
 }
 
