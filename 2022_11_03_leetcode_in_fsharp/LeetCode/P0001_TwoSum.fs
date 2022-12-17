@@ -2,7 +2,13 @@
 // tags: collect, find
 // examples: [| 2; 7; 11; 15 |] -> 9
 
+
+// R E P L
 module LeetCode.P0001_TwoSum
+
+
+// let nums = [| 2; 7; 11; 15 |]
+// let target = 9
 
 let twoSum nums target =
     { 0 .. Array.length nums - 1 }

@@ -1,7 +1,7 @@
 ﻿
 // https://leetcode.com/problems/is-subsequence/
 
-var { pipe, scan, find, range, every } = require("powerseq");
+var { pipe, scan, find, range, every, some } = require("powerseq");
 
 function isSubsequence(s, t) {
     return pipe(
@@ -13,3 +13,11 @@ function isSubsequence(s, t) {
 
 isSubsequence("abc", "ahbgdc"); // -> true
 isSubsequence("axc", "ahbgdc"); // -> false
+
+function isSubsequence2(s, t) {
+    return pipe(
+        t,
+        scan((i, c) => s[i] === c ? i + 1 : i, 0),
+        some(i => i === s.length)
+    );
+}

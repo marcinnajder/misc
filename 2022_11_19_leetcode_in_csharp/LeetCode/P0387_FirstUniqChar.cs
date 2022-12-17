@@ -9,7 +9,7 @@ class P0387_FirstUniqChar
     static int FirstUniqChar(string s)
     {
         return s
-            .Select((c, i) => new { Char = c, Index = i })
+            .Select((c, i) => new { Char = c, Index = i }) // Char='l' Index=0
             .FirstOrDefault(t => Range(0, s.Length).All(j => t.Index == j || t.Char != s[j]))
             ?.Index ?? -1;
     }

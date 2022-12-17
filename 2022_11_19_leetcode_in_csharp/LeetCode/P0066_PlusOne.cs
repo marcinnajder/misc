@@ -8,6 +8,7 @@ class P0066_PlusOne
 {
     static int[] PlusOne(int[] digits)
     {
+        // 4322
         return new[] { 0 }
             .Concat(digits)
             .Reverse()

@@ -1,0 +1,11 @@
+﻿//https://leetcode.com/problems/pascals-triangle-ii/
+
+// https://leetcode.com/problems/reverse-linked-list-ii/
+// https://leetcode.com/problems/flatten-binary-tree-to-linked-list/
+// https://leetcode.com/problems/rotate-list/
+// https://leetcode.com/problems/partition-list/ !
+
+
+// https://leetcode.com/problems/same-tree/
+// https://leetcode.com/problems/binary-tree-inorder-traversal/
+// https://leetcode.com/problems/minimum-depth-of-binary-tree/

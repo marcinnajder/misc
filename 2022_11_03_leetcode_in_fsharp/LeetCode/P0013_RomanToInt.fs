@@ -65,3 +65,20 @@ let _ = romanToInt "MCMXCIV" // ->  1994
 // VII             LXX         DCC
 // VIII            LXXX        DCCC
 // IX              XC          CM
+
+
+// correct and minal algorithm , going from the right to the left
+let m =
+    Map [ ('I', 1)
+          ('V', 5)
+          ('X', 10)
+          ('L', 50)
+          ('C', 100)
+          ('D', 500)
+          ('M', 1000) ]
+
+let romanToInt2 (s: string) =
+    { s.Length - 1 .. -1 .. 0 }
+    |> Seq.map (fun i -> m[s[i]])
+    |> Seq.fold (fun (total, prev) next -> (total + ((if next < prev then -1 else 1) * next), next)) (0, 0)
+    |> fst

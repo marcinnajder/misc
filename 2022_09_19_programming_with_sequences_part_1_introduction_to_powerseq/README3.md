@@ -83,7 +83,7 @@ firstUniqChar("aabb") // -> -1
 
 We introduced two new operators. `findIndex` works almost the same as `find` but instead of returning found item, it returns the index the found item. `every` operator returns `true` if all items of the sequence matches passed predicate function, the first item for which the lambda returns `false` stops the execution returning `false` result.
 
-#### isSubsequence (scan)
+#### isSubsequence (scan, some)
 
 This time the function takes two strings and returns `true` if the first string is a subsequence of the second string. `"abc"` string is a subsequence of `"ahbgdc"` because even if we omit few characters in `"ahbgdc"` we can still find `"abc"` characters in that order. `"axc"` is not a subsequence of `"ahbgdc"` string because `"x"` character can not be found in `"ahbgdc"`.
 
@@ -103,13 +103,27 @@ isSubsequence("axc", "ahbgdc"); // -> false
 ```
 
 `scan` operator is very powerful, it allows to implement more advanced scenarios. powerseq library provides `reduce` operator which works the same as builtin `reduce` method from the `Array` type. `scan` operator is similar to `reduce`. If we execute `reduce(range(1, 3), (prev, curr) => prev + curr, 0)` the value `6` will be returned
-	- first time lambda function will be called with `prev=0,curr=1`  and return `0 + 1 = 1`
-	- second time lambda function will be called with `prev=1,curr=2` and return `1 + 2 = 3`
-	- the finally call will take`prev=3,curr=3` and return `3 + 3 = 6`
+    - first time lambda function will be called with `prev=0,curr=1`  and return `0 + 1 = 1`
+    - second time lambda function will be called with `prev=1,curr=2` and return `1 + 2 = 3`
+    - the finally call will take`prev=3,curr=3` and return `3 + 3 = 6`
 
 If we execute the same code but for the `scan` operator `scan(range(1, 3), (prev, curr) => prev + curr, 0)`, the sequence `1, 2, 6` will be retuned. `reduce` operator is eager, it executes right away returning final result. `scan` operator is lazy, it returns a lazy sequence of intermediate values up to the final result. The customer of the sequence decides how many item should be produced.
 
 Let's try to analyze what exactly happens once we execute `isSubsequence("abc", "ahbgdc")`. The type of `s` parameter is a string and we can think of a string type as a sequence of characters. We call `scan` operator passing a string `s` parameter,  the initial value  `-1`. Lambda takes `c` string parameter which is the next character from the `s` string and the number `i` which is the aggregated value (`-1` at the beginning). The goal of the lambda function is to find the first index of the current `c` character in string `t` (the second parameter of the `isSubsequence` function). The trick here is to not search from the beginning every time, but from the index of the previously found character. The aggregated value is used exactly for that reason. To understand the whole process better, let's pretend that we have replaced `every` operator with `toarray` in the code above. After the changes the execution of `isSubsequence("abc", "ahbgdc")` would return `[ 0, 2, 5 ]`, but the execution of `isSubsequence("axc", "ahbgdc")` would return `[ 0, -1, 5 ]`. Value `-1` would be  returned because `x` character does not exist in string `"ahbgdc"`. `every` operator pulls next indexes from the sequence until the first value `-1` is found or all items has been processed.
+
+There is even simpler implementation of `isSubsequence` function
+
+```javascript
+function isSubsequence2(s, t) {
+    return pipe(
+        t,
+        scan((i, c) => s[i] === c ? i + 1 : i, 0),
+        some(i => i === s.length)
+    );
+}
+```
+
+This time we iterate over the second string parameter `t` instead of the first one `s`. Aggregated value `i` represents the index of the character from the `s`string which is incremented every time we find the matching character from the `t` string. New operator `some`  returns `true` if the index `i` reaches the length of the `s` string parameter.
 
 #### plusOne (reverse, skipwhile)
 

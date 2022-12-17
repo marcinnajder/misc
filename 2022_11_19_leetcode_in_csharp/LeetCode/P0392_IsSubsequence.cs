@@ -14,10 +14,17 @@ class P0392_IsSubsequence
             .All(i => i != -1);
     }
 
+    static bool IsSubsequence2(string s, string t)
+    {
+        return t
+            .Scan(0, (i, c) => s[i] == c ? i + 1 : i)
+            .Any(i => i == s.Length);
+    }
+
     public static void Run()
     {
         var inputs = new[] {
-            ("abc", "ahbgdc"),
+            ("abc", "eopyahbgdc"),
             ("axc", "ahbgdc"),
         };
 

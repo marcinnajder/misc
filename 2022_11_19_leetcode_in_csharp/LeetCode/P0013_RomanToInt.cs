@@ -116,7 +116,7 @@ class P0013_RomanToInt
 
         foreach (var input in inputs)
         {
-            var output = RomanToInt(input);
+            var output = RomanToInt2(input);
             // var output = RomanToInt__(input);
             Console.WriteLine($" {input} -> {output}");
         }
@@ -206,5 +206,15 @@ class P0013_RomanToInt
         }
 
         return result.Number!.Value;
+    }
+
+    public static int RomanToInt2(string s)
+    {
+        var m = new Dictionary<char, int> { { 'I', 1 }, { 'V', 5 }, { 'X', 10 }, { 'L', 50 }, { 'C', 100 }, { 'D', 500 }, { 'M', 1000 } };
+
+        return Enumerable.Range(0, s.Length)
+            .Select(i => m[s[^(i + 1)]])
+            .Aggregate((Total: 0, Prev: 0), (s, next) => (s.Total + ((next < s.Prev ? -1 : 1) * next), next))
+            .Total;
     }
 }

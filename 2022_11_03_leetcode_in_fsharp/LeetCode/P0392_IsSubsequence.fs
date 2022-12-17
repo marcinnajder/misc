@@ -17,4 +17,9 @@ let isSubsequence (s: string) (t: string) =
 
 
 let _ = isSubsequence "abc" "ahbgdc" // -> true
-let _ = isSubsequence "axc" "ahbgdc" // -> false
+let _ = isSubsequence "axc" "ahbgdc"
+
+let isSubsequence' (s: string) (t: string) =
+    t
+    |> Seq.scan (fun index c -> if s[index] = c then index + 1 else index) 0
+    |> Seq.exists (fun index -> index = s.Length)

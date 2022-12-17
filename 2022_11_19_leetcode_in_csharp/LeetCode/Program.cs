@@ -10,6 +10,8 @@ using LeetCode;
 // P0392_IsSubsequence.Run();
 // P0013_RomanToInt.Run();
 // P0021_MergeTwoSortedLists.Run();
+// P0013_RomanToInt.Run();
+P0024_SwapNodesInPairs.Run();
 
 
 // Console.WriteLine(IsSebsuqence("abc", "ahbgdc"));
