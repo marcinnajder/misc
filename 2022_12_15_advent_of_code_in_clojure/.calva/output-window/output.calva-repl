@@ -1,0 +1,1140 @@
+; This is the Calva evaluation results output window.
+; TIPS: The keyboard shortcut `ctrl+alt+o o` shows and focuses this window
+;   when connected to a REPL session.
+; Please see https://calva.io/output/ for more info.
+; Happy coding! ♥️
+
+; Jacking in...
+; Starting Jack-in Terminal: lein update-in :dependencies conj '[nrepl,"1.0.0"]' -- update-in :plugins conj '[cider/cider-nrepl,"0.28.5"]' -- update-in '[:repl-options,:nrepl-middleware]' conj '["cider.nrepl/cider-middleware"]' -- repl :headless
+; Hooking up nREPL sessions...
+; Connected session: clj
+; TIPS:
+;   - You can edit the contents here. Use it as a REPL if you like.
+;   - `alt+enter` evaluates the current top level form.
+;   - `ctrl+enter` evaluates the current form.
+;   - `alt+up` and `alt+down` traverse up and down the REPL command history
+;      when the cursor is after the last contents at the prompt
+;   - Clojure lines in stack traces are peekable and clickable.
+clj꞉advent-of-code-2022.core꞉>  ; Use `alt+enter` to evaluate
+; Jack-in done.
+clj꞉advent-of-code-2022.core꞉> 
+; Evaluating file: day_01.clj
+nil
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/load-data
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/load-data
+clj꞉advent-of-code-2022.day-01꞉> 
+"asdasd"
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/file-path
+clj꞉advent-of-code-2022.day-01꞉> 
+"1000\n2000\n3000\n\n4000\n\n5000\n6000\n\n7000\n8000\n9000\n\n10000"
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error compiling at (src/advent_of_code_2022/day_01.clj:9:1).
+; No such namespace: string
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error compiling at (src/advent_of_code_2022/day_01.clj:9:1).
+; No such namespace: string
+clj꞉advent-of-code-2022.day-01꞉> 
+nil
+clj꞉advent-of-code-2022.day-01꞉> 
+["1000" "2000" "3000" "" "4000" "" "5000" "6000" "" "7000" "8000" "9000" "" "10000"]
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/file-path
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (ClassCastException) at nrepl.middleware.interruptible-eval/evaluate$fn$fn (interruptible_eval.clj:87).
+; java.lang.String cannot be cast to clojure.lang.IFn
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/text
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/load-data
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/load-data
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (FileNotFoundException) at java.io.FileInputStream/open0 (FileInputStream.java:-2).
+; 1000
+; 2000
+; 3000
+; 
+; 4000
+; 
+; 5000
+; 6000
+; 
+; 7000
+; 8000
+; 9000
+; 
+; 10000 (No such file or directory)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/load-data
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/load-data
+clj꞉advent-of-code-2022.day-01꞉> 
+"1000\n2000\n3000\n\n4000\n\n5000\n6000\n\n7000\n8000\n9000\n\n10000"
+clj꞉advent-of-code-2022.day-01꞉> 
+"1000\n2000\n3000\n\n4000\n\n5000\n6000\n\n7000\n8000\n9000\n\n10000"
+clj꞉advent-of-code-2022.day-01꞉> 
+"1000\n2000\n3000\n\n4000\n\n5000\n6000\n\n7000\n8000\n9000\n\n10000"
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (FileNotFoundException) at java.io.FileInputStream/open0 (FileInputStream.java:-2).
+; 1000
+; 2000
+; 3000
+; 
+; 4000
+; 
+; 5000
+; 6000
+; 
+; 7000
+; 8000
+; 9000
+; 
+; 10000 (No such file or directory)
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (FileNotFoundException) at java.io.FileInputStream/open0 (FileInputStream.java:-2).
+; 1000
+; 2000
+; 3000
+; 
+; 4000
+; 
+; 5000
+; 6000
+; 
+; 7000
+; 8000
+; 9000
+; 
+; 10000 (No such file or directory)
+clj꞉advent-of-code-2022.day-01꞉> 
+"1000\n2000\n3000\n\n4000\n\n5000\n6000\n\n7000\n8000\n9000\n\n10000"
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/load-data
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (FileNotFoundException) at java.io.FileInputStream/open0 (FileInputStream.java:-2).
+; 1000
+; 2000
+; 3000
+; 
+; 4000
+; 
+; 5000
+; 6000
+; 
+; 7000
+; 8000
+; 9000
+; 
+; 10000 (No such file or directory)
+clj꞉advent-of-code-2022.day-01꞉> 
+"1000\n2000\n3000\n\n4000\n\n5000\n6000\n\n7000\n8000\n9000\n\n10000"
+clj꞉advent-of-code-2022.day-01꞉> 
+"1000\n2000\n3000\n\n4000\n\n5000\n6000\n\n7000\n8000\n9000\n\n10000"
+clj꞉advent-of-code-2022.day-01꞉> 
+true
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/parse-int
+clj꞉advent-of-code-2022.day-01꞉> 
+-333
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/parse-int
+clj꞉advent-of-code-2022.day-01꞉> 
+-333
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (NumberFormatException) at java.lang.NumberFormatException/forInputString (NumberFormatException.java:65).
+; For input string: "asd"
+clj꞉advent-of-code-2022.day-01꞉> 
+123
+clj꞉advent-of-code-2022.day-01꞉> 
+123
+clj꞉advent-of-code-2022.day-01꞉> 
+-123
+clj꞉advent-of-code-2022.day-01꞉> 
+java.lang.Long
+clj꞉advent-of-code-2022.day-01꞉> 
+java.lang.Long
+clj꞉advent-of-code-2022.day-01꞉> 
+('())
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/l
+clj꞉advent-of-code-2022.day-01꞉> 
+'()
+clj꞉advent-of-code-2022.day-01꞉> 
+quote
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/l
+clj꞉advent-of-code-2022.day-01꞉> 
+(())
+clj꞉advent-of-code-2022.day-01꞉> 
+nil
+clj꞉advent-of-code-2022.day-01꞉> 
+true
+clj꞉advent-of-code-2022.day-01꞉> 
+"1000\n2000\n3000\n\n4000\n\n5000\n6000\n\n7000\n8000\n9000\n\n10000"
+clj꞉advent-of-code-2022.day-01꞉> 
+["1000" "2000" "3000" "" "4000" "" "5000" "6000" "" "7000" "8000" "9000" "" "10000"]
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/load-data
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/load-data
+clj꞉advent-of-code-2022.day-01꞉> 
+((10000) (9000 8000 7000) (6000 5000) (4000) (3000 2000 1000))
+clj꞉advent-of-code-2022.day-01꞉> 
+["1000" "2000" "3000" "" "4000" "" "5000" "6000" "" "7000" "8000" "9000" "" "10000"]
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/load-data
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/text
+clj꞉advent-of-code-2022.day-01꞉> 
+((10000) (9000 8000 7000) (6000 5000) (4000) (3000 2000 1000))
+clj꞉advent-of-code-2022.day-01꞉> 
+((10000) (9000 8000 7000) (6000 5000) (4000) (3000 2000 1000))
+clj꞉advent-of-code-2022.day-01꞉> 
+((10000) (9000 8000 7000) (6000 5000) (4000) (3000 2000 1000))
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (ArityException) at advent-of-code-2022.day-01/eval7872 (form-init7339539864444834114.clj:26).
+; Wrong number of args (1) passed to: clojure.core/apply
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error compiling def at (src/advent_of_code_2022/day_01.clj:22:1).
+; Too many arguments to def
+clj꞉advent-of-code-2022.day-01꞉> 
+((10000) (9000 8000 7000) (6000 5000) (4000) (3000 2000 1000))
+clj꞉advent-of-code-2022.day-01꞉> 
+(10000 9000 6000 4000 3000)
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error compiling def at (src/advent_of_code_2022/day_01.clj:22:1).
+; Too many arguments to def
+clj꞉advent-of-code-2022.day-01꞉> 
+10000
+clj꞉advent-of-code-2022.day-01꞉> 
+(10000 9000 6000 4000 3000)
+clj꞉advent-of-code-2022.day-01꞉> 
+((10000) (9000 8000 7000) (6000 5000) (4000) (3000 2000 1000))
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error compiling at (src/advent_of_code_2022/day_01.clj:22:1).
+; Unable to resolve symbol: sum in this context
+clj꞉advent-of-code-2022.day-01꞉> 
+24
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error compiling def at (src/advent_of_code_2022/day_01.clj:24:1).
+; Too many arguments to def
+clj꞉advent-of-code-2022.day-01꞉> 
+(10000 24000 11000 4000 6000)
+clj꞉advent-of-code-2022.day-01꞉> 
+24000
+clj꞉advent-of-code-2022.day-01꞉> 
+; Error printing return value (ClassCastException) at java.lang.Class/cast (Class.java:3369).
+; Cannot cast clojure.lang.Cons to java.lang.Number
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error compiling def at (src/advent_of_code_2022/day_01.clj:24:1).
+; Too many arguments to def
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (ArityException) at advent-of-code-2022.day-01/eval7938 (form-init7339539864444834114.clj:29).
+; Wrong number of args (1) passed to: clojure.core/apply
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/puzzle-1
+clj꞉advent-of-code-2022.day-01꞉> 
+24000
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/file-path
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/text
+clj꞉advent-of-code-2022.day-01꞉> 
+((5279 1510 1791 4529 1919 3158 1126 4187 3948 4197 1787 4909 1590 3085 1104)
+ (7477 8221 4887 9709 13299 4391)
+ (3692 1890 1024 1086 1822 4754 3113 5425 3637 5027 1854 4045 3757 2803)
+ (1867 15849 7848 14938 11367)
+ (42975)
+ (2213 8069 6237 8051 6315 6467 2068 1967 4409 4309 5692)
+ (2454 3351 5644 3393 2440 3537 3501 2813 2422 5675 2300 5275 3022 3972 5551)
+ (7013 4447 4326 7159 7790 1036 3051 3171 6583 3303)
+ (13548 1749 7002)
+ (2231 5065 1808 3495 4476 6105 5848 1200 5617 6171 2505 1281)
+ (5184 8737 5761 7340 5533 2164 9273 3196 6671)
+ (3940 5274 5873 1253 6903 7350 8695 5132 8038 1112)
+ (35285 29197)
+ (5357 1682 25290)
+ (2711 4556 6201 7916 7027 7466 5821 4067 1420 5415)
+ (26315)
+ (5749 8315 3776 8847 3039 9098 9589 5108 7945)
+ (5705 4990 1758 5310 1596 2814 4954 5843 3976 1405 3793 4976 2184 2465 4574)
+ (12643 1380 11947 7940 12406 3578)
+ (15579 10005 7982 11510)
+ (4995 4199 1940 1011 2286 9404 8501 6533 8242)
+ (2898 6588 1754 2272 3460 6531 1617 1993 3459 2201 2259 1446 4707)
+ (10698 13505 12999 4748)
+ (4280 4290 1909 4166 6177 1798 3438 1033 6572 3368)
+ (46938)
+ (46591)
+ (2112 1925 1495 4502 3299 4740 4144 5145 4188 4310 2569 4429 3053 1839 2253)
+ (5616 6161 4786 7686 6707 1753 6697 3246 3537)
+ (8092 12115 15514 8768)
+ (3331 9054 8412 7472 2502 7541 6235 3014)
+ (5463 6437 3418 4940 3746 5075 3261 2876 5340 6674 1884 5563)
+ (18747 24926)
+ (2166 2567 1610 1330 3473 8649 3437 6883)
+ (1031 3115 4029 3503 7688 6443 5751 2961 5501 2764 4434)
+ (2783 3104 3292 1184 3040 5341 6185 5660 3487 3366 4981 4122 4136 2121)
+ (4984 7213 7766 4668 4280 3724 1894 4036 4089 5891 3629)
+ (6661 3383 8006)
+ (8542)
+ (13932 4399 2637 11007 8740 5902)
+ (14422 7130 1193 14689)
+ (1125 3549 2121 2140 3770 2774 5588 3383 2088 4438 2454 5910 2462 5157 1639)
+ (3002 2478 6127 4148 2643 1481 7831 2115 7369 6833 6637)
+ (7414 6496 4885 1294 1448 6470 6399 5973 7929 1532 7024)
+ (3073 4080 2465 4259 1597 4208 5938 3734 2251 7043 4693)
+ (3573 6079 3804 4497 5681 2043 4408 2018 3095 6608 2154 3509 6370)
+ (2337 6194 4096 4369 3767 6002 6434 7528 7954 1053)
+ (9745 8564 16871)
+ (49356)
+ (4750 18058)
+ (2905 1157 4632 2419 2609 3481 3215 5906 1306 1744 2179 4534 2859 1990 3548)
+ ...)
+clj꞉advent-of-code-2022.day-01꞉> 
+66719
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error macroexpanding clojure.core/let at (src/advent_of_code_2022/day_01.clj:32:1).
+; [[a b c] (quote (1 2 3)) a] - failed: even-number-of-forms? at: [:bindings] spec: :clojure.core.specs.alpha/bindings
+clj꞉advent-of-code-2022.day-01꞉> 
+1
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (UnsupportedOperationException) at advent-of-code-2022.day-01/eval7961 (form-init7339539864444834114.clj:32).
+; nth not supported on this type: Keyword
+clj꞉advent-of-code-2022.day-01꞉> 
+nil
+clj꞉advent-of-code-2022.day-01꞉> 
+nil
+clj꞉advent-of-code-2022.day-01꞉> 
+(2)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert
+clj꞉advent-of-code-2022.day-01꞉> 
+(x)
+clj꞉advent-of-code-2022.day-01꞉> 
+(x)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert
+clj꞉advent-of-code-2022.day-01꞉> 
+(~x)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert
+clj꞉advent-of-code-2022.day-01꞉> 
+(1)
+clj꞉advent-of-code-2022.day-01꞉> 
+(10)
+clj꞉advent-of-code-2022.day-01꞉> 
+(5)
+clj꞉advent-of-code-2022.day-01꞉> 
+(10)
+clj꞉advent-of-code-2022.day-01꞉> 
+(5)
+clj꞉advent-of-code-2022.day-01꞉> 
+(5)
+clj꞉advent-of-code-2022.day-01꞉> 
+(5)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert
+clj꞉advent-of-code-2022.day-01꞉> 
+(10)
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 0)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert
+clj꞉advent-of-code-2022.day-01꞉> 
+(10)
+clj꞉advent-of-code-2022.day-01꞉> 
+(10)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert
+clj꞉advent-of-code-2022.day-01꞉> 
+(10)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 0 10)
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 0 10)
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 0 5)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert
+clj꞉advent-of-code-2022.day-01꞉> 
+(10)
+clj꞉advent-of-code-2022.day-01꞉> 
+nil
+clj꞉advent-of-code-2022.day-01꞉> 
+(1)
+clj꞉advent-of-code-2022.day-01꞉> 
+(1 2)
+clj꞉advent-of-code-2022.day-01꞉> 
+clojure.lang.PersistentVector$ChunkedSeq
+clj꞉advent-of-code-2022.day-01꞉> 
+clojure.lang.PersistentVector$ChunkedSeq
+clj꞉advent-of-code-2022.day-01꞉> 
+nil
+clj꞉advent-of-code-2022.day-01꞉> 
+nil
+clj꞉advent-of-code-2022.day-01꞉> 
+nil
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 0 10)
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 0 5 10)
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 0 5 10)
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 0 5 5 7 10)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert-sorted
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 0 10)
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 0 5 5 7 10)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert-top-3
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 15)
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 15)
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 15 15)
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 10 15)
+clj꞉advent-of-code-2022.day-01꞉> 
+(5 10 15)
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 15)
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 10 15)
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (ArityException) at advent-of-code-2022.day-01/eval8099 (form-init7339539864444834114.clj:65).
+; Wrong number of args (1) passed to: advent-of-code-2022.day-01/insert-top-3
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 15)
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 15)
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 5 15)
+clj꞉advent-of-code-2022.day-01꞉> 
+(5 5 15)
+clj꞉advent-of-code-2022.day-01꞉> 
+(5 7 15)
+clj꞉advent-of-code-2022.day-01꞉> 
+(7 15 70)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert-top-3
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert-top-3
+clj꞉advent-of-code-2022.day-01꞉> 
+(44119
+ 47984
+ 43929
+ 51869
+ 42975
+ 55797
+ 55350
+ 47879
+ 22299
+ 45802
+ 53859
+ 53570
+ 64482
+ 32329
+ 52600
+ 26315
+ 61466
+ 56343
+ 49894
+ 45076
+ 47111
+ 41185
+ 41950
+ 37031
+ 46938
+ 46591
+ 50003
+ 46189
+ 44489
+ 47561
+ 54677
+ 43673
+ 30115
+ 47220
+ 52802
+ 52174
+ 18050
+ 8542
+ 46617
+ 37434
+ 48598
+ 50664
+ 56864
+ 43341
+ 53839
+ 49734
+ 35180
+ 49356
+ 22808
+ 44484
+ ...)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/file-path
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/text
+clj꞉advent-of-code-2022.day-01꞉> 
+((10000) (9000 8000 7000) (6000 5000) (4000) (3000 2000 1000))
+clj꞉advent-of-code-2022.day-01꞉> 
+(10000 24000 11000 4000 6000)
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (IllegalArgumentException) at advent-of-code-2022.day-01/insert-sorted (form-init7339539864444834114.clj:36).
+; Don't know how to create ISeq from: java.lang.Integer
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert-top-3
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (IllegalArgumentException) at advent-of-code-2022.day-01/insert-top-3 (form-init7339539864444834114.clj:34).
+; Don't know how to create ISeq from: java.lang.Long
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (IllegalArgumentException) at advent-of-code-2022.day-01/insert-sorted (form-init7339539864444834114.clj:36).
+; Don't know how to create ISeq from: java.lang.Integer
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 0)
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (IllegalArgumentException) at advent-of-code-2022.day-01/insert-sorted (form-init7339539864444834114.clj:36).
+; Don't know how to create ISeq from: java.lang.Integer
+clj꞉advent-of-code-2022.day-01꞉> 
+(10000 24000 11000 4000 6000)
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (IllegalArgumentException) at advent-of-code-2022.day-01/insert-sorted (form-init7339539864444834114.clj:36).
+; Don't know how to create ISeq from: java.lang.Long
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 0)
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (IllegalArgumentException) at advent-of-code-2022.day-01/insert-sorted (form-init7339539864444834114.clj:36).
+; Don't know how to create ISeq from: java.lang.Long
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (IllegalArgumentException) at advent-of-code-2022.day-01/insert-sorted (form-init7339539864444834114.clj:36).
+; Don't know how to create ISeq from: java.lang.Long
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert-sorted
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert-top-3
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert-top-3
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert-top-3
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert-sorted
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert-top-3
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (IllegalArgumentException) at advent-of-code-2022.day-01/insert-sorted (form-init7339539864444834114.clj:25).
+; Don't know how to create ISeq from: java.lang.Long
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (IllegalArgumentException) at advent-of-code-2022.day-01/insert-sorted (form-init7339539864444834114.clj:25).
+; Don't know how to create ISeq from: java.lang.Long
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error compiling if at (src/advent_of_code_2022/day_01.clj:34:3).
+; Too many arguments to if
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (IllegalArgumentException) at advent-of-code-2022.day-01/insert-sorted (form-init7339539864444834114.clj:25).
+; Don't know how to create ISeq from: java.lang.Long
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert-sorted
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error compiling if at (src/advent_of_code_2022/day_01.clj:34:3).
+; Too many arguments to if
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (IllegalArgumentException) at advent-of-code-2022.day-01/insert-sorted (form-init7339539864444834114.clj:25).
+; Don't know how to create ISeq from: java.lang.Long
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error macroexpanding clojure.core/defn at (src/advent_of_code_2022/day_01.clj:47:2).
+; quote - failed: vector? at: [:fn-tail :arity-n :bodies :params] spec: :clojure.core.specs.alpha/param-list
+; (quote (0 0 0)) - failed: vector? at: [:fn-tail :arity-1 :params] spec: :clojure.core.specs.alpha/param-list
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error macroexpanding clojure.core/defn at (src/advent_of_code_2022/day_01.clj:47:2).
+; quote - failed: vector? at: [:fn-tail :arity-n :bodies :params] spec: :clojure.core.specs.alpha/param-list
+; (quote (0 0 0)) - failed: vector? at: [:fn-tail :arity-1 :params] spec: :clojure.core.specs.alpha/param-list
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error macroexpanding clojure.core/defn at (src/advent_of_code_2022/day_01.clj:47:2).
+; quote - failed: vector? at: [:fn-tail :arity-n :bodies :params] spec: :clojure.core.specs.alpha/param-list
+; (quote (0 0 0)) - failed: vector? at: [:fn-tail :arity-1 :params] spec: :clojure.core.specs.alpha/param-list
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 0 1)
+clj꞉advent-of-code-2022.day-01꞉> 
+; Execution error (IllegalArgumentException) at advent-of-code-2022.day-01/insert-sorted (form-init7339539864444834114.clj:25).
+; Don't know how to create ISeq from: java.lang.Long
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/insert-top-3
+clj꞉advent-of-code-2022.day-01꞉> 
+(0 0 1)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/x
+clj꞉advent-of-code-2022.day-01꞉> 
+(x)
+clj꞉advent-of-code-2022.day-01꞉> 
+(~x)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/x
+clj꞉advent-of-code-2022.day-01꞉> 
+1
+clj꞉advent-of-code-2022.day-01꞉> 
+(~x)
+clj꞉advent-of-code-2022.day-01꞉> 
+(~x)
+clj꞉advent-of-code-2022.day-01꞉> 
+(1 2 3)
+clj꞉advent-of-code-2022.day-01꞉> 
+(1 advent-of-code-2022.day-01/x 3)
+clj꞉advent-of-code-2022.day-01꞉> 
+(1 ~x 2)
+clj꞉advent-of-code-2022.day-01꞉> 
+(1 2)
+clj꞉advent-of-code-2022.day-01꞉> 
+(1 ~x 3)
+clj꞉advent-of-code-2022.day-01꞉> 
+true
+clj꞉advent-of-code-2022.day-01꞉> 
+false
+clj꞉advent-of-code-2022.day-01꞉> 
+1
+clj꞉advent-of-code-2022.day-01꞉> 
+(1)
+clj꞉advent-of-code-2022.day-01꞉> 
+(10000 11000 24000)
+clj꞉advent-of-code-2022.day-01꞉> 
+(10000 11000 24000)
+clj꞉advent-of-code-2022.day-01꞉> 
+(10000 24000 11000 4000 6000)
+clj꞉advent-of-code-2022.day-01꞉> 
+(10000 11000 24000)
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error compiling at (src/advent_of_code_2022/day_01.clj:47:8).
+; Unable to resolve symbol: appy in this context
+clj꞉advent-of-code-2022.day-01꞉> 
+; Syntax error compiling at (src/advent_of_code_2022/day_01.clj:47:8).
+; Unable to resolve symbol: appy in this context
+clj꞉advent-of-code-2022.day-01꞉> 
+45000
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/puzzle-2
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/file-path
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/file-path
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/text
+clj꞉advent-of-code-2022.day-01꞉> 
+((5279 1510 1791 4529 1919 3158 1126 4187 3948 4197 1787 4909 1590 3085 1104)
+ (7477 8221 4887 9709 13299 4391)
+ (3692 1890 1024 1086 1822 4754 3113 5425 3637 5027 1854 4045 3757 2803)
+ (1867 15849 7848 14938 11367)
+ (42975)
+ (2213 8069 6237 8051 6315 6467 2068 1967 4409 4309 5692)
+ (2454 3351 5644 3393 2440 3537 3501 2813 2422 5675 2300 5275 3022 3972 5551)
+ (7013 4447 4326 7159 7790 1036 3051 3171 6583 3303)
+ (13548 1749 7002)
+ (2231 5065 1808 3495 4476 6105 5848 1200 5617 6171 2505 1281)
+ (5184 8737 5761 7340 5533 2164 9273 3196 6671)
+ (3940 5274 5873 1253 6903 7350 8695 5132 8038 1112)
+ (35285 29197)
+ (5357 1682 25290)
+ (2711 4556 6201 7916 7027 7466 5821 4067 1420 5415)
+ (26315)
+ (5749 8315 3776 8847 3039 9098 9589 5108 7945)
+ (5705 4990 1758 5310 1596 2814 4954 5843 3976 1405 3793 4976 2184 2465 4574)
+ (12643 1380 11947 7940 12406 3578)
+ (15579 10005 7982 11510)
+ (4995 4199 1940 1011 2286 9404 8501 6533 8242)
+ (2898 6588 1754 2272 3460 6531 1617 1993 3459 2201 2259 1446 4707)
+ (10698 13505 12999 4748)
+ (4280 4290 1909 4166 6177 1798 3438 1033 6572 3368)
+ (46938)
+ (46591)
+ (2112 1925 1495 4502 3299 4740 4144 5145 4188 4310 2569 4429 3053 1839 2253)
+ (5616 6161 4786 7686 6707 1753 6697 3246 3537)
+ (8092 12115 15514 8768)
+ (3331 9054 8412 7472 2502 7541 6235 3014)
+ (5463 6437 3418 4940 3746 5075 3261 2876 5340 6674 1884 5563)
+ (18747 24926)
+ (2166 2567 1610 1330 3473 8649 3437 6883)
+ (1031 3115 4029 3503 7688 6443 5751 2961 5501 2764 4434)
+ (2783 3104 3292 1184 3040 5341 6185 5660 3487 3366 4981 4122 4136 2121)
+ (4984 7213 7766 4668 4280 3724 1894 4036 4089 5891 3629)
+ (6661 3383 8006)
+ (8542)
+ (13932 4399 2637 11007 8740 5902)
+ (14422 7130 1193 14689)
+ (1125 3549 2121 2140 3770 2774 5588 3383 2088 4438 2454 5910 2462 5157 1639)
+ (3002 2478 6127 4148 2643 1481 7831 2115 7369 6833 6637)
+ (7414 6496 4885 1294 1448 6470 6399 5973 7929 1532 7024)
+ (3073 4080 2465 4259 1597 4208 5938 3734 2251 7043 4693)
+ (3573 6079 3804 4497 5681 2043 4408 2018 3095 6608 2154 3509 6370)
+ (2337 6194 4096 4369 3767 6002 6434 7528 7954 1053)
+ (9745 8564 16871)
+ (49356)
+ (4750 18058)
+ (2905 1157 4632 2419 2609 3481 3215 5906 1306 1744 2179 4534 2859 1990 3548)
+ ...)
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-01/puzzle-2
+clj꞉advent-of-code-2022.day-01꞉> 
+198551
+clj꞉advent-of-code-2022.day-01꞉> 
+(65493 66339 66719)
+clj꞉advent-of-code-2022.day-01꞉> 
+198551
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-02/file-path
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-01/text
+clj꞉advent-of-code-2022.day-01꞉> 
+((5279 1510 1791 4529 1919 3158 1126 4187 3948 4197 1787 4909 1590 3085 1104)
+ (7477 8221 4887 9709 13299 4391)
+ (3692 1890 1024 1086 1822 4754 3113 5425 3637 5027 1854 4045 3757 2803)
+ (1867 15849 7848 14938 11367)
+ (42975)
+ (2213 8069 6237 8051 6315 6467 2068 1967 4409 4309 5692)
+ (2454 3351 5644 3393 2440 3537 3501 2813 2422 5675 2300 5275 3022 3972 5551)
+ (7013 4447 4326 7159 7790 1036 3051 3171 6583 3303)
+ (13548 1749 7002)
+ (2231 5065 1808 3495 4476 6105 5848 1200 5617 6171 2505 1281)
+ (5184 8737 5761 7340 5533 2164 9273 3196 6671)
+ (3940 5274 5873 1253 6903 7350 8695 5132 8038 1112)
+ (35285 29197)
+ (5357 1682 25290)
+ (2711 4556 6201 7916 7027 7466 5821 4067 1420 5415)
+ (26315)
+ (5749 8315 3776 8847 3039 9098 9589 5108 7945)
+ (5705 4990 1758 5310 1596 2814 4954 5843 3976 1405 3793 4976 2184 2465 4574)
+ (12643 1380 11947 7940 12406 3578)
+ (15579 10005 7982 11510)
+ (4995 4199 1940 1011 2286 9404 8501 6533 8242)
+ (2898 6588 1754 2272 3460 6531 1617 1993 3459 2201 2259 1446 4707)
+ (10698 13505 12999 4748)
+ (4280 4290 1909 4166 6177 1798 3438 1033 6572 3368)
+ (46938)
+ (46591)
+ (2112 1925 1495 4502 3299 4740 4144 5145 4188 4310 2569 4429 3053 1839 2253)
+ (5616 6161 4786 7686 6707 1753 6697 3246 3537)
+ (8092 12115 15514 8768)
+ (3331 9054 8412 7472 2502 7541 6235 3014)
+ (5463 6437 3418 4940 3746 5075 3261 2876 5340 6674 1884 5563)
+ (18747 24926)
+ (2166 2567 1610 1330 3473 8649 3437 6883)
+ (1031 3115 4029 3503 7688 6443 5751 2961 5501 2764 4434)
+ (2783 3104 3292 1184 3040 5341 6185 5660 3487 3366 4981 4122 4136 2121)
+ (4984 7213 7766 4668 4280 3724 1894 4036 4089 5891 3629)
+ (6661 3383 8006)
+ (8542)
+ (13932 4399 2637 11007 8740 5902)
+ (14422 7130 1193 14689)
+ (1125 3549 2121 2140 3770 2774 5588 3383 2088 4438 2454 5910 2462 5157 1639)
+ (3002 2478 6127 4148 2643 1481 7831 2115 7369 6833 6637)
+ (7414 6496 4885 1294 1448 6470 6399 5973 7929 1532 7024)
+ (3073 4080 2465 4259 1597 4208 5938 3734 2251 7043 4693)
+ (3573 6079 3804 4497 5681 2043 4408 2018 3095 6608 2154 3509 6370)
+ (2337 6194 4096 4369 3767 6002 6434 7528 7954 1053)
+ (9745 8564 16871)
+ (49356)
+ (4750 18058)
+ (2905 1157 4632 2419 2609 3481 3215 5906 1306 1744 2179 4534 2859 1990 3548)
+ ...)
+clj꞉advent-of-code-2022.day-01꞉> 
+66719
+clj꞉advent-of-code-2022.day-01꞉> 
+198551
+clj꞉advent-of-code-2022.day-01꞉> 
+; Evaluating file: day_01.clj
+nil
+clj꞉advent-of-code-2022.day-01꞉> 
+#'advent-of-code-2022.day-02/play
+clj꞉advent-of-code-2022.day-02꞉> 
+; Execution error (IllegalArgumentException) at advent-of-code-2022.day-02/play (form-init7339539864444834114.clj:9).
+; No matching clause: ["P" "P"]
+clj꞉advent-of-code-2022.day-02꞉> 
+; Execution error (IllegalArgumentException) at advent-of-code-2022.day-02/play (form-init7339539864444834114.clj:9).
+; No matching clause: ["P" "P"]
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/play
+clj꞉advent-of-code-2022.day-02꞉> 
+3
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/points
+clj꞉advent-of-code-2022.day-02꞉> 
+1
+clj꞉advent-of-code-2022.day-02꞉> 
+; Execution error (ClassCastException) at advent-of-code-2022.day-02/eval8398 (form-init7339539864444834114.clj:8).
+; java.lang.String cannot be cast to clojure.lang.IFn
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/file-path
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/text
+clj꞉advent-of-code-2022.day-02꞉> 
+"A Y\nB X\nC Z"
+clj꞉advent-of-code-2022.day-02꞉> 
+; Syntax error compiling at (src/advent_of_code_2022/day_02.clj:6:3).
+; No such namespace: string
+clj꞉advent-of-code-2022.day-02꞉> 
+; Syntax error compiling at (src/advent_of_code_2022/day_02.clj:6:3).
+; No such namespace: string
+clj꞉advent-of-code-2022.day-02꞉> 
+"A Y\nB X\nC Z"
+clj꞉advent-of-code-2022.day-02꞉> 
+nil
+clj꞉advent-of-code-2022.day-02꞉> 
+["A Y" "B X" "C Z"]
+clj꞉advent-of-code-2022.day-02꞉> 
+(["A Y"] ["B X"] ["C Z"])
+clj꞉advent-of-code-2022.day-02꞉> 
+["A Y" "B X" "C Z"]
+clj꞉advent-of-code-2022.day-02꞉> 
+["adas" "ad" "ad" "adad" "ad"]
+clj꞉advent-of-code-2022.day-02꞉> 
+["adas" "ad" "ad" "adad" "ad"]
+clj꞉advent-of-code-2022.day-02꞉> 
+["adas" "ad" "ad" "" "adad" "" "ad"]
+clj꞉advent-of-code-2022.day-02꞉> 
+["adas" "ad" "ad" "adad" "ad"]
+clj꞉advent-of-code-2022.day-02꞉> 
+(["A" "Y"] ["B" "X"] ["C" "Z"])
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/mapping
+clj꞉advent-of-code-2022.day-02꞉> 
+(["R" "P"] ["P" "R"] ["S" "S"])
+clj꞉advent-of-code-2022.day-02꞉> 
+(["R" "P"] ["P" "R"] ["S" "S"])
+clj꞉advent-of-code-2022.day-02꞉> 
+(("R" "P") ("P" "R") ("S" "S"))
+clj꞉advent-of-code-2022.day-02꞉> 
+(["R" "P"] ["P" "R"] ["S" "S"])
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/load-data
+clj꞉advent-of-code-2022.day-02꞉> 
+(("R" "P") ("P" "R") ("S" "S"))
+clj꞉advent-of-code-2022.day-02꞉> 
+(("R" "P") ("P" "R") ("S" "S"))
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/puzzle-1
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/puzzle-1
+clj꞉advent-of-code-2022.day-02꞉> 
+; Error printing return value (ArityException) at clojure.lang.AFn/throwArity (AFn.java:429).
+; Wrong number of args (1) passed to: advent-of-code-2022.day-02/eval8534/fn--8535
+clj꞉advent-of-code-2022.day-02꞉> 
+(("R" "P") ("P" "R") ("S" "S"))
+clj꞉advent-of-code-2022.day-02꞉> 
+(8 1 6)
+clj꞉advent-of-code-2022.day-02꞉> 
+15
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/file-path
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/text
+clj꞉advent-of-code-2022.day-02꞉> 
+; Error printing return value (ArityException) at clojure.lang.AFn/throwArity (AFn.java:429).
+; Wrong number of args (1) passed to: advent-of-code-2022.day-02/puzzle-1/fn--8531
+clj꞉advent-of-code-2022.day-02꞉> 
+(("R" "P")
+ ("P" "R")
+ ("S" nil "S")
+ ("S" "S")
+ ("R" "P")
+ ("R" "R")
+ ("S" "S")
+ ("S" "S")
+ ("R" "R")
+ ("S" "R")
+ ("R" "R")
+ ("S" "R")
+ ("R" "R")
+ ("R" "R")
+ ("R" "R")
+ ("R" "R")
+ ("S" "P")
+ ("R" "R")
+ ("R" "R")
+ ("R" "P")
+ ("S" "S")
+ ("S" "R")
+ ("S" "S")
+ ("S" "P")
+ ("P" "P")
+ ("S" "P")
+ ("S" "R")
+ ("S" "R")
+ ("R" "S")
+ ("S" "P")
+ ("R" "S")
+ ("R" "S")
+ ("P" "R")
+ ("R" "P")
+ ("R" "R")
+ ("P" "P")
+ ("S" "R")
+ ("R" "R")
+ ("R" "R")
+ ("S" "S")
+ ("S" "P")
+ ("P" "R")
+ ("R" "P")
+ ("S" "S")
+ ("S" "P")
+ ("S" "S")
+ ("S" "S")
+ ("R" "R")
+ ("S" "S")
+ ("S" "P")
+ ...)
+clj꞉advent-of-code-2022.day-02꞉> 
+"A Y\nB X\nC ZC Z\nC Z\nA Y\nA X\nC Z\nC Z\nA X\nC X\nA X\nC X\nA X\nA X\nA X\nA X\nC Y\nA X\nA X\nA Y\nC Z\nC X\nC Z\nC Y\nB Y\nC Y\nC X\nC X\nA Z\nC Y\nA Z\nA Z\nB X\nA Y\nA X\nB Y\nC X\nA X\nA X\nC Z\nC Y\nB X\nA Y\nC Z\nC Y\nC Z\nC Z\nA X\nC Z\nC Y\nC X\nC Z\nA X\nC Z\nA Y\nA X\nA X\nA X\nA X\nC X\nA X\nA X\nC X\nA X\nC Y\nC Y\nA X\nC Z\nC Y\nA X\nC Z\nC Y\nC Z\nC Z\nB X\nC Z\nC X\nC X\nB Z\nA X\nA X\nC Z\nC X\nC X\nA X\nA Y\nC X\nC Y\nA X\nC Z\nA Z\nC Z\nA Z\nA Z\nC X\nA X\nA X\nC Z\nC Y\nC Z\nA X\nA X\nC X\nA X\nC X\nA X\nA Z\nA Y\nC Y\nA Y\nC Z\nA X\nA Y\nC X\nA Z\nC Y\nC Z\nC Z\nA Y\nC Z\nA Z\nC Z\nA Z\nA Z\nA X\nC X\nA Y\nA X\nC Z\nA X\nC Z\nC Z\nA X\nC Z\nC X\nA Z\nA X\nA Z\nA X\nC Z\nA X\nC X\nA X\nA X\nC X\nC Z\nC Y\nC Z\nA Y\nC Z\nC Z\nA X\nC X\nB X\nC X\nA X\nC Y\nC Z\nC Z\nC Z\nA Z\nC Y\nA X\nC X\nB X\nB X\nC Y\nC X\nA X\nC X\nC X\nA Y\nC Z\nA X\nA X\nA X\nC Z\nA X\nC Z\nC Y\nC Z\nC X\nA X\nC Z\nA X\nC Z\nC X\nC X\nA X\nC Z\nC Z\nC X\nA Y\nB X\nB Z\nA Z\nC Z\nA X\nA X\nA X\nC X\nC X\nC Y\nC Z\nA Y\nB Z\nA X\nC X\nC X\nC X\nC Y\nC X\nA X\nA X\nA Z\nA X\nA X\nC Z\nC Z\nC Z\nA X\nC X\nC X\nC Y\nA X\nC Z\nA Z\nC X\nA X\nC X\nC Z\nA X\nA X\nC Z\nC X\nC Y\nA X\nC Y\nC Z\nA Z\nC X\nA X\nA X\nA X\nA Z\nC X\nC X\nA X\nA X\nB X\nC Y\nC X\nC Z\nC Y\nA X\nC X\nC Z\nC Y\nC Y\nC X\nC Y\nB X\nC X\nC Y\nA X\nC Z\nC Y\nA X\nA X\nC X\nA X\nA X\nA Z\nC X\nA Z\nC X\nC X\nC X\nC Y\nA Z\nC Z\nA X\nB X\nC X\nA X\nA Z\nC X\nC Z\nB X\nC X\nA X\nA Y\nA Z\nC Z\nC Z\nC X\nA Z\nC Z\nC Z\nC X\nC Y\nC Z\nC Z\nC X\nA Z\nC Z\nC X\nA X\nA X\nA X\nA Z\nA Z\nC Z\nA X\nC X\nA X\nC X\nC Z\nC X\nC X\nA X\nC X\nB Y\nA X\nB X\nA X\nC X\nC Z\nA X\nC X\nA X\nA X\nC Z\nC X\nC X\nC X\nC Z\nA X\nB X\nA Z\nC X\nB Z\nC Z\nB Z\nC Z\nA Y\nA X\nB Y\nA X\nA X\nC Z\nC X\nA X\nB X\nC X\nB Z\nC Z\nA X\nA X\nA X\nA X\nA X\nA X\nA X\nC Y\nA Y\nC X\nC Z\nC X\nC Y\nC Z\nC X\nA X\nC Z\nA X\nA Z\nC X\nC Z\nC Y\nA X\nC X\nC Z\nA X\nA Y\nC X\nA X\nC Y\nA Y\nC Y\nA Z\nC Z\nA X\nC Z\nC Z\nA X\nC Z\nA Z\nC X\nC Z\nB X\nC X\nA X\nA Y\nA X\nC Z\nA Y\nA Y\nC X\nB Z\nC X\nA X\nA X\nA X\nA X\nA X\nC X\nC Z\nA Z\nA X\nC Y\nC Z\nA X\nA Z\nB Z\nA Z\nA X\nC Y\nC X\nC X\nC X\nB Z\nA X\nC Y\nA X\nA X\nA X\nC Y\nA X\nB X\nC X\nC X\nC Z\nC Z\nA X\nC Y\nA Z\nA X\nC X\nA X\nC X\nC X\nC Z\nA X\nC Y\nC Y\nA X\nA Z\nA Z\nA X\nC X\nA X\nC Y\nB X\nA X\nC Y\nC X\nB X\nC Z\nA X\nA X\nC X\nC Z\nC Z\nC X\nC Y\nC Y\nA X\nC Z\nC X\nC Y\nC X\nA X\nA X\nA X\nB Y\nC X\nA X\nC X\nC X\nA X\nC Z\nC Z\nC X\nB X\nA Y\nA Y\nC Z\nC Y\nC X\nC Y\nB Y\nA Z\nC X\nA X\nA Z\nA Y\nC X\nA Z\nC Z\nC Y\nC Z\nA X\nC X\nC Z\nC X\nC X\nA X\nC Z\nA Z\nC X\nC Y\nC X\nA X\nA Z\nC Z\nC X\nA Z\nB Z\nC Y\nB X\nA Y\nB X\nB Y\nA Y\nA X\nA Z\nC X\nC X\nA X\nC X\nC Z\nC Y\nA Z\nA X\nC Z\nA X\nA X\nA Z\nA X\nA X\nC Z\nA X\nC X\nA X\nA X\nA Y\nC Z\nA X\nC Z\nA Z\nA X\nA X\nA Y\nC Z\nA Z\nA Z\nA X\nC X\nA X\nA X\nC Z\nC X\nC X\nC X\nC Y\nC X\nA X\nB X\nB X\nC Z\nC Z\nC Z\nC X\nB Y\nA Y\nB X\nB X\nC X\nC X\nC X\nA X\nC Y\nA Z\nA X\nC X\nA X\nA X\nA X\nB X\nC Y\nA X\nC Z\nA X\nC X\nA X\nC Z\nC X\nA X\nA Z\nA X\nA X\nA X\nC Z\nA Y\nB X\nA X\nB X\nC Z\nA X\nA X\nC Y\nC Z\nC Z\nA X\nC X\nA X\nA X\nA X\nA X\nA X\nC X\nA X\nC Y\nC X\nB X\nA X\nC Y\nC Z\nA X\nA X\nC X\nA Z\nA X\nA Z\nA X\nC Z\nA X\nB X\nC X\nA X\nC X\nA X\nC Y\nC Z\nA X\nC Z\nC Z\nC X\nB X\nC Z\nA X\nA Z\nC X\nA X\nC X\nC Z\nC Z\nC Y\nC Z\nA X\nC X\nC Z\nA Z\nC Z\nA Z\nC X\nC Z\nA X\nA X\nB X\nA Z\nB X\nC Y\nC Z\nC X\nA X\nC Z\nC Z\nC Z\nB X\nC X\nC X\nA Z\nA X\nC Y\nA X\nB Z\nB X\nA X\nC Y\nB X\nC Z\nC Y\nC Z\nA X\nC Y\nA X\nA X\nA Z\nA X\nA X\nC X\nC Y\nC Z\nC Z\nC Y\nB Y\nC Z\nA X\nA X\nC X\nC X\nC X\nA X\nC Y\nA X\nA Y\nA X\nC X\nC Y\nC Y\nB X\nA X\nC Z\nA X\nC Z\nC X\nA X\nA Z\nC X\nC Y\nA X\nA Z\nA Z\nC Y\nA X\nC Z\nC Z\nA X\nA Z\nB X\nA X\nC Y\nC X\nB Z\nC Z\nA X\nC Y\nA X\nC Y\nA Z\nA X\nC X\nC Y\nB X\nA X\nB X\nA X\nA X\nB Y\nA X\nA X\nC X\nA X\nC X\nA X\nA X\nC Y\nA X\nC Z\nC Z\nA Z\nC X\nA Z\nC Y\nC Z\nC X\nA X\nC Z\nA X\nC Y\nA X\nA Z\nC Y\nC X\nC X\nC Z\nB X\nA X\nA X\nA Z\nC Z\nC X\nA X\nC X\nA Z\nA Z\nA X\nC X\nC Z\nB Z\nC X\nC X\nA X\nA X\nA X\nC Y\nC X\nA X\nC Z\nA X\nB Y\nA X\nA X\nC X\nB X\nA X\nC X\nB Y\nA Z\nC X\nC X\nA X\nA X\nA X\nC Y\nC X\nA Z\nC X\nA X\nC Z\nC Z\nC Y\nA X\nA X\nB Z\nC Y\nC Z\nA X\nC Z\nA X\nC Z\nB X\nA Z\nA Z\nC X\nA X\nC Z\nC X\nA X\nA X\nC X\nC Z\nC X\nA X\nC X\nA X\nA X\nC Z\nC X\nA X\nA X\nA X\nA X\nC Y\nA X\nC X\nC Z\nC Y\nC Z\nC X\nC Z\nA X\nC X\nC Z\nC Z\nC Z\nB X\nC X\nA Z\nA Z\nA X\nC X\nC Z\nB Z\nC Z\nC Z\nA Y\nA Y\nC X\nA X\nA X\nA Z\nA X\nA Y\nA Z\nA X\nA X\nC Z\nC Z\nA Y\nA X\nB X\nA X\nA X\nC X\nA X\nA Z\nC Z\nC X\nC Z\nC X\nA Z\nB X\nA X\nA X\nC X\nB Y\nA X\nC Z\nA X\nA Y\nA Z\nA X\nC Z\nA Z\nB X\nC Z\nC Y\nA X\nC Y\nA X\nC X\nC X\nC X\nA X\nC X\nC Z\nC Y\nA Z\nC X\nC Y\nA X\nA X\nC Z\nA X\nC X\nC X\nA X\nA X\nA Z\nC X\nC Z\nA Z\nA Z\nA X\nB X\nB X\nA X\nC Z\nA Z\nC Z\nC X\nC Z\nB X\nC X\nC X\nB Z\nA X\nA Z\nB Z\nB Z\nC X\nA Z\nA X\nA Y\nC X\nA X\nC Z\nA X\nC X\nA X\nC Z\nC X\nC X\nC X\nC Z\nB Z\nA X\nA X\nA X\nC Z\nA X\nA X\nC X\nB Z\nC X\nC X\nA X\nB Y\nC X\nC X\nC X\nA X\nC X\nA Z\nC Y\nB Z\nA X\nC Z\nC Z\nC Z\nC Z\nA Y\nC Z\nA X\nA X\nC X\nC X\nA X\nC X\nA Z\nA X\nC Z\nC X\nA X\nC Z\nC X\nC Z\nB Z\nA X\nC Y\nC Z\nA X\nA X\nC Y\nA Z\nC X\nC Z\nC Z\nC Y\nC Z\nA X\nC X\nA X\nA X\nC X\nA X\nC Z\nA X\nA Z\nA X\nC Z\nC Z\nB X\nC Z\nA Y\nA Z\nA X\nC Y\nC X\nC Y\nA X\nA Z\nA X\nA X\nA X\nC X\nB X\nC X\nA Y\nA Y\nC Z\nA X\nA X\nA Z\nC X\nA X\nA Z\nC Z\nC Z\nC X\nC X\nA X\nA X\nC Z\nA X\nC Z\nC Z\nB Z\nA X\nA X\nC Z\nA X\nC Z\nC Y\nC X\nA X\nA Z\nA X\nA X\nA X\nC Y\nC Z\nA X\nC Y\nC Z\nC Z\nA X\nA Z\nA X\nC Z\nC Y\nC Z\nC Y\nA X\nC X\nA X\nA X\nA X\nC X\nA X\nA X\nC Y\nC X\nA X\nC X\nA Z\nA X\nC Z\nC X\nB Z\nC Z\nA X\nC Y\nC Z\nC X\nA X\nA X\nB Y\nA X\nB X\nC X\nA X\nA X\nC X\nC Y\nA X\nA X\nA X\nC X\nC Z\nA X\nB X\nC Y\nC Y\nA X\nC Y\nC X\nA X\nC X\nA X\nA X\nA X\nC X\nC X\nB Z\nA X\nC X\nA X\nC Z\nA X\nC Y\nA X\nC Z\nC Z\nC Y\nA X\nA Z\nA X\nC X\nC Z\nA X\nC Z\nC X\nC Z\nA X\nC Y\nA X\nC Z\nC Y\nC X\nA X\nA Y\nB X\nA X\nA Y\nA X\nA X\nA X\nA X\nC Z\nC Y\nB X\nA X\nC X\nA X\nC X\nA X\nA Y\nA X\nC Z\nA Z\nC X\nA X\nA X\nA X\nC Z\nC Z\nC Y\nC X\nA X\nC X\nC Y\nA Z\nC X\nA X\nC Y\nC Z\nC Z\nA X\nA X\nC Z\nC Z\nC X\nC X\nC X\nC Z\nC Y\nC X\nB Z\nC Z\nA X\nC Z\nA X\nA X\nC X\nC X\nC Y\nA Y\nA X\nC X\nA X\nC X\nC X\nA X\nA X\nA Y\nC Z\nC Y\nA X\nA X\nA X\nA X\nC X\nC Y\nA X\nA Y\nA X\nA X\nC X\nA Z\nC Z\nC Z\nC Z\nC Z\nA X\nC Z\nC X\nC X\nB X\nC X\nC Z\nC X\nA Z\nC Z\nB X\nB Z\nC Y\nA X\nB X\nA X\nA X\nA X\nC X\nC X\nA X\nC Y\nA X\nC Y\nB Y\nC Y\nA X\nC X\nC Y\nC Z\nC X\nA X\nA X\nC X\nB X\nC Z\nC X\nA X\nA Z\nA X\nC Z\nC X\nB X\nA Z\nA X\nB Z\nC Z\nA X\nC Y\nA X\nC Z\nB X\nC X\nC X\nC Y\nA X\nA X\nA X\nC Z\nC X\nB Z\nC Z\nB X\nB Z\nA X\nA Z\nA X\nC X\nC X\nC Z\nC X\nC X\nB Y\nA X\nA X\nA X\nA X\nA X\nA X\nC X\nA Z\nA Z\nC X\nC X\nA X\nB Y\nC X\nC X\nA Z\nA X\nB X\nA X\nC X\nC Z\nC Y\nC Z\nC Z\nB X\nC Y\nC X\nA X\nA X\nC X\nC Y\nC Z\nA X\nC X\nA X\nB Z\nA X\nC Y\nC X\nC X\nA X\nC Z\nC Z\nA X\nC X\nC X\nC X\nA X\nA Z\nC X\nA X\nC Z\nA X\nC Z\nC Z\nA X\nC Z\nA Z\nC X\nA X\nA X\nC Z\nA X\nA X\nA X\nC X\nA X\nA X\nC Z\nC X\nC Y\nB X\nC X\nC Y\nC X\nA X\nA Y\nA X\nA X\nA Z\nC Z\nA X\nC X\nC X\nC X\nC X\nB Z\nA X\nB Y\nC X\nC X\nC Y\nC X\nC Z\nC Z\nA X\nC X\nA X\nC X\nA Z\nC Y\nB X\nA X\nC X\nC Z\nC Y\nB X\nC Y\nA X\nC X\nA X\nA X\nA Z\nA X\nB X\nC X\nA X\nA Y\nA X\nC X\nC Z\nA Z\nA X\nA X\nC Z\nA X\nC X\nA X\nC X\nA X\nC Z\nC Y\nA X\nC X\nA X\nC Z\nA Y\nB X\nC Z\nC Z\nA X\nA X\nA Y\nA Z\nA X\nC X\nC Y\nC Z\nA X\nC Z\nC Z\nB X\nA X\nA X\nA X\nC Y\nA Z\nC Z\nC Z\nA Z\nA X\nA X\nB X\nC X\nB X\nA X\nC Z\nA Y\nC Z\nA X\nC X\nC Z\nC X\nA X\nC X\nA X\nA X\nC Z\nA Z\nC X\nC X\nB Z\nC Z\nA Y\nA X\nC X\nC Z\nA X\nC Z\nC X\nC Y\nC X\nA Y\nC Z\nC Z\nA X\nA X\nA X\nC Z\nC Y\nC Z\nA X\nC Z\nA X\nC X\nA X\nA Y\nA X\nA Z\nA X\nA Y\nA X\nA X\nA X\nA Z\nA X\nC Z\nC Z\nC Z\nC X\nA X\nA Z\nC X\nC Z\nA X\nC X\nC Y\nA X\nC X\nA X\nC Y\nA X\nA X\nC Z\nC X\nA X\nC Z\nA X\nA X\nC Z\nC X\nC Z\nC Y\nA Y\nC Z\nC X\nB X\nA X\nA X\nA Z\nA X\nA X\nC X\nC Z\nA X\nC X\nA Z\nB X\nA Z\nC Z\nC Z\nA X\nB X\nA X\nA Y\nA X\nA X\nC Z\nA X\nC Y\nC Z\nC Y\nA X\nA X\nA X\nA X\nB Z\nB Z\nA X\nC X\nC X\nA X\nC X\nC Y\nB X\nC Y\nB X\nA X\nB Z\nC Z\nA X\nA X\nC X\nA Z\nA X\nC X\nC Z\nA X\nC X\nC X\nC X\nC Z\nC Y\nA X\nA X\nA X\nC Z\nC Z\nC X\nC Z\nB X\nA X\nC Z\nC Z\nC Y\nA X\nA X\nC Z\nA Z\nC X\nC Z\nC Y\nC Z\nC Z\nA X\nC Z\nC Y\nC X\nB X\nC Z\nA Y\nC Z\nC X\nC X\nA X\nA X\nA X\nC Z\nB Z\nA X\nA Z\nB X\nA Z\nA Z\nC Z\nC Z\nC X\nC Y\nC Y\nC Z\nA Z\nC Y\nC X\nC Y\nA Z\nB Y\nA X\nC Y\nA X\nA X\nA Z\nC Z\nC Z\nC Z\nC X\nC X\nC Z\nC Z\nA X\nC X\nA Y\nA Y\nA X\nB Z\nA X\nC X\nA X\nC X\nA X\nA X\nA X\nC X\nC Y\nC Z\nC Z\nA X\nC Z\nA X\nC X\nC X\nC Z\nA X\nA X\nA X\nC X\nC Z\nA X\nA X\nA X\nA X\nC Z\nB Y\nA X\nA X\nA X\nC Y\nA X\nA X\nA Z\nC X\nA Z\nC Z\nA Z\nC Z\nA X\nA Z\nA X\nA X\nA X\nA X\nA Y\nC X\nC Z\nA X\nA Z\nC X\nA Y\nC Z\nC Y\nA X\nB X\nA Y\nC X\nA X\nC Z\nC X\nA X\nC Z\nC X\nA X\nC X\nC X\nC Z\nA X\nA Y\nC Y\nC Y\nA X\nA X\nA X\nA X\nA X\nC X\nA Y\nC Z\nC Z\nC Y\nA X\nC Z\nC Z\nA X\nC X\nC X\nC Y\nA X\nA X\nC X\nC X\nA Z\nA X\nC Z\nA X\nC Z\nA X\nB X\nA Z\nB X\nC Z\nC Z\nC X\nA X\nA Z\nC X\nA X\nA X\nC X\nC Y\nC Z\nC X\nC X\nA X\nC Z\nC Z\nC X\nB X\nC Z\nA X\nB X\nA Z\nC X\nA Z\nA X\nA X\nC X\nA X\nC Z\nA X\nA X\nC Z\nC Z\nC Z\nA X\nC X\nA Y\nC Y\nA X\nA X\nA X\nA X\nC X\nC Z\nA X\nA X\nA X\nC X\nC Z\nA X\nC Z\nA X\nA Y\nC Y\nC X\nC X\nA X\nA X\nA X\nA Z\nA X\nC Z\nA X\nC Y\nB Z\nB X\nA X\nC X\nC Z\nA X\nA X\nC Z\nB X\nB X\nC X\nC Y\nC X\nB X\nA X\nA X\nC X\nA Z\nA X\nC X\nC X\nC X\nA X\nC Z\nA Y\nA X\nC Y\nA X\nA X\nC Z\nA Z\nA Z\nC X\nC X\nC Y\nC Y\nC X\nC X\nC Z\nA X\nC X\nA X\nA X\nA X\nA X\nC Y\nC Z\nA X\nC Z\nC X\nC X\nA X\nA X\nA Z\nC Y\nC X\nA X\nC X\nA X\nA Z\nA X\nA Z\nA X\nA X\nA X\nC X\nA Z\nA X\nC X\nC Y\nA Z\nA X\nB X\nC X\nC Y\nC Z\nC X\nC Y\nC X\nC X\nA X\nC Y\nB X\nA Z\nC Z\nB Z\nC X\nA X\nC Z\nA X\nC X\nA X\nA X\nA X\nC Z\nC Y\nB Z\nA X\nC X\nA Y\nC Z\nA X\nA X\nA Z\nA Z\nA Y\nC X\nC Z\nC X\nA Z\nC X\nC Z\nC X\nB X\nA X\nC Z\nA X\nA X\nC Z\nA Z\nC X\nC Y\nC X\nC X\nC Y\nA X\nA X\nC X\nA Z\nC X\nC Z\nC X\nA Z\nA X\nA Y\nA X\nA X\nB Z\nC Z\nC Z\nA Y\nC X\nA X\nB X\nA X\nA Z\nC Y\nC Z\nC X\nC Z\nC Z\nC X\nC X\nA X\nC X\nA Z\nC Z\nC Z\nC Z\nC Y\nC X\nA X\nC Z\nA Z\nC Z\nC Z\nA X\nC X\nA X\nC Z\nA X\nB X\nA X\nC Z\nC X\nC X\nA X\nC Y\nA X\nC Z\nB X\nC Z\nC X\nA X\nC X\nC X\nC Z\nA X\nA X\nC Z\nC Z\nC X\nC Z\nC X\nA X\nA X\nC Z\nC X\nC X\nA X\nC Z\nA Z\nC Z\nB X\nC X\nC Y\nC X\nC Z\nA X\nB X\nC Z\nA X\nC Z\nA Z\nC Z\nC X\nA X\nC Z\nC Z\nA X\nA X\nC Z\nA X\nC Y\nA Z\nC X\nC Z\nA X\nB Z\nB X\nA X\nA Z\nA X\nA Z\nA X\nA X\nC Y\nA X\nC Y\nC X\nC Y\nC Y\nC X\nA X\nA Z\nA Z\nC X\nC Z\nB X\nA X\nC Z\nA Z\nC X\nC Z\nC Y\nA X\nA X\nC Z\nC Z\nC Y\nA Z\nC Z\nC Y\nA X\nC X\nA X\nC X\nC Z\nA Z\nB Z\nA X\nA X\nA X\nC X\nC X\nA Y\nA Z\nC X\nC Z\nA X\nB X\nA X\nA X\nC X\nC X\nB X\nA X\nB X\nC Z\nA Z\nC Z\nA X\nC X\nC Z\nC Y\nA Y\nA Z\nC Y\nC Z\nA X\nA X\nC X\nA X\nC Z\nC Y\nA X\nC Z\nA X\nA X\nB X\nA X\nA Z\nC X\nC Y\nA Z\nC Z\nA X\nA Z\nC X\nC Z\nC X\nC Z\nA X\nA X\nA X\nC X\nA X\nC Z\nC X\nC X\nC X\nC X\nA X\nC X\nB Y\nA Z\nA Z\nC Z\nC X\nA Y\nC X\nA X\nC X\nC Z\nB Z\nC Z\nB X\nA X\nA Z\nA X\nC X\nA X\nC Z\nC Z\nC Z\nA X\nC Z\nA X\nC Z\nC X\nC X\nC X\nB X\nA X\nA X\nB X\nC X\nA X\nC Z\nA Z\nC Y\nC Z\nA Z\nB Z\nA Z\nC Z\nC Z\nC X\nA X\nA X\nC X\nC X\nC Y\nA Y\nA Z\nA X\nC Z\nC Z\nC Y\nC X\nA X\nA X\nC Y\nA Z\nC X\nC X\nC X\nA X\nC X\nC X\nA Z\nC X\nC Y\nA Z\nC Z\nC Y\nA Z\nC Z\nA X\nC X\nC Y\nC X\nC X\nC Z\nC X\nC X\nC Z\nC X\nA X\nB Y\nA X\nC X\nB Z\nC Z\nC X\nC Z\nC Z\nA Y\nA Y\nA X\nA Z\nC Z\nA X\nC X\nC Z\nA Z\nA X\nA X\nA X\nB X\nA X\nB Z\nC X\nA X\nC X\nA Z\nC X\nA X\nC Y\nA X\nC X\nC Y\nA Z\nC Z\nC Z\nB X\nA X\nC X\nA X\nC X\nC Y\nA X\nC Y\nA X\nB X\nC Y\nA X\nA X\nC X\nA X\nB Y\nC Y\nC Y\nC Y\nC X\nA Y\nC X\nC Z\nA X\nA Z\nA X\nA X\nC Z\nA Z\nA Z\nC X\nA X\nA X\nB X\nC X\nC Y\nC X\nB Z\nA X\nC X\nC Y\nC X\nC Z\nC Y\nA X\nC X\nA X\nA X\nA Y\nC Z\nC Z\nC Z\nA X\nA X\nA Z\nA X\nA X\nA Z\nA X\nC Y\nC Y\nA X\nA X\nA Z\nC X\nA X\nC Z\nA Z\nC Z\nC Y\nC Z\nA X\nC Z\nC X\nC Z\nA X\nC Y\nC Y\nB X\nA X\nA Z\nC X\nA X\nA X\nC Z\nA X\nC X\nC Z\nA Z\nA Y\nA Y\nA X\nC X\nA Y\nA X\nA X\nB Z\nA X\nC X\nC X\nC X\nA X\nC X\nC Z\nC Z\nA Z\nC X\nC X\nC Y\nA X\nC X\nA X\nA X\nC Y\nC X\nA X\nC Y\nC X\nC X\nA Y\nC Z\nC X\nC X\nC Y\nC Z\nA Y\nA X\nC Z\nC Z\nC Z\nC X\nC Z\nA X\nA X\nA Z\nA X\nC Y\nC X\nC Z\nA X\nA X\nC Z\nA X\nC X\nA X\nA Y\nC "
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/puzzle-1
+clj꞉advent-of-code-2022.day-02꞉> 
+; Execution error (NullPointerException) at advent-of-code-2022.day-02/puzzle-1$fn (form-init7339539864444834114.clj:39).
+; null
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/file-path
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/text
+clj꞉advent-of-code-2022.day-02꞉> 
+(("S" "S")
+ ("S" "S")
+ ("R" "P")
+ ("R" "R")
+ ("S" "S")
+ ("S" "S")
+ ("R" "R")
+ ("S" "R")
+ ("R" "R")
+ ("S" "R")
+ ("R" "R")
+ ("R" "R")
+ ("R" "R")
+ ("R" "R")
+ ("S" "P")
+ ("R" "R")
+ ("R" "R")
+ ("R" "P")
+ ("S" "S")
+ ("S" "R")
+ ("S" "S")
+ ("S" "P")
+ ("P" "P")
+ ("S" "P")
+ ("S" "R")
+ ("S" "R")
+ ("R" "S")
+ ("S" "P")
+ ("R" "S")
+ ("R" "S")
+ ("P" "R")
+ ("R" "P")
+ ("R" "R")
+ ("P" "P")
+ ("S" "R")
+ ("R" "R")
+ ("R" "R")
+ ("S" "S")
+ ("S" "P")
+ ("P" "R")
+ ("R" "P")
+ ("S" "S")
+ ("S" "P")
+ ("S" "S")
+ ("S" "S")
+ ("R" "R")
+ ("S" "S")
+ ("S" "P")
+ ("S" "R")
+ ("S" "S")
+ ...)
+clj꞉advent-of-code-2022.day-02꞉> 
+12156
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/file-path
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/text
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/load-data
+clj꞉advent-of-code-2022.day-02꞉> 
+(["A" "Y"] ["B" "X"] ["C" "Z"])
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/strategy-1
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/strategy-2
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/calculate
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/puzzle-1
+clj꞉advent-of-code-2022.day-02꞉> 
+(["A" "Y"] ["B" "X"] ["C" "Z"])
+clj꞉advent-of-code-2022.day-02꞉> 
+; Error printing return value (NullPointerException) at clojure.lang.Numbers/ops (Numbers.java:1095).
+; null
+clj꞉advent-of-code-2022.day-02꞉> 
+(["A" "Y"] ["B" "X"] ["C" "Z"])
+clj꞉advent-of-code-2022.day-02꞉> 
+; Error printing return value (NullPointerException) at clojure.lang.Numbers/ops (Numbers.java:1095).
+; null
+clj꞉advent-of-code-2022.day-02꞉> 
+{"R" 1, "P" 2, "S" 3}
+clj꞉advent-of-code-2022.day-02꞉> 
+; Evaluating file: day_02.clj
+; Syntax error compiling def at (src/advent_of_code_2022/day_02.clj:22:1).
+; First argument to def must be a Symbol
+; Evaluation of file day_02.clj failed: class clojure.lang.Compiler$CompilerException
+clj꞉advent-of-code-2022.day-02꞉> 
+{"R" 1, "P" 2, "S" 3}
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/points
+clj꞉advent-of-code-2022.day-02꞉> 
+{:R2 1, :P2 2, :S2 3}
+clj꞉advent-of-code-2022.day-02꞉> 
+[:R1 :Lose]
+clj꞉advent-of-code-2022.day-02꞉> 
+:S2
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/R1
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/R1
+clj꞉advent-of-code-2022.day-02꞉> 
+; Syntax error compiling at (src/advent_of_code_2022/day_02.clj:34:1).
+; Unable to resolve symbol: R2 in this context
+clj꞉advent-of-code-2022.day-02꞉> 
+{:R2 1, :P2 2, :S2 3}
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/points
+clj꞉advent-of-code-2022.day-02꞉> 
+(["A" "Y"] ["B" "X"] ["C" "Z"])
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/calculate
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/points
+clj꞉advent-of-code-2022.day-02꞉> 
+15
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/puzzle-1
+clj꞉advent-of-code-2022.day-02꞉> 
+; Execution error (ArityException) at advent-of-code-2022.day-02/eval8658 (form-init7339539864444834114.clj:74).
+; Wrong number of args (1) passed to: clojure.core/apply
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/strategy-2
+clj꞉advent-of-code-2022.day-02꞉> 
+(["A" "A"] ["B" "X"] ["C" "X"])
+clj꞉advent-of-code-2022.day-02꞉> 
+; Error printing return value (NullPointerException) at clojure.lang.Numbers/ops (Numbers.java:1095).
+; null
+clj꞉advent-of-code-2022.day-02꞉> 
+; Error printing return value (NullPointerException) at clojure.lang.Numbers/ops (Numbers.java:1095).
+; null
+clj꞉advent-of-code-2022.day-02꞉> 
+(["A" "Y"] ["B" "X"] ["C" "Z"])
+clj꞉advent-of-code-2022.day-02꞉> 
+(["A" "A"] ["B" "X"] ["C" "X"])
+clj꞉advent-of-code-2022.day-02꞉> 
+(["A" "Y"] ["B" "X"] ["C" "Z"])
+clj꞉advent-of-code-2022.day-02꞉> 
+(["A" "A"] ["B" "X"] ["C" "X"])
+clj꞉advent-of-code-2022.day-02꞉> 
+; Error printing return value (NullPointerException) at clojure.lang.Numbers/ops (Numbers.java:1095).
+; null
+clj꞉advent-of-code-2022.day-02꞉> 
+(["A" "A"] ["B" "X"] ["C" "X"])
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/strategy-2
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/puzzle-1
+clj꞉advent-of-code-2022.day-02꞉> 
+(4 1 7)
+clj꞉advent-of-code-2022.day-02꞉> 
+(4 1 7)
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/file-path
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/text
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/puzzle-1
+clj꞉advent-of-code-2022.day-02꞉> 
+10835
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/calculate
+clj꞉advent-of-code-2022.day-02꞉> 
+(7 7 4 3 7 7 3 2 3 2 3 3 3 3 6 3 3 4 7 2 7 6 5 6 2 2 8 6 8 8 1 4 3 5 2 3 3 7 6 1 4 7 6 7 7 3 7 6 2 7 ...)
+clj꞉advent-of-code-2022.day-02꞉> 
+10835
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/play
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/puzzle-1
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/puzzle-2
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/file-path
+clj꞉advent-of-code-2022.day-02꞉> 
+#'advent-of-code-2022.day-02/text
+clj꞉advent-of-code-2022.day-02꞉> 
+(["C" "Z"]
+ ["C" "Z"]
+ ["A" "Y"]
+ ["A" "X"]
+ ["C" "Z"]
+ ["C" "Z"]
+ ["A" "X"]
+ ["C" "X"]
+ ["A" "X"]
+ ["C" "X"]
+ ["A" "X"]
+ ["A" "X"]
+ ["A" "X"]
+ ["A" "X"]
+ ["C" "Y"]
+ ["A" "X"]
+ ["A" "X"]
+ ["A" "Y"]
+ ["C" "Z"]
+ ["C" "X"]
+ ["C" "Z"]
+ ["C" "Y"]
+ ["B" "Y"]
+ ["C" "Y"]
+ ["C" "X"]
+ ["C" "X"]
+ ["A" "Z"]
+ ["C" "Y"]
+ ["A" "Z"]
+ ["A" "Z"]
+ ["B" "X"]
+ ["A" "Y"]
+ ["A" "X"]
+ ["B" "Y"]
+ ["C" "X"]
+ ["A" "X"]
+ ["A" "X"]
+ ["C" "Z"]
+ ["C" "Y"]
+ ["B" "X"]
+ ["A" "Y"]
+ ["C" "Z"]
+ ["C" "Y"]
+ ["C" "Z"]
+ ["C" "Z"]
+ ["A" "X"]
+ ["C" "Z"]
+ ["C" "Y"]
+ ["C" "X"]
+ ["C" "Z"]
+ ...)
+clj꞉advent-of-code-2022.day-02꞉> 
+12156
+clj꞉advent-of-code-2022.day-02꞉> 
+10835
+clj꞉advent-of-code-2022.day-02꞉> 
+; Evaluating file: day_02.clj
+nil
+clj꞉advent-of-code-2022.day-02꞉> 
