@@ -25,7 +25,6 @@
      init-crates
      crates-lines)))
 
-
 (defn load-data [text]
   (let [[crates-lines [_ & move-lines]]
         (->> text
