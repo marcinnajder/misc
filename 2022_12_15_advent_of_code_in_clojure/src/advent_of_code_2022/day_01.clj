@@ -38,7 +38,9 @@
        (reduce insert-top-3 (list 0 0 0))
        (apply +)))
 
+
 (comment
+
   (def file-path "src/advent_of_code_2022/day_01.txt")
 
   (def text (slurp file-path))
