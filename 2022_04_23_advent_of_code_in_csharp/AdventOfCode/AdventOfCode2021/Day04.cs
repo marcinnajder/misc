@@ -1,5 +1,5 @@
-using static AdventOfCode.AdventOfCode2021.Common;
-using static AdventOfCode.AdventOfCode2021.Option;
+using static AdventOfCode.Common;
+using static AdventOfCode.Option;
 using static System.Linq.Enumerable;
 
 namespace AdventOfCode.AdventOfCode2021;

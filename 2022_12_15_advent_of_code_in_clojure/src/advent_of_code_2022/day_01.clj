@@ -12,6 +12,14 @@
                      (cons (cons (Integer/valueOf line) inner-list) tail))))
                '(()))))
 
+
+(defn load-data-2 [text]
+  (->> text
+       string/split-lines
+       (partition-by string/blank?)
+       (filter (comp not string/blank? first))
+       (map (partial map parse-long))))
+
 (defn puzzle-1 [text]
   (->> text
        load-data

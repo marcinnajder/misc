@@ -11,10 +11,10 @@
        (map #(split-at 2 %))))
 
 
-(defn is-range-fully-contain? [[a b] [c d]]
+(defn range-fully-contain? [[a b] [c d]]
   (and (<= a c) (>= b d)))
 
-(defn is-range-overlapping? [[a b] [c d]]
+(defn range-overlapping? [[a b] [c d]]
   (and (<= c b) (>= c a)))
 
 
@@ -26,10 +26,10 @@
    count))
 
 (defn puzzle-1 [text]
-  (count-ranges text is-range-fully-contain?))
+  (count-ranges text range-fully-contain?))
 
 (defn puzzle-2 [text]
-  (count-ranges text is-range-overlapping?))
+  (count-ranges text range-overlapping?))
 
 
 

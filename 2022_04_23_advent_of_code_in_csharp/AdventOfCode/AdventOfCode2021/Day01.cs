@@ -14,7 +14,7 @@ static class Day1
         var result = CountIncreases(numers);
         return result.ToString();
     }
-    //=> input.Pipe(LoadData).Pipe(CountIncreases).Pipe(count => count.ToString());
+    //=> input.Pipe(LoadData).Pipe(CountIncreases).ToString();
 
     public static string Puzzle2(string input)
     {

@@ -1,6 +1,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static AdventOfCode.AdventOfCode2021.Option;
+using static AdventOfCode.Option;
 
 
 namespace AdventOfCode.AdventOfCode2021.Tests;
@@ -75,6 +75,38 @@ public class ExtensionsTests
         Assert.AreEqual("", new char[] { }.AggregateBack("", (p, c) => p + c));
         Assert.AreEqual("a", new char[] { 'a' }.AggregateBack("", (p, c) => p + c));
         Assert.AreEqual("cba", new char[] { 'a', 'b', 'c' }.AggregateBack("", (p, c) => p + c));
+    }
+
+
+    [TestMethod]
+    public void PartitionByTest()
+    {
+
+        var pairs = new[]
+      {
+            (new string[0].PartitionBy(IsSpace),""),
+            (new [] { "a"}.PartitionBy(IsSpace),"a"),
+            (new [] { "a", "b"}.PartitionBy(IsSpace),"a-b"),
+
+            (new [] { "a", "b", " ", "c" ,"d"}.PartitionBy(IsSpace),"a-b, ,c-d"),
+            (new [] { "a", "b", " ", " ", "c" ,"d"}.PartitionBy(IsSpace),"a-b, - ,c-d"),
+            (new [] { "a", "b", " ", }.PartitionBy(IsSpace),"a-b, "),
+
+            (new string?[] { "a", "b", null, null, "c"}.PartitionBy(IsNull),"a-b,-,c"),
+
+            (new [] { "a", "b", "cc", "dd" ,"e"}.PartitionBy(GetLength),"a-b,cc-dd,e"),
+
+        };
+
+        foreach (var (packs, result) in pairs)
+        {
+            Assert.AreEqual(result, packs.Select(w => w.JoinToString("-")).JoinToString());
+        }
+
+        static bool IsSpace(string str) => str is " ";
+        static bool IsNull(string? str) => str is null;
+        static int GetLength(string str) => str.Length;
+
     }
 
 

@@ -1,7 +1,7 @@
 
 using static System.Linq.Enumerable;
-using static AdventOfCode.AdventOfCode2021.Extensions;
-using static AdventOfCode.AdventOfCode2021.Option;
+using static AdventOfCode.Extensions;
+using static AdventOfCode.Option;
 
 namespace AdventOfCode.AdventOfCode2021;
 

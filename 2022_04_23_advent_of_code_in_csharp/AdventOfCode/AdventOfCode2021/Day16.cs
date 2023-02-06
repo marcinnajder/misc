@@ -1,6 +1,6 @@
 // #pragma warning disable CS8509
 
-using static AdventOfCode.AdventOfCode2021.Option;
+using static AdventOfCode.Option;
 
 namespace AdventOfCode.AdventOfCode2021;
 
