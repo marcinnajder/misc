@@ -4,9 +4,7 @@
   (:gen-class))
 
 (defn load-data [text]
-  (->> text
-       string/split-lines))
-
+  (string/split-lines text))
 
 (def priority-of-a (int \a))
 (def priority-of-A (int \A))

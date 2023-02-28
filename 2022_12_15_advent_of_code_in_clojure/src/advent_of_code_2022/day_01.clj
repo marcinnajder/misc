@@ -13,18 +13,6 @@
                '(()))))
 
 
-(defn load-data-2 [text]
-  (->> text
-       string/split-lines
-       (partition-by string/blank?)
-       (filter (comp not string/blank? first))
-       (map (partial map parse-long))))
-
-(defn puzzle-1 [text]
-  (->> text
-       load-data
-       (map #(apply + %))
-       (apply max)))
 
 (defn insert-sorted [xs x]
   (if (empty? xs)
@@ -34,17 +22,24 @@
         (cons x xs)
         (cons head (insert-sorted tail x))))))
 
-(defn insert-top-3 [xs x]
+(defn insert-sorted-preserving-length [xs x]
   (if (<= x (first xs))
     xs
     (rest (insert-sorted xs x))))
 
-(defn puzzle-2 [text]
+
+(defn puzzle [text top-n]
   (->> text
        load-data
        (map #(apply + %))
-       (reduce insert-top-3 (list 0 0 0))
+       (reduce insert-sorted-preserving-length (into '() (repeat top-n 0)))
        (apply +)))
+
+(defn puzzle-1 [text]
+  (puzzle text 1))
+
+(defn puzzle-2 [text]
+  (puzzle text 3))
 
 
 (comment
@@ -60,3 +55,20 @@
   (puzzle-2 text)
 
   :rfc)
+
+
+(apply)
+
+(defn load-data-2 [text]
+  (->> text
+       string/split-lines
+       (partition-by string/blank?)
+       (filter (comp not string/blank? first))
+       (map (partial map parse-long))))
+
+
+(defn puzzle-1- [text]
+  (->> text
+       load-data
+       (map #(apply + %))
+       (apply max)))

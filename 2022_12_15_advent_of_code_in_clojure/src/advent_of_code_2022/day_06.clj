@@ -22,7 +22,6 @@
   (puzzle text 14))
 
 
-
 (comment
   (def file-path "src/advent_of_code_2022/day_06.txt")
 
@@ -36,4 +35,31 @@
 
   :rfc)
 
+
+
+(defn inc-occurrs [occurrs c]
+  (update occurrs c (fnil inc 0)))
+
+(defn dec-occurrs [occurs c]
+  (let [c-occur (get occurs c)]
+    (if (= c-occur 1)
+      (dissoc occurs c)
+      (update occurs c dec))))
+
+(defn update-state [{:keys [queue occurrs]} index c]
+  (let [q-index (mod index (count queue))
+        old-c (get queue q-index)]
+    {:queue (assoc queue q-index c)
+     :occurrs (-> occurrs (dec-occurrs old-c) (inc-occurrs c))}))
+
+(defn puzzle' [text n]
+  (let [[first-n other] (split-at n text)]
+    (reduce
+     (fn [state [index c]]
+       (let [state (update-state state index c)]
+         (if (= (count (:occurrs state)) n)
+           (reduced (+ index n 1))
+           state)))
+     {:queue (into [] first-n) :occurrs (reduce inc-occurrs {} first-n)}
+     (map-indexed vector other))))
 

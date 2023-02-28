@@ -1,0 +1,148 @@
+
+
+//   (let [coll vector-1]
+//     [(first coll)
+//      (rest coll)
+//      (empty? coll)
+//      (nth coll 1)]) ;; => [1 (2) false 2]
+  
+  
+  
+  
+//   ;; - operacje na mapach
+  
+//   (get map-1 :name) ;; => "marcin"
+//   (map-1 :name) ;; => "marcin" (... mapa jest funkcja)
+//   (:name map-1) ;; => "marcin" (... keyword jest funkcja)
+  
+//   (assoc map-1 :address "wroclaw" :id 1) ;; =? {:name "marcin", :age 123, :address "wroclaw", :id 1}
+//   (dissoc map-1  :name :id) ;; => {:age 123}
+  
+//   (assoc map-1 :name "lukasz") ;; => {:name "lukasz", :age 123}
+  
+//   (update map-1 :name (fn [value] (str value "!"))) ;; => {:name "marcin!", :age 123}
+//   (update map-1 :name str "!") ;; => {:name "marcin!", :age 123}
+  
+  
+  
+  
+  
+//   ;; - zagniezdzone mapy
+  
+//   (def line {:start {:x 1 :y 2} :end {:x 10 :y 20}})
+  
+//   (get-in line [:start :x]) ;; => 1
+//   (assoc-in line [:start :x] 0) ;; => {:start {:x 0, :y 2}, :end {:x 10, :y 20}}
+  
+//   (update-in line [:start :x] inc) ;; => {:start {:x 2, :y 2}, :end {:x 10, :y 20}}
+//   (update-in line [:start :x] + 1) ;; => {:start {:x 2, :y 2}, :end {:x 10, :y 20}}
+  
+  
+  
+  
+//   ;; - operacje na mapach dzialaja takze z wektorem
+  
+//   (def users [{:name "James" :age 26}  {:name "John" :age 43}])
+  
+//   (get users 1) ;; {:name "John", :age 43}
+  
+//   (get-in users [1 :name]) ;; => "John"
+  
+//   (update-in users [1 :age] inc) ;; => [{:name "James", :age 26} {:name "John", :age 44}]
+  
+  
+  
+  
+//   ;; - map/filter/reduce/...
+  
+//   (map
+//    (fn [x] (* x 10))
+//    (filter odd? [1 2 3 4 5 6])) ; => (10 30 50)
+  
+//   (map
+//    #(* % 10)
+//    (filter odd? [1 2 3 4 5 6])) ; => (10 30 50)
+  
+  
+  
+//   ;; ->> "thread-last"
+//   (->>
+//    [1 2 3 4 5 6]
+//    (filter odd?)
+//    (map #(* % 10)))
+  
+//   (macroexpand
+//    '(->>
+//      [1 2 3 4 5 6]
+//      (filter odd?)
+//      (map #(* % 10))))
+  
+//   ;; => (map (fn* [p1__8212#] (* p1__8212# 10)) (filter odd? [1 2 3 4 5 6]))
+  
+  
+  
+  
+//   ;; -> "thread-first"
+  
+//   (assoc (assoc {} :name "marcin") :age 123)
+//   ;; => {:name "marcin", :age 123}
+  
+//   (->
+//    {}
+//    (assoc :name "marcin")
+//    (assoc :age 123))
+//   ;; => {:name "marcin", :age 123}
+  
+  
+//   (macroexpand
+//    `(->
+//      {}
+//      (assoc :name "marcin")
+//      (assoc :age 123)))
+//   ;; => (clojure.core/assoc (clojure.core/assoc {} :name "marcin") :age 123)
+  
+  
+//   ;; - rekurencja
+//   (defn sum-numbers [numbers]
+//     (if
+//      (empty? numbers)
+//       0
+//       (let [[head & tail] numbers]
+//         (+ head (sum-numbers tail)))))
+  
+//   (sum-numbers '())
+  
+//   (defn sum-numbers-with-tail-call [numbers total]
+//     (if
+//      (empty? numbers)
+//       total
+//       (let [[head & tail] numbers]
+//         (sum-numbers-with-tail-call tail (+ head total)))))
+  
+//   (sum-numbers-with-tail-call '(1 2 3) 0)
+  
+//   (defn sum-numbers-with-tail-call-recur [numbers total]
+//     (if
+//      (empty? numbers)
+//       total
+//       (let [[head & tail] numbers]
+//         (recur tail (+ head total)))))
+  
+  
+//   (sum-numbers-with-tail-call-recur '(1 2 3) 0)
+  
+//   (defn sum-numbers-with-tail-loop [numbers]
+//     (loop [lst numbers
+//            total 0]
+//       (if
+//        (empty? lst)
+//         total
+//         (let [[head & tail] lst]
+//           (recur tail (+ head total))))))
+  
+//   (sum-numbers-with-tail-loop '(1 2 3))
+  
+//   ;; todo
+//   ;; - sequence
+  
+  
