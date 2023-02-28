@@ -1,29 +1,17 @@
 # Clojure for JavaScript developers
 
+
 ```js
 var fs = require("fs");
 var os = require("os");
-var {
-  pipe,
-  skip: skip_,
-  elementat: elementat_,
-  find: find_,
-  some: some_,
-  map: map_,
-  filter: filter_,
-  repeatvalue: repeatvalue_,
-} = require("powerseq");
+var { pipe, skip: skip_, elementat: elementat_, find: find_, some: some_, map: map_, filter: filter_, repeatvalue: repeatvalue_ } = require("powerseq");
 
 function wrongArgType(arg) {
-  const argType = typeof arg !== "object" ? typeof arg : arg.constructor.name;
-  throw new Error(
-    `function '${wrongArgType.caller.name}' was called with argument of unexpected type '${argType}'`
-  );
+    const argType = typeof arg !== "object" ? typeof arg : arg.constructor.name;
+    throw new Error(`function '${wrongArgType.caller.name}' was called with argument of unexpected type '${argType}'`);
 }
 
-var throww = (message) => {
-  throw new Error(message);
-};
+var throww = message => { throw new Error(message); };
 ```
 
 #### Global variables
@@ -37,6 +25,7 @@ var throww = (message) => {
 var firstName = "marcin";
 console.log("my name is:", firstName);
 ```
+
 
 #### First-class function
 
@@ -56,6 +45,7 @@ add(1, 2);
 ((a, b) => a + b)(1, 2);
 ```
 
+
 #### Function definition, defn macro
 
 ```scheme
@@ -67,9 +57,10 @@ add(1, 2);
 
 ```js
 function add(a, b) {
-  return a + b;
+    return a + b;
 }
 ```
+
 
 #### Macros
 
@@ -102,7 +93,7 @@ eval(`${a} / ${b}`);
 ```js
 /** function takes at least 2 arguments */
 function addAtLeast2(a, b, ...restArgs) {
-  return a + b + restArgs.reduce((x, y) => x + y, 0);
+    return a + b + restArgs.reduce((x, y) => x + y, 0);
 }
 ```
 
@@ -130,24 +121,25 @@ function addAtLeast2(a, b, ...restArgs) {
 
 ```js
 function func1(a, b) {
-  if (a > b) {
-    var sum = a + b;
-    var value = sum % 10;
-    console.log("value:", value);
-    return value;
-  } else {
-    for (var n = 0; n < 3; n++) {
-      console.log(n, "hej");
-      console.log(n, "yo");
+    if (a > b) {
+        var sum = a + b;
+        var value = sum % 10;
+        console.log("value:", value);
+        return value;
+    } else {
+        for (var n = 0; n < 3; n++) {
+            console.log(n, "hej");
+            console.log(n, "yo");
+        }
+        for (var n of [3, 4, 5]) {
+            console.log(n, "hej");
+            console.log(n, "yo");
+        }
+        return 666;
     }
-    for (var n of [3, 4, 5]) {
-      console.log(n, "hej");
-      console.log(n, "yo");
-    }
-    return 666;
-  }
 }
 ```
+
 
 #### 'apply' function
 
@@ -185,10 +177,7 @@ add.bind(null, 1)(10); // => 11
 ```
 
 ```js
-var comp =
-  (...funcs) =>
-  (arg) =>
-    funcs.reduceRight((a, f) => f(a), arg);
+var comp = (...funcs) => arg => funcs.reduceRight((a, f) => f(a), arg);
 
 var incrementTwiceThenToString = comp(str, inc, inc);
 incrementTwiceThenToString(10); // => "12"
@@ -239,38 +228,34 @@ incrementTwiceThenToString(10); // => "12"
 ```
 
 ```js
-var nilp = (x) => typeof x === "undefined" || x === null;
-var stringp = (x) => typeof x === "string";
-var booleanp = (x) => typeof x === "boolean";
-var numberp = (x) => typeof x === "number";
-var functionp = (x) => typeof x === "function";
+var nilp = x => typeof x === "undefined" || x === null;
+var stringp = x => typeof x === "string";
+var booleanp = x => typeof x === "boolean";
+var numberp = x => typeof x === "number";
+var functionp = x => typeof x === "function";
 
 var plus = (...args) => args.reduce((p, c) => p + c, 0);
-var minus = (...args) =>
-  args.length === 1 ? -args[0] : args.reduce((p, c) => p - c);
+var minus = (...args) => args.length === 1 ? -args[0] : args.reduce((p, c) => p - c);
 var multiply = (...args) => args.reduce((p, c) => p * c, 1);
 var mod = (...args) => args.reduce((p, c) => p * c, 1);
-var inc = (x) => x + 1;
-var dec = (x) => x - 1;
+var inc = x => x + 1;
+var dec = x => x - 1;
 var mod = (x, div) => x % div;
-var abs = (x) => Math.abs(x);
+var abs = x => Math.abs(x);
 var max = (...xs) => Math.max(...xs);
 var min = (...xs) => Math.min(...xs);
-var evenp = (x) => x % 2 === 0;
-var oddp = (x) => x % 2 === 1;
-var zerop = (x) => x === 0;
-var posp = (x) => x > 0;
+var evenp = x => x % 2 === 0;
+var oddp = x => x % 2 === 1;
+var zerop = x => x === 0;
+var posp = x => x > 0;
 var str = (...args) => args.join("");
 
-var identity = (x) => x;
-var constantly = (x) => () => x;
-var complement =
-  (f) =>
-  (...args) =>
-    !f(...args);
+var identity = x => x;
+var constantly = x => () => x;
+var complement = f => (...args) => !f(...args);
 
-2 > 1 && "tata".endsWith("ta") && false; // => false
-2 > 1 || "tata".endsWith("ta") || false; // => true
+(2 > 1) && "tata".endsWith("ta") && false; // => false
+(2 > 1) || "tata".endsWith("ta") || false; // => true
 
 // ... in JS "" and 0 are also falshy
 "" && 0; // => ""
@@ -302,25 +287,24 @@ var empty = { type: "list-empty" };
 var cons = (head, tail) => ({ type: "list-cons", head, tail });
 
 function lengthOfList(list) {
-  return list.type === "list-empty" ? 0 : 1 + lengthOfList(list.tail);
+    return list.type === "list-empty" ? 0 : 1 + lengthOfList(list.tail);
 }
 
-var list = (...args) =>
-  args.reduceRight((tail, head) => cons(head, tail), empty);
-var listp = (coll) => coll.type === "list-empty" || coll.type === "list-cons";
+var list = (...args) => args.reduceRight((tail, head) => cons(head, tail), empty);
+var listp = coll => coll.type === "list-empty" || coll.type === "list-cons";
 var conjToList = (coll, item) => cons(item, coll);
 
 function* seqFromList(coll) {
-  var node = coll;
+    var node = coll;
 
-  while (node.type !== "list-empty") {
-    yield node.head;
-    node = node.tail;
-  }
+    while (node.type !== "list-empty") {
+        yield node.head;
+        node = node.tail;
+    }
 }
 
-var list1 = cons(1, cons(2, cons(3, empty)));
-var list2 = list(1, 2, 3);
+var list1 = cons(1, cons(2, cons(3, (empty))));
+var list2 = list(1, 2, 3);;
 lengthOfList(list1); // => 3
 listp(list()); // => true
 ```
@@ -335,8 +319,8 @@ listp(list()); // => true
 
 ```js
 var vector = (...args) => args;
-var vectorp = (coll) => Array.isArray(coll);
-var lengthOfVector = (coll) => coll.length;
+var vectorp = coll => Array.isArray(coll);
+var lengthOfVector = coll => coll.length;
 var conjToVector = (coll, item) => [...coll, item];
 
 vectorp(vector(1, 2, 3)); // => true
@@ -352,22 +336,14 @@ lengthOfVector(vector(1, 2, 3)); // => 3
 ```
 
 ```js
-var lengthOfMap = (coll) => Object.keys(coll).length;
+var lengthOfMap = coll => Object.keys(coll).length;
 function mapp(coll) {
-  return (
-    !listp(coll) &&
-    !vectorp(coll) &&
-    !setp(coll) &&
-    !functionp(coll) &&
-    !numberp(coll) &&
-    !stringp(coll) &&
-    !functionp(coll) &&
-    !nilp(coll)
-  );
+    return !listp(coll) && !vectorp(coll) && !setp(coll) && !functionp(coll)
+        && !numberp(coll) && !stringp(coll) && !functionp(coll) && !nilp(coll);
 }
 function conjToMap(coll, item) {
-  var [key, value] = Array.isArray(item) ? item : Object.entries(item)[0];
-  return { ...coll, [key]: value };
+    var [key, value] = Array.isArray(item) ? item : Object.entries(item)[0];
+    return { ...coll, [key]: value };
 }
 
 var map1 = { name: "marcin", age: 123 };
@@ -384,12 +360,11 @@ lengthOfMap({ name: "marcin" }); // => 2
 ```
 
 ```js
-var set = (items) => new Set(items);
+var set = items => new Set(items);
 var hashSet = (...items) => set(items);
-var setp = (coll) => coll instanceof Set;
-var lengthOfSet = (coll) => coll.size;
-var conjToSet = (coll, item) =>
-  coll.has(item) ? coll : new Set([...coll, item]);
+var setp = coll => coll instanceof Set;
+var lengthOfSet = coll => coll.size;
+var conjToSet = (coll, item) => coll.has(item) ? coll : new Set([...coll, item]);
 
 var set1 = set([1, 2, 3, 1]);
 var set2 = hashSet(1, 2, 3, 1);
@@ -408,15 +383,12 @@ lengthOfSet(hashSet(1, 2, 3)); // => 3
 ```
 
 ```js
-var seqp = (coll) => typeof coll[Symbol.iterator] !== "undefined";
+var seqp = coll => typeof coll[Symbol.iterator] !== "undefined";
 function seq(coll) {
-  return seqp(coll)
-    ? coll // string, array, set
-    : listp(coll)
-    ? seqFromList(coll)
-    : mapp(coll)
-    ? Object.entries(coll)
-    : wrongArgType(coll);
+    return seqp(coll) ? coll // string, array, set
+        : listp(coll) ? seqFromList(coll)
+            : mapp(coll) ? Object.entries(coll)
+                : wrongArgType(coll);
 }
 ```
 
@@ -445,39 +417,31 @@ function seq(coll) {
 
 ```js
 function count(coll) {
-  return listp(coll)
-    ? lengthOfList(coll)
-    : vectorp(coll)
-    ? lengthOfVector(coll)
-    : setp(coll)
-    ? lengthOfSet(coll)
-    : mapp(coll)
-    ? lengthOfMap(coll)
-    : wrongArgType(coll);
+    return listp(coll) ? lengthOfList(coll)
+        : vectorp(coll) ? lengthOfVector(coll)
+            : setp(coll) ? lengthOfSet(coll)
+                : mapp(coll) ? lengthOfMap(coll)
+                    : wrongArgType(coll);
 }
 
 function conj(coll, ...items) {
-  const conjItem = listp(coll)
-    ? conjToList
-    : vectorp(coll)
-    ? conjToVector
-    : setp(coll)
-    ? conjToSet
-    : mapp(coll)
-    ? conjToMap
-    : wrongArgType(coll);
+    const conjItem = listp(coll) ? conjToList
+        : vectorp(coll) ? conjToVector
+            : setp(coll) ? conjToSet
+                : mapp(coll) ? conjToMap
+                    : wrongArgType(coll)
 
-  return items.reduce(conjItem, coll);
+    return items.reduce(conjItem, coll);
 }
 
 var into = (coll, items) => conj(coll, ...items);
 
 into(list(1, 2, 3), vector(4, 5));
 
-var first = (coll) => find_(seq(coll));
-var rest = (coll) => (listp(coll) ? coll.tail : skip_(seq(coll), 1));
+var first = coll => find_(seq(coll));
+var rest = coll => listp(coll) ? coll.tail : skip_(seq(coll), 1);
 var nth = (coll, n) => elementat_(seq(coll), n);
-var emptyp = (coll) => !some_(seq(coll));
+var emptyp = coll => !some_(seq(coll));
 ```
 
 #### Map operations
@@ -497,58 +461,43 @@ var emptyp = (coll) => !some_(seq(coll));
 ```
 
 ```js
-var get = (coll, key) =>
-  vectorp(coll) || stringp(coll) || mapp(coll) ? coll[key] : wrongArgType(coll);
+var get = (coll, key) => vectorp(coll) || stringp(coll) || mapp(coll) ? coll[key] : wrongArgType(coll);
 
 function update(coll, key, func, ...args) {
-  return vectorp(coll)
-    ? coll.map((e, i) => (i === key ? func(e, ...args) : e))
-    : mapp(coll)
-    ? Object.entries({ [key]: null, ...coll }).reduce(
-        (o, [k, v]) => ({ ...o, [k]: k === key ? func(v, ...args) : v }),
-        {}
-      )
-    : wrongArgType(coll);
+    return vectorp(coll) ? coll.map((e, i) => i === key ? func(e, ...args) : e)
+        : mapp(coll) ? Object.entries({ [key]: null, ...coll }).reduce((o, [k, v]) => ({ ...o, [k]: k === key ? func(v, ...args) : v }), {})
+            : wrongArgType(coll);
 }
 
 function assoc(coll, ...kvs) {
-  if (nilp(coll) || kvs.length === 0) {
-    return coll;
-  }
+    if (nilp(coll) || kvs.length === 0) {
+        return coll;
+    }
 
-  const [key, value, ...other] = kvs;
+    const [key, value, ...other] = kvs;
 
-  const coll2 =
-    (vectorp(coll) || stringp(coll)) && (key < 0 || key >= coll.length)
-      ? throww("index out of bounds")
-      : stringp(coll)
-      ? coll.substring(0, key) + value + coll.substring(key + 1)
-      : update(coll, key, (_) => value);
+    const coll2 = (vectorp(coll) || stringp(coll)) && (key < 0 || key >= coll.length) ? throww("index out of bounds")
+        : stringp(coll) ? coll.substring(0, key) + value + coll.substring(key + 1)
+            : update(coll, key, _ => value);
 
-  return assoc(coll2, ...other);
+    return assoc(coll2, ...other);
 }
+
 
 function dissoc(coll, ...keys) {
-  const keysSet = new Set(keys);
-  return mapp(coll)
-    ? Object.entries(coll).reduce(
-        (o, [k, v]) => (keysSet.has(k) ? o : { ...o, [k]: v }),
-        {}
-      )
-    : wrongArgType(coll);
+    const keysSet = new Set(keys);
+    return mapp(coll)
+        ? Object.entries(coll).reduce((o, [k, v]) => keysSet.has(k) ? o : { ...o, [k]: v }, {})
+        : wrongArgType(coll);
 }
 
-var p1 = {
-  id: 1,
-  name: "marcin",
-  age: 123,
-  address: { city: "wroclaw", country: "poland" },
-};
+
+var p1 = { id: 1, name: "marcin", age: 123, address: { city: "wroclaw", country: "poland" } };
 
 get(p1, "name"); // => "marcin"
 get(vector(1, 2, 3), 1); // 2
 assoc(p1, "age", 5, "address", "wroclaw"); // => { address: 'wroclaw', age: 5, id: 1, name: 'marcin' }
-update(vector(1, 2, 3), 0, (v) => v + 10); // => [ 11, 2, 3 ]
+update(vector(1, 2, 3), 0, v => v + 10); // => [ 11, 2, 3 ]
 update(vector(1, 2, 3), 0, plus, 10, 5); // => [ 11, 2, 3 ]
 dissoc(p1, "name", "age"); // => { id: 1 }
 ```
@@ -567,46 +516,39 @@ dissoc(p1, "name", "age"); // => { id: 1 }
 
 ```js
 function getIn(coll, ks) {
-  const [key, ...other] = ks;
-  return nilp(coll) || ks.length === 0 ? coll : getIn(get(coll, key), other);
+    const [key, ...other] = ks;
+    return nilp(coll) || ks.length === 0 ? coll : getIn(get(coll, key), other);
 }
 
+
 function updateIn(coll, ks, func, ...args) {
-  const [key, ...other] = ks;
-  return nilp(coll) || ks.length === 0
-    ? coll
-    : ks.length === 1
-    ? update(coll, key, func, ...args)
-    : update(coll, key, (v) =>
-        updateIn(nilp(v) ? {} : v, other, func, ...args)
-      );
+    const [key, ...other] = ks;
+    return nilp(coll) || ks.length === 0 ? coll
+        : ks.length === 1 ? update(coll, key, func, ...args)
+            : update(coll, key, v => updateIn(nilp(v) ? {} : v, other, func, ...args));
 }
 
 function assocIn(coll, ks, value) {
-  return updateIn(coll, ks, (_) => value, value);
+    return updateIn(coll, ks, _ => value, value);
 }
 
 getIn(p1, ["address", "city"]);
 getIn(p1, ["address", "city", 0]); // => w
 
-updateIn(p1, ["name"], (x) => x + "!");
-updateIn(p1, ["lastName"], (x) => (x === null ? "null" : "!null"));
-updateIn(p1, ["address", "city"], (city) => city.toUpperCase());
-updateIn(p1, ["address", "postalCode"], (_) => 666);
-updateIn([p1, p1], [0, "name"], (name) => name + "!");
+updateIn(p1, ["name"], x => x + "!");
+updateIn(p1, ["lastName"], x => x === null ? "null" : "!null");
+updateIn(p1, ["address", "city"], city => city.toUpperCase());
+updateIn(p1, ["address", "postalCode"], _ => 666);
+updateIn([p1, p1], [0, "name"], name => name + "!");
 
 assocIn(p1, ["name"], "wojtek");
 assocIn(p1, ["lastName"], "w");
 assocIn(p1, ["address", "city"], "Krakow");
 assocIn(p1, ["address", "postalCode"], 666);
 assocIn([p1, p1], [0, "name"], "wojtek");
-assocIn(
-  assocIn({}, ["C", "photos", "image1.jpg"], 11111),
-  ["C", "photos", "image2.jpg"],
-  22222
-);
+assocIn(assocIn({}, ["C", "photos", "image1.jpg"], 11111), ["C", "photos", "image2.jpg"], 22222);
 // => { C: { photos: { 'image2.jpg': 22222, 'image1.jpg': 11111 } } }
-updateIn(p1, ["address"], dissoc, "city");
+updateIn(p1, ["address"], dissoc, "city")
 ```
 
 #### Map operations and vectors
@@ -617,6 +559,8 @@ updateIn(p1, ["address"], dissoc, "city");
 (get-in users [1 :name]) ;; => "John"
 (update-in users [1 :age] inc) ;; => [{:name "James", :age 26} {:name "John", :age 44}]
 ```
+
+
 
 #### Seq operators (map, filter, reduce, ... )
 
@@ -636,34 +580,30 @@ var filter = (f, coll) => filter_(seq(coll), f);
 var repeat = (n, x) => repeatvalue_(x, n);
 
 var reducedS = Symbol();
-var reduced = (v) => ({ s: reducedS, v });
+var reduced = v => ({ s: reducedS, v });
 function reduce(f, val, coll) {
-  return iter(seq(coll)[Symbol.iterator](), val);
+    return iter(seq(coll)[Symbol.iterator](), val);
 
-  function iter(iterator, total) {
-    var { done, value } = iterator.next();
-    if (done) {
-      return typeof value === "undefined" ? total : f(total, value);
+    function iter(iterator, total) {
+        var { done, value } = iterator.next();
+        if (done) {
+            return typeof value === "undefined" ? total : f(total, value);
+        }
+        var t = f(total, value);
+        return t.s === reducedS ? t.v : iter(iterator, t);
     }
-    var t = f(total, value);
-    return t.s === reducedS ? t.v : iter(iterator, t);
-  }
 }
 
-map(filter(oddp, list(1, 2, 3, 4, 5, 6)), (x) => x * 10);
+map(filter(oddp, list(1, 2, 3, 4, 5, 6)), x => x * 10);
 
 reduce((p, c) => p + c, 0, list());
 reduce((p, c) => p + c, 0, list(1, 2, 3));
 reduce((p, c) => (c === 2 ? reduced(1000 + p) : p + c), 0, list(1, 2, 3));
-reduce(
-  (p, c) => p + c,
-  0,
-  (function* () {
+reduce((p, c) => p + c, 0, (function* () {
     yield 10;
     yield 20;
     return 30;
-  })()
-);
+})());
 ```
 
 #### ->> ""thread-last"
@@ -684,19 +624,16 @@ reduce(
 ```
 
 ```js
-into(
-  vector(),
-  map((x) => x * 10, filter(oddp, list(1, 2, 3, 4, 5, 6)))
-);
+into(vector(), map(x => x * 10, filter(oddp, list(1, 2, 3, 4, 5, 6))));
 pipe(
-  list(1, 2, 3, 4, 5, 6),
-  (o) => filter(oddp, o),
-  (o) => map((x) => x * 10, o),
-  (o) => into(vector(), o)
+    list(1, 2, 3, 4, 5, 6),
+    o => filter(oddp, o),
+    o => map(x => x * 10, o),
+    o => into(vector(), o)
 ); // => [ 10, 30, 50 ]
 ```
 
-#### -> "thread-first"
+#### -> "thread-first" 
 
 ```scheme
 (assoc (assoc {} :name "marcin") :age 123) ;; => {:name "marcin", :age 123}
@@ -718,9 +655,9 @@ pipe(
 ```js
 assoc(assoc({}, "name", "marcin"), "age", 123);
 pipe(
-  {},
-  (o) => assoc(o, "name", "marcin"),
-  (o) => assoc(o, "age", 123)
+    {},
+    o => assoc(o, "name", "marcin"),
+    o => assoc(o, "age", 123)
 ); // => { age: 123, name: 'marcin' }
 ```
 
@@ -768,7 +705,8 @@ pipe(
 (sum-numbers-with-tail-loop '(1 2 3))
 ```
 
-#### Advent Of Code 2022 Day 1
+
+#### Advent Of Code 2022 Day 1 
 
 ```scheme
 ;; https://adventofcode.com/2022/day/1
@@ -809,7 +747,7 @@ pipe(
 
 (defn puzzle-2 [text]
   (puzzle text 3))
-
+  
 (comment
   (def file-path "src/advent_of_code_2022/day_01.txt")
   (def text (slurp file-path))
@@ -826,59 +764,53 @@ apply(add, list(1, 2));
 var partial = (f, ...args) => f.bind(null, ...args);
 partial(add, 1)(10);
 
-var integer_valueOf = (text) => parseInt(text);
-var string_splitLines = (text) => text.split(os.EOL);
-var string_blankp = (text) => text.trim().length === 0;
-var slurp = (filePath) => fs.readFileSync(filePath, "utf-8");
+var integer_valueOf = text => parseInt(text);
+var string_splitLines = text => text.split(os.EOL);
+var string_blankp = text => text.trim().length === 0;
+var slurp = filePath => fs.readFileSync(filePath, "utf-8");
 
 function loadData(text) {
-  return pipe(text, string_splitLines, (o) =>
-    reduce(
-      (lists, line) =>
-        string_blankp(line)
-          ? cons(list(), lists)
-          : cons(cons(integer_valueOf(line), first(lists)), rest(lists)),
-      list(list()),
-      o
-    )
-  );
+    return pipe(text,
+        string_splitLines,
+        o => reduce((lists, line) =>
+            string_blankp(line)
+                ? cons(list(), lists)
+                : cons(cons(integer_valueOf(line), first(lists)), rest(lists)),
+            list(list()), o));
 }
 
 function insertSorted(xs, x) {
-  return emptyp(xs)
-    ? list(x)
-    : x < first(xs)
-    ? cons(x, xs)
-    : cons(first(xs), insertSorted(rest(xs), x));
+    return emptyp(xs)
+        ? list(x)
+        : (x < first(xs) ? cons(x, xs) : cons(first(xs), insertSorted(rest(xs), x)));
 }
 
 function insertSortedPreservingLength(xs, x) {
-  return x <= first(xs) ? xs : rest(insertSorted(xs, x));
+    return x <= first(xs) ? xs : rest(insertSorted(xs, x))
 }
 
 function puzzle(text, topN) {
-  return pipe(
-    text,
-    loadData,
-    (o) => map((xs) => apply(plus, xs), o),
-    (o) => into(vector(), o),
-    (o) =>
-      reduce(insertSortedPreservingLength, into(list(), repeat(topN, 0)), o),
-    (o) => apply(plus, o)
-  );
+    return pipe(text,
+        loadData,
+        o => map(xs => apply(plus, xs), o),
+        o => into(vector(), o),
+        o => reduce(insertSortedPreservingLength, into(list(), repeat(topN, 0)), o),
+        o => apply(plus, o)
+    );
 }
 
 function puzzle1(text) {
-  return puzzle(text, 1);
+    return puzzle(text, 1);
 }
 function puzzle2(text) {
-  return puzzle(text, 3);
+    return puzzle(text, 3);
 }
 
 function comment() {
-  var filePath = "./day01.txt";
-  var text = slurp(filePath);
-  puzzle1(text);
-  puzzle2(text);
+    var filePath = "./day01.txt";
+    var text = slurp(filePath);
+    puzzle1(text);
+    puzzle2(text);
 }
 ```
+
