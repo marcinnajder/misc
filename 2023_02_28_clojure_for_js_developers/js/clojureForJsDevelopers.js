@@ -420,7 +420,7 @@ function reduce(f, val, coll) {
     }
 }
 
-map(filter(oddp, list(1, 2, 3, 4, 5, 6)), x => x * 10);
+map(x => x * 10, filter(oddp, list(1, 2, 3, 4, 5, 6)));
 
 reduce((p, c) => p + c, 0, list());
 reduce((p, c) => p + c, 0, list(1, 2, 3));

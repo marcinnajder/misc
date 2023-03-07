@@ -2,42 +2,32 @@
   (:require [clojure.string :as string])
   (:gen-class))
 
-#_(defn load-data [text]
-    (->>
-     text
-     string/split-lines
-     (mapv #(mapv int %))))
 
-(defn find-height [heightmap height]
-  (some
-   (fn [[row-index row]]
-     (let [column-index (first (keep-indexed #(when (= %2 height) %1) row))]
-       (when-not (nil? column-index) [row-index column-index])))
-   (map-indexed vector heightmap)))
+
+
+(defn all-positions [row-count column-count]
+  (for [row (range 0 row-count)
+        column (range 0 column-count)]
+    [row column]))
+
+(defn find-heights [heightmap row-count column-count height]
+  (filter #(= (get-in heightmap %) height) (all-positions row-count column-count)))
 
 
 (defn load-data [text]
   (let [heightmap (mapv #(mapv int %) (string/split-lines text))
         row-count (count heightmap)
         column-count (count (first heightmap))
-        start (find-height heightmap (int \S))
-        end (find-height heightmap (int \E))
-        data {:heightmap heightmap :row-count row-count :column-count column-count :start start :end end}]
+        start (first (find-heights heightmap row-count column-count (int \S)))
+        end (first (find-heights heightmap row-count column-count (int \E)))
+        heightmap (->
+                   heightmap
+                   (assoc-in start (int \a))
+                   (assoc-in end (int \z)))]
+    {:heightmap heightmap :row-count row-count :column-count column-count :end end :start start}))
 
-    (def track #{})
-    (def position start)
-    (def data data)
-    (def heightmap heightmap)
-    (def row-count row-count)
-    (def column-count column-count)
-    (def end end)
-    (def start start)
-    data))
-
-;; (def heightmap (load-data text))
 
 (defn neighbours [[row column] row-count column-count]
-  (println "neighbours" row column row-count column-count)
   (concat
    (when (> row 0) [[(dec row) column]])
    (when (> column 0) [[row (dec column)]])
@@ -47,110 +37,66 @@
      (when (< next-column column-count) [[row next-column]]))))
 
 
+;; https://admay.github.io/queues-in-clojure/
+(defn queue
+  ([] (clojure.lang.PersistentQueue/EMPTY))
+  ([coll]
+   (reduce conj clojure.lang.PersistentQueue/EMPTY coll)))
 
 
-;; (def start (find-height heightmap (int \S)))
-;; (def finish (find-height heightmap (int \E)))
-
-
-;; TODO
-;; - zamiast board-size powinnt byc column-count row-count
-;; - przemyslec jeszcze raz jak powinno dzialac zakonczenie wchodzenia na ostatni element
-;; tzn trzeba isc chyba do konca gdy juz nie mozna dalej i wtedy sprawdzac czy w okolicy 
-;; jest koniec
-
-(defn traverse [{:keys [heightmap row-count column-count start end] :as data}  position track]
-  (println "traverse: " position)
-
-  (let [track (conj track position)
-        value-of-postion (get-in heightmap position)]
-    #_break
-    (if
-     (= position end)
-      (do (println "KONIEC")
-          [track])
-      (->>
-       (neighbours position row-count column-count)
-       #_(remove (fn [x] true))
-       (remove track)
-
-       #_(map (fn [x]
-                (println x)
-                x))
-
-       (filter #(or
-                 (= position start)
-                 (= % end)
-                 (<= (- (get-in heightmap %) value-of-postion) 1)))
-
-       #_(take 1)
-      ;;  (map (fn [x]
-      ;;         (println x)
-      ;;         x))
-
-       (map #(traverse data % track))
-       (apply concat)))
-    ;
-    ))
-
-(let [result (traverse data position track)
-      _ (into [] result)]
-  (apply min (map count result)))
-
-
-;; (conj [] (traverse data position track))
-
-;; (defn puzzle-2 [text]
-;;   (let [heightmap (load-data text)
-;;         row-count (count heightmap)
-;;         column-count (count (first heightmap))
-;;         start (find-height heightmap (int \S))
-;;         end (find-height heightmap (int \E))
-;;         data {:heightmap heightmap :row-count row-count :column-count column-count :start start :end end}]
-
-;;     (def track #{})
-;;     (def position start)
-;;     (def data data)
-;;     (def heightmap heightmap)
-;;     (def row-count row-count)
-;;     (def column-count column-count)
-;;     (def end end)
-;;     (def start start)
+(defn calculate-minimal-costs [{:keys [heightmap row-count column-count]} start move?]
+  (loop [todo-queue (queue [start])
+         costs {start 0}]
+    (if (empty? todo-queue)
+      costs
+      (let [pos (peek todo-queue)
+            pos-height (get-in heightmap pos)
+            pos-cost (get costs pos)
+            pos-cost-next (inc pos-cost)
+            pos-neighbours
+            (->>
+             (neighbours pos row-count column-count)
+             (filter  #(move? pos-height (get-in heightmap %)))
+             (filter (fn [n]
+                       (let [n-cost (get costs n)]
+                         (or
+                          (nil? n-cost)
+                          (<  pos-cost-next n-cost))))))]
+        (recur
+         (into (pop todo-queue) pos-neighbours)
+         (reduce  #(assoc %1 %2 pos-cost-next) costs  pos-neighbours))))))
 
 
 
-;;     (println start end)
+(defn move-forward? [from-height to-height]
+  (<= (- to-height from-height) 1))
 
-;;     #_(traverse data start #{})
-;;     ;
-;;     ))
-
-;; (defn puzzle [text]
-;;   (let [heightmap (load-data text)
-;;         row-count (count heightmap)
-;;         column-count (count (first heightmap))
-;;         start (find-height heightmap (int \S))
-;;         end (find-height heightmap (int \E))
-;;         data {:heightmap heightmap :row-count row-count :column-count column-count :start start :end end}]
-
-;;     (def track #{})
-;;     (def position start)
-;;     (def data data)
-;;     (def heightmap heightmap)
-;;     (def row-count row-count)
-;;     (def column-count column-count)
-;;     (def end end)
-;;     (def start start)
+(defn puzzle-1 [text]
+  (let [{:keys [start end] :as data} (load-data text)]
+    (get (calculate-minimal-costs data start move-forward?) end)))
 
 
 
-;;     (println start end)
+(defn interior? [{:keys [heightmap row-count column-count]} pos]
+  (and
+   (= (get-in heightmap pos) (int \a))
+   (every? #(= (get-in heightmap %) (int \a)) (neighbours pos row-count column-count))))
 
-;;     #_(traverse data start #{})
-;;     ;
-;;     ))
 
-;; (find-height heightmap (int \E))
+(defn puzzle-2 [text]
+  (let [{:keys [end heightmap row-count column-count] :as data} (load-data text)
+        starts (find-heights heightmap row-count column-count (int \a))]
+    (->>
+     starts
+     (remove #(interior? data %))
+     (map #(get (calculate-minimal-costs data % move-forward?) end))
+     (remove nil?)
+     (apply min))))
+
+
+
+
+
 
 (comment
   (def file-path "src/advent_of_code_2022/day_12.txt")
@@ -158,8 +104,6 @@
   (def text (slurp file-path))
 
   (load-data text)
-
-  (def data (load-data text))
 
   (puzzle-1 text)
 
@@ -170,34 +114,40 @@
 
 
 
+(defn move-backward? [from-height to-height]
+  (move-forward? to-height from-height))
 
-;; (defn puzzle [text]
-;;   (let [monkeys (load-data text)
-;;         monkeys-count (count monkeys)
-;;         ;; monkeys-count 3
-;;         ]
-;;     ;; (def monkeys monkeys)
-;;     ;; (def monkeys-count monkeys-count)
+(defn puzzle-2' [text]
+  (let [{:keys [end heightmap row-count column-count] :as data} (load-data text)
+        costs (calculate-minimal-costs data end move-backward?)]
+    (->>
+     (all-positions row-count column-count)
+     (filter #(= (get-in heightmap %) (int \a)))
+     (keep #(get costs %))
+     (apply min))))
 
-;;     (reduce
-;;      (fn [monkeys index]
-;;        (let [{:keys [worry-levels op-value op-op if-test if-true if-false]} (get monkeys index)
-;;              monkeys (reduce
-;;                       (fn [monkeys worry-level]
-;;                         (let [worry-level (quot (op-op (or op-value worry-level) worry-level) 3)
-;;                               monkey-index (if (= (mod worry-level if-test) 0)
-;;                                              if-true
-;;                                              if-false)]
-;;                           (update-in monkeys [monkey-index :worry-levels] conj worry-level)))
-;;                       monkeys
-;;                       worry-levels)]
 
-;;          (->
-;;           monkeys
-;;           (update-in [index :inspects-count] + (count worry-levels))
-;;           (assoc-in [index :worry-levels] []))))
-;;      monkeys
-;;      (range 0 monkeys-count))
 
-;;     ;
-;;     ))
+;; https://www.redblobgames.com/pathfinding/a-star/introduction.html
+;; https://www.digitalocean.com/community/tutorials/breadth-first-search-depth-first-search-bfs-dfs
+;; Breadth-First Search (BFS) - implementation above
+;; Depth-First Search (DFS) - implementation below
+
+(defn traverse [{:keys [heightmap row-count column-count end] :as data}  position track]
+  (let [track (conj track position)
+        value-of-postion (get-in heightmap position)]
+    #_break
+    (if
+     (= position end)
+      [(count track)]
+      (->>
+       (neighbours position row-count column-count)
+       (remove track)
+       (filter  #(<= (- (get-in heightmap %) value-of-postion) 1))
+       (map #(traverse data % track))
+       (apply concat)))
+    ;
+    ))
+
+;; (apply min (traverse data position track))
+
