@@ -3,8 +3,6 @@
   (:gen-class))
 
 
-
-
 (defn all-positions [row-count column-count]
   (for [row (range 0 row-count)
         column (range 0 column-count)]
@@ -25,6 +23,7 @@
                    (assoc-in start (int \a))
                    (assoc-in end (int \z)))]
     {:heightmap heightmap :row-count row-count :column-count column-count :end end :start start}))
+
 
 
 (defn neighbours [[row column] row-count column-count]
@@ -109,6 +108,8 @@
 
   (puzzle-2 text)
 
+  (puzzle-2' text)
+
   :rfc)
 
 
@@ -123,7 +124,7 @@
     (->>
      (all-positions row-count column-count)
      (filter #(= (get-in heightmap %) (int \a)))
-     (keep #(get costs %))
+     (keep costs)
      (apply min))))
 
 

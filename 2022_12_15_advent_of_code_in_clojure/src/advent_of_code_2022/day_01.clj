@@ -57,7 +57,7 @@
   :rfc)
 
 
-(apply)
+
 
 (defn load-data-2 [text]
   (->> text
