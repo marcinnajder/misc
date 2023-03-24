@@ -12,6 +12,7 @@
   (:require advent-of-code-2022.day-11)
   (:require advent-of-code-2022.day-12)
   (:require advent-of-code-2022.day-13)
+  (:require advent-of-code-2022.day-15)
   (:gen-class))
 
 (defn -main
@@ -20,17 +21,21 @@
   (println "Hello, World!")
 
   (let [results
-        [(let [text (slurp "src/advent_of_code_2022/day_01.txt")] [(advent-of-code-2022.day-01/puzzle-1 text) (advent-of-code-2022.day-01/puzzle-2 text)])
-         (let [text (slurp "src/advent_of_code_2022/day_02.txt")] [(advent-of-code-2022.day-02/puzzle-1 text) (advent-of-code-2022.day-02/puzzle-2 text)])
-         (let [text (slurp "src/advent_of_code_2022/day_03.txt")] [(advent-of-code-2022.day-03/puzzle-1 text) (advent-of-code-2022.day-03/puzzle-2 text)])
-         (let [text (slurp "src/advent_of_code_2022/day_04.txt")] [(advent-of-code-2022.day-04/puzzle-1 text) (advent-of-code-2022.day-04/puzzle-2 text)])
-         (let [text (slurp "src/advent_of_code_2022/day_05.txt")] [(advent-of-code-2022.day-05/puzzle-1 text) (advent-of-code-2022.day-05/puzzle-2 text)])
-         (let [text (slurp "src/advent_of_code_2022/day_06.txt")] [(advent-of-code-2022.day-06/puzzle-1 text) (advent-of-code-2022.day-06/puzzle-2 text)])
-         (let [text (slurp "src/advent_of_code_2022/day_07.txt")] [(advent-of-code-2022.day-07/puzzle-1 text) (advent-of-code-2022.day-07/puzzle-2 text)])
-         (let [text (slurp "src/advent_of_code_2022/day_08.txt")] [(advent-of-code-2022.day-08/puzzle-1 text) (advent-of-code-2022.day-08/puzzle-2 text)])
-         (let [text (slurp "src/advent_of_code_2022/day_09.txt")] [(advent-of-code-2022.day-09/puzzle-1 text) (advent-of-code-2022.day-09/puzzle-2 text)])
-         (let [text (slurp "src/advent_of_code_2022/day_10.txt")] [(advent-of-code-2022.day-10/puzzle-1 text) (advent-of-code-2022.day-10/puzzle-2 text)])
-         (let [text (slurp "src/advent_of_code_2022/day_11.txt")] [(advent-of-code-2022.day-11/puzzle-1 text) (advent-of-code-2022.day-11/puzzle-2 text)])
-         (let [text (slurp "src/advent_of_code_2022/day_12.txt")] [(advent-of-code-2022.day-12/puzzle-1 text) (advent-of-code-2022.day-12/puzzle-2 text)])
-         (let [text (slurp "src/advent_of_code_2022/day_13.txt")] [(advent-of-code-2022.day-13/puzzle-1 text) (advent-of-code-2022.day-13/puzzle-2 text)])]]
+        [;
+         (time (let [text (slurp "src/advent_of_code_2022/day_01.txt")] [(advent-of-code-2022.day-01/puzzle-1 text) (advent-of-code-2022.day-01/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_02.txt")] [(advent-of-code-2022.day-02/puzzle-1 text) (advent-of-code-2022.day-02/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_03.txt")] [(advent-of-code-2022.day-03/puzzle-1 text) (advent-of-code-2022.day-03/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_04.txt")] [(advent-of-code-2022.day-04/puzzle-1 text) (advent-of-code-2022.day-04/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_05.txt")] [(advent-of-code-2022.day-05/puzzle-1 text) (advent-of-code-2022.day-05/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_06.txt")] [(advent-of-code-2022.day-06/puzzle-1 text) (advent-of-code-2022.day-06/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_07.txt")] [(advent-of-code-2022.day-07/puzzle-1 text) (advent-of-code-2022.day-07/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_08.txt")] [(advent-of-code-2022.day-08/puzzle-1 text) (advent-of-code-2022.day-08/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_09.txt")] [(advent-of-code-2022.day-09/puzzle-1 text) (advent-of-code-2022.day-09/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_10.txt")] [(advent-of-code-2022.day-10/puzzle-1 text) (advent-of-code-2022.day-10/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_11.txt")] [(advent-of-code-2022.day-11/puzzle-1 text) (advent-of-code-2022.day-11/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_12.txt")] [(advent-of-code-2022.day-12/puzzle-1 text) (advent-of-code-2022.day-12/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_13.txt")] [(advent-of-code-2022.day-13/puzzle-1 text) (advent-of-code-2022.day-13/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_14.txt")] [(advent-of-code-2022.day-14/puzzle-1 text) (advent-of-code-2022.day-14/puzzle-2 text)]))
+         ;
+         ]]
     (println results)))
