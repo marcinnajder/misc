@@ -12,6 +12,7 @@
   (:require advent-of-code-2022.day-11)
   (:require advent-of-code-2022.day-12)
   (:require advent-of-code-2022.day-13)
+  (:require advent-of-code-2022.day-14)
   (:require advent-of-code-2022.day-15)
   (:gen-class))
 
@@ -36,6 +37,7 @@
          (time (let [text (slurp "src/advent_of_code_2022/day_12.txt")] [(advent-of-code-2022.day-12/puzzle-1 text) (advent-of-code-2022.day-12/puzzle-2 text)]))
          (time (let [text (slurp "src/advent_of_code_2022/day_13.txt")] [(advent-of-code-2022.day-13/puzzle-1 text) (advent-of-code-2022.day-13/puzzle-2 text)]))
          (time (let [text (slurp "src/advent_of_code_2022/day_14.txt")] [(advent-of-code-2022.day-14/puzzle-1 text) (advent-of-code-2022.day-14/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_15.txt")] [(advent-of-code-2022.day-15/puzzle-1 text) (advent-of-code-2022.day-15/puzzle-2 text)]))
          ;
          ]]
     (println results)))
