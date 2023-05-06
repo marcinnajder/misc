@@ -7,7 +7,7 @@
   text)
 
 
-(defn calc-visible-face [shape-content [first-index & rest-indexes]]
+(defn calc-visible-face-indexes [shape-content [first-index & rest-indexes]]
   (reduce
    (fn [[found-indexes [from-max to-max] :as state] index]
      (let [[from to] (get shape-content index)]
@@ -19,9 +19,9 @@
 
 (defn calc-shape-properties [shape-content]
   (let [width (count shape-content)
-        [left-face [from to]] (calc-visible-face shape-content (range 0 width))
-        [right-face _] (calc-visible-face shape-content (reverse (range 0 width)))]
-    {:width width :height (inc (- to from)) \< left-face \> right-face}))
+        [left-face-indexes [from to]] (calc-visible-face-indexes shape-content (range 0 width))
+        [right-face-indexes _] (calc-visible-face-indexes shape-content (reverse (range 0 width)))]
+    {:width width :height (inc (- to from)) \< left-face-indexes \> right-face-indexes}))
 
 (def shape-types
   (->>
@@ -131,17 +131,17 @@
 (defn calc-height-of-board [board]
   (abs (apply min (map ffirst board))))
 
-(defn try-log-first-horizontal-shape-in-a-new-cycle [cycle-length board shape shape-counter position i prev-log-entry]
+(defn try-log-first-horizontal-shape-in-a-new-cycle [cycle-length board shape shape-counter position i prev-entry]
   (when (and (nil? position) (= (:type shape) :horizontal))
     (let [cycles (quot i  cycle-length)]
-      (when (not= cycles (:cycles prev-log-entry))
+      (when (not= cycles (:cycles prev-entry))
         (let [height (calc-height-of-board board)
-              h-diff (- height (:height prev-log-entry))
-              s-diff (- shape-counter (:shapes prev-log-entry))
+              h-diff (- height (:height prev-entry))
+              s-diff (- shape-counter (:shapes prev-entry))
               no (rem i cycle-length)]
           {:id {:no no :h-diff h-diff :s-diff s-diff} :cycles cycles :height height :shapes shape-counter})))))
 
-(defn speed-up-many-cycles [board shape-counter pattern final-number-of-shapes]
+(defn speed-up-with-many-cycles [board shape-counter pattern final-number-of-shapes]
   (let [[pattern-height pattern-shapes]
         (reduce (fn [[h s] {:keys [h-diff s-diff]}] [(+ h h-diff) (+ s s-diff)]) [0 0] pattern)
 
@@ -167,25 +167,25 @@
            shape-counter 0
            position nil
            i 0
-           log-previous init-log-entry
+           log-previous-entry init-log-entry
            log-ids '()
-           log-map {}
+           log-map-of-indexes {}
            log-i 0]
 
-      (let [{entry-id :id :as entry} (try-log-first-horizontal-shape-in-a-new-cycle cycle-length board shape shape-counter position i log-previous)
-            [pattern log' log-ids' log-map' log-i']
+      (let [{entry-id :id :as entry} (try-log-first-horizontal-shape-in-a-new-cycle cycle-length board shape shape-counter position i log-previous-entry)
+            [pattern log' log-ids' log-map-of-indexes' log-i']
             (if
              (nil? entry)
-              [nil log-previous log-ids log-map log-i]
-              [(try-find-pattern-of-many-reps log-ids log-map entry-id log-i  5)
-               entry (cons entry-id log-ids) (update log-map entry-id (fnil conj '()) log-i) (inc log-i)])]
+              [nil log-previous-entry log-ids log-map-of-indexes log-i]
+              [(try-find-pattern-of-many-reps log-ids log-map-of-indexes entry-id log-i  5)
+               entry (cons entry-id log-ids) (update log-map-of-indexes entry-id (fnil conj '()) log-i) (inc log-i)])]
 
         (cond
           (= shape-counter final-number-of-shapes)
           (calc-height-of-board board)
 
           pattern
-          (let [[board' shape-counter'] (speed-up-many-cycles board shape-counter pattern final-number-of-shapes)]
+          (let [[board' shape-counter'] (speed-up-with-many-cycles board shape-counter pattern final-number-of-shapes)]
             (recur board' all-moves shape rest-shapes shape-counter' nil i init-log-entry '() {} 0))
 
           :else
@@ -200,8 +200,8 @@
             (if
              (= (second old-position) (second new-position))
               (let [new-board (insert-shape board shape new-position)]
-                (recur new-board rest-moves (first rest-shapes) (rest rest-shapes) (inc shape-counter) nil i' log' log-ids' log-map' log-i'))
-              (recur board rest-moves shape rest-shapes shape-counter new-position i' log' log-ids' log-map' log-i'))))))))
+                (recur new-board rest-moves (first rest-shapes) (rest rest-shapes) (inc shape-counter) nil i' log' log-ids' log-map-of-indexes' log-i'))
+              (recur board rest-moves shape rest-shapes shape-counter new-position i' log' log-ids' log-map-of-indexes' log-i'))))))))
 
 (defn puzzle-1 [text]
   (puzzle text 2022))
@@ -244,8 +244,8 @@
             :cross [[[0 1] [0 2]], [[2 1] [0 2]]]
             :corner [[[0 2] [0 2]], [[2] [0 2]]]}]
      (let [shape (find-shape-of-type shape-types shape-type)]
-       (assert (= (calc-visible-face (:content shape) (range 0 (:width shape))) left-expected))
-       (assert (= (calc-visible-face (:content shape) (reverse (range 0 (:width shape)))) right-expected))))
+       (assert (= (calc-visible-face-indexes (:content shape) (range 0 (:width shape))) left-expected))
+       (assert (= (calc-visible-face-indexes (:content shape) (reverse (range 0 (:width shape)))) right-expected))))
 
   ;;  line-overlapping?
    (assert (not (line-overlapping? [] [5 7])))
