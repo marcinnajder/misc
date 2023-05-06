@@ -1,4 +1,4 @@
-(ns advent-of-code-2022.day-06
+(ns advent-of-code-2022.day-06-markers
   (:gen-class))
 
 (defn load-data [text]

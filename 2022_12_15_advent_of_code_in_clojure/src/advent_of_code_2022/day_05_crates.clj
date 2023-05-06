@@ -1,4 +1,4 @@
-(ns advent-of-code-2022.day-05
+(ns advent-of-code-2022.day-05-crates
   (:require [clojure.string :as string])
   (:gen-class))
 

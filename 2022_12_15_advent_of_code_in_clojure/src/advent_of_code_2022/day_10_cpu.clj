@@ -1,4 +1,4 @@
-(ns advent-of-code-2022.day-10
+(ns advent-of-code-2022.day-10-cpu
   (:require [clojure.string :as string])
   (:gen-class))
 

@@ -1,6 +1,7 @@
-(ns advent-of-code-2022.day-14
+(ns advent-of-code-2022.day-14-sand
   (:require [clojure.string :as string])
   (:gen-class))
+
 
 (defn merge-lines [[[from to :as head] & tail :as lines] [from-l to-l :as line]]
   (cond
@@ -17,6 +18,9 @@
      #(update %1 %2 (fnil merge-lines '()) [y1 y1])
      board
      (range (min x1 x2) (inc (max x1 x2))))))
+
+;; (def line "498,4 -> 498,6 -> 496,6")
+
 
 (defn insert-snake-line [board line]
   (->>

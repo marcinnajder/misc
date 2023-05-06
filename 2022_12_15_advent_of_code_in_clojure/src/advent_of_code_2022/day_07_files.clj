@@ -1,4 +1,4 @@
-(ns advent-of-code-2022.day-07
+(ns advent-of-code-2022.day-07-files
   (:require [clojure.string :as string])
   (:gen-class))
 

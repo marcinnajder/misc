@@ -1,7 +1,9 @@
-(ns advent-of-code-2022.day-13
+(ns advent-of-code-2022.day-13-packets
   (:require [clojure.string :as string])
   (:gen-class))
 
+
+;; (read-string "1")
 
 (defn load-data-parsing-line [text parse-line]
   (->>
@@ -12,6 +14,9 @@
 (defn load-data [text]
   (load-data-parsing-line text read-string))
 
+
+
+;; (assert (= (compare-packages 1 1) 0))
 
 (defn compare-packages [left right]
   (cond

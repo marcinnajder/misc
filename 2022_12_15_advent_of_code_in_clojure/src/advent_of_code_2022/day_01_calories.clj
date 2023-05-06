@@ -1,4 +1,4 @@
-(ns advent-of-code-2022.day-01
+(ns advent-of-code-2022.day-01-calories
   (:require [clojure.string :as string])
   (:gen-class))
 
@@ -11,8 +11,6 @@
                    (let [[inner-list & tail] lists]
                      (cons (cons (Integer/valueOf line) inner-list) tail))))
                '(()))))
-
-
 
 (defn insert-sorted [xs x]
   (if (empty? xs)

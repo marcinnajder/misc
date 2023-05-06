@@ -1,4 +1,4 @@
-(ns advent-of-code-2022.day-15
+(ns advent-of-code-2022.day-15-scanners
   (:require [clojure.string :as string])
   (:gen-class))
 
@@ -69,7 +69,7 @@
     (- points beacons-in-row)))
 
 
-
+;; (type (/ 10 3 ))
 
 
 (defn intersection-points-of-two-lines [[[sx-1 sy-1] [sx-2 sy-2]] [[bx-1 by-1] [bx-2 by-2]]]
