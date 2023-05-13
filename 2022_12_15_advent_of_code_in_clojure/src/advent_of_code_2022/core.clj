@@ -15,6 +15,7 @@
   (:require advent-of-code-2022.day-14-sand)
   (:require advent-of-code-2022.day-15-scanners)
   (:require advent-of-code-2022.day-17-tetris)
+  (:require advent-of-code-2022.day-18-droplets)
   (:gen-class))
 
 (defn -main
@@ -40,6 +41,7 @@
          (time (let [text (slurp "src/advent_of_code_2022/day_14.txt")] [(advent-of-code-2022.day-14-sand/puzzle-1 text) (advent-of-code-2022.day-14-sand/puzzle-2 text)]))
          (time (let [text (slurp "src/advent_of_code_2022/day_15.txt")] [(advent-of-code-2022.day-15-scanners/puzzle-1 text) (advent-of-code-2022.day-15-scanners/puzzle-2 text)]))
          (time (let [text (slurp "src/advent_of_code_2022/day_17.txt")] [(advent-of-code-2022.day-17-tetris/puzzle-1 text) (advent-of-code-2022.day-17-tetris/puzzle-2 text)]))
+         (time (let [text (slurp "src/advent_of_code_2022/day_18.txt")] [(advent-of-code-2022.day-18-droplets/puzzle-1 text) (advent-of-code-2022.day-18-droplets/puzzle-2 text)]))
          ;
          ]]
     (println results)))

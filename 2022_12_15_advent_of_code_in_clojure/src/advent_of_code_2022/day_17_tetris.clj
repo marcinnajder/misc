@@ -192,11 +192,11 @@
           (let [[old-position new-position rest-moves i']
                 (if
                  (nil? position)
-                  (let [[p rest-moves] (calc-init-postion board shape all-moves)]
-                    [p (move-down board shape p) rest-moves (+ i 4)])
-                  (let [[move & rest-moves] all-moves
+                  (let [[p rest-moves'] (calc-init-postion board shape all-moves)]
+                    [p (move-down board shape p) rest-moves' (+ i 4)])
+                  (let [[move & rest-moves'] all-moves
                         p (move-left-or-right board shape position move)]
-                    [p (move-down board shape p) rest-moves (+ i 1)]))]
+                    [p (move-down board shape p) rest-moves' (+ i 1)]))]
             (if
              (= (second old-position) (second new-position))
               (let [new-board (insert-shape board shape new-position)]
@@ -211,7 +211,7 @@
 
 
 (comment
-  (def file-path "src/advent_of_code_2022/day_17s.txt")
+  (def file-path "src/advent_of_code_2022/day_17.txt")
 
   (def text (slurp file-path))
 
