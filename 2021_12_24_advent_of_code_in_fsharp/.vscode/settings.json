@@ -3,5 +3,6 @@
         "**/bin/": true,
         "**/obj/": true,
         "**/TestResults/": true
-    }
+    } ,
+    "editor.codeLens": false    
 }
