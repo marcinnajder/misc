@@ -17,7 +17,7 @@
         c (range 1 (dec columns-count))]
     [l c]))
 
-(defn is-tree-visiable [{:keys [rows rows-count columns-count]} [row column]]
+(defn is-tree-visible [{:keys [rows rows-count columns-count]} [row column]]
   (let [value (get-in rows [row column])]
     (or
      (every? #(< (get-in rows [row %]) value) (range 0 column)) ; left
@@ -48,10 +48,10 @@
 
 (defn puzzle-1 [text]
   (let [data (load-data text)
-        visible-on-edges (+ (* 2 (:rows-count data)) (* 2 (- (:rows-count data) 2)))
+        visible-on-edges (+ (* 2 (:columns-count data)) (* 2 (- (:rows-count data) 2)))
         visible-interior (->>
                           (seq-of-interior-positions data)
-                          (filter #(is-tree-visiable data %))
+                          (filter #(is-tree-visible data %))
                           count)]
     (+ visible-on-edges visible-interior)))
 

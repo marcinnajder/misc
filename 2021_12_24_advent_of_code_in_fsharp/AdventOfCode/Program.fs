@@ -8,8 +8,8 @@ open AdventOfCode2021
 
 [<EntryPoint>]
 let main argv =
-    // let years, days  = { 2021..2021 }, { 10..10 }
-    let years, days = { 2015..2021 }, { 1..25 }
+    let years, days = { 2022..2022 }, { 1..6 }
+    // let years, days = { 2015..2021 }, { 1..25 }
 
 
     let allDayModuleNames =

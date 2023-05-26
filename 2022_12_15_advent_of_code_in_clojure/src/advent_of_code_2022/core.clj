@@ -15,7 +15,7 @@
   (:require advent-of-code-2022.day-14-sand)
   (:require advent-of-code-2022.day-15-scanners)
   (:require advent-of-code-2022.day-17-tetris)
-  (:require advent-of-code-2022.day-18-droplets)
+  (:require advent-of-code-2022.day-19-minerals)
   (:gen-class))
 
 (defn -main

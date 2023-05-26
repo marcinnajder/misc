@@ -8,12 +8,14 @@
 
   <ItemGroup><PackageReference Include="FSharpx.Collections" Version="3.0.1" />    
   </ItemGroup>
-
+  
   <ItemGroup>
     <Compile Include="Common/Common.fs" />
     <Compile Include="AdventOfCode2015/*.fs" />
     <Compile Include="AdventOfCode2021/*.fs" />
+    <Compile Include="AdventOfCode2022/*.fs" />
     <Compile Include="Program.fs" />    
+  
   </ItemGroup>
   
 </Project>

@@ -1,0 +1,19 @@
+{
+  "name": "oop_and_ocp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "del-dist": "rm -rf ./dist",
+    "tsc": "tsc",
+    "tsc-watch": "tsc --watch",
+    "ts-node": "ts-node",
+    "ts-node-1": "ts-node ./src/1_shapesOop.ts"
+  },
+  "author": "Marcin Najder",
+  "license": "ISC",
+  "dependencies": {
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
+  }
+}
