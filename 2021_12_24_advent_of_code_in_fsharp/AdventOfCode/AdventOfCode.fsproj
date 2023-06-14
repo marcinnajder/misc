@@ -1,21 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <WarnOn>3390;$(WarnOn)</WarnOn>
   </PropertyGroup>
-
-  <ItemGroup><PackageReference Include="FSharpx.Collections" Version="3.0.1" />    
+  <ItemGroup>
+    <PackageReference Include="FSharpx.Collections" Version="3.0.1" />
   </ItemGroup>
-  
   <ItemGroup>
     <Compile Include="Common/Common.fs" />
     <Compile Include="AdventOfCode2015/*.fs" />
     <Compile Include="AdventOfCode2021/*.fs" />
     <Compile Include="AdventOfCode2022/*.fs" />
-    <Compile Include="Program.fs" />    
-  
+    <Compile Include="Program.fs" />
   </ItemGroup>
-  
 </Project>

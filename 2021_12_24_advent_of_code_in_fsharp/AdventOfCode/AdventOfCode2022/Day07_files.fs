@@ -11,9 +11,9 @@ let linesToListOfFoldersWithSizes (lines: string seq) =
         ||> Seq.fold (fun state line ->
             if line.StartsWith("dir") then
                 state
-            else if line = "$ ls" then
-                {| state with CwdAsString = String.Join('/', List.rev state.Cwd) |}
-            else if line.StartsWith("$ cd ") then
+            elif line = "$ ls" then
+                {| state with CwdAsString = state.Cwd |> List.rev |> String.concat "/" |}
+            elif line.StartsWith("$ cd ") then
                 let dirName = line.Substring("$ cd ".Length)
                 let cwd = if dirName = ".." then List.tail state.Cwd else dirName :: state.Cwd
                 {| state with Cwd = cwd |}
@@ -26,15 +26,15 @@ let linesToListOfFoldersWithSizes (lines: string seq) =
 
 type Folder = { Size: int; Folders: Map<string, Folder> }
 
-let rec updateFolder segments size folder =
+let rec insertSubfolderSize segments size folder =
     match segments with
     | [] -> { folder with Size = size }
     | segment :: restSegments ->
         let folders =
             folder.Folders
             |> Map.change segment (function
-                | None -> Some(updateFolder restSegments size { Size = 0; Folders = Map.empty })
-                | Some f -> Some(updateFolder restSegments size f))
+                | None -> Some(insertSubfolderSize restSegments size { Size = 0; Folders = Map.empty })
+                | Some f -> Some(insertSubfolderSize restSegments size f))
         { folder with Folders = folders }
 
 let listToTree paths =
@@ -43,7 +43,7 @@ let listToTree paths =
     |> Seq.fold
         (fun folder (path: string, size) ->
             let segments = path.Split([| "/" |], StringSplitOptions.RemoveEmptyEntries) |> Array.toList
-            updateFolder segments size folder)
+            insertSubfolderSize segments size folder)
         { Size = 0; Folders = Map.empty }
 
 let rec treeToListOfSizes result folder =

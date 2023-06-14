@@ -69,7 +69,7 @@ let replicateData (data: int [,]) =
     result
 
 
-let neighbors (x, y) upperBound =
+let neighbours (x, y) upperBound =
     seq {
         if x > 0 then x - 1, y
         if x < upperBound then x + 1, y
@@ -95,7 +95,7 @@ let search (data: int [,]) =
         if current = theEnd then
             result <- costSoFar.[current]
         else
-            for next in neighbors current upperBound do
+            for next in neighbours current upperBound do
                 let newCost = costSoFar.[current] + data.[fst next, snd next]
                 let nextCostExists, nextCost = costSoFar.TryGetValue next
                 if (not nextCostExists) || (newCost < nextCost) then

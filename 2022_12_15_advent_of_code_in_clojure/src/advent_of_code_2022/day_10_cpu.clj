@@ -38,16 +38,14 @@
    load-data
    to-sequence-of-registry-values
    (map
-    (fn [x [index before after]]
-      (let [diff (abs (- x before))]
-        (if (or (= diff 0) (= diff 1)) "#" ".")))
-    (mapcat identity (repeat (range 0 40))))
+    (fn [[index before after]]
+      (let [diff (abs (- (mod (dec index) 40) before))]
+        (if (or (= diff 0) (= diff 1)) "#" "."))))
    (partition 40)
    (map #(apply str %))
    (apply str)
    ;EZFCHJAB
    ))
-
 
 
 (comment

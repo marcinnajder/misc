@@ -45,8 +45,8 @@ let findCharIncludedInAllCollections' colls =
 
 
 
-findCharIncludedInAllCollections (Seq.splitInto 2 "vJrwpWtwJgWrhcsFMMfFFhFp" |> Seq.toArray) = 'p' |> assertTrue
-findCharIncludedInAllCollections' (Seq.splitInto 2 "vJrwpWtwJgWrhcsFMMfFFhFp" |> Seq.toArray) = 'p' |> assertTrue
+findCharIncludedInAllCollections (Seq.splitInto 2 "vJrwpWtwJgWrhcsFMMfFFhFp" |> Seq.toArray) === 'p'
+findCharIncludedInAllCollections' (Seq.splitInto 2 "vJrwpWtwJgWrhcsFMMfFFhFp" |> Seq.toArray) === 'p'
 
-findCharIncludedInAllCollections (Seq.splitInto 2 "PmmdzqPrVvPwwTWBwg" |> Seq.toArray) = 'P' |> assertTrue
-findCharIncludedInAllCollections' (Seq.splitInto 2 "PmmdzqPrVvPwwTWBwg" |> Seq.toArray) = 'P' |> assertTrue
+findCharIncludedInAllCollections (Seq.splitInto 2 "PmmdzqPrVvPwwTWBwg" |> Seq.toArray) === 'P'
+findCharIncludedInAllCollections' (Seq.splitInto 2 "PmmdzqPrVvPwwTWBwg" |> Seq.toArray) === 'P'

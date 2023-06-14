@@ -3,10 +3,6 @@ module AdventOfCode2022.Day01
 open System
 open Common
 
-let input =
-    System.IO.File.ReadAllText
-        "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2022/Day0.txt"
-
 let loadData (input: string) =
     let lines = input.Split Environment.NewLine
     Seq.append lines [ "" ]
@@ -46,14 +42,14 @@ let puzzle2 input = puzzle input 3
 //  ** ** **
 
 
-(insertSorted [] 1 = [ 1 ]) |> assertTrue
-(insertSorted [ 2 ] 1 = [ 1; 2 ]) |> assertTrue
-(insertSorted [ 2; 3 ] 1 = [ 1; 2; 3 ]) |> assertTrue
-(insertSorted [ 1; 3 ] 2 = [ 1; 2; 3 ]) |> assertTrue
-(insertSorted [ 1; 2 ] 3 = [ 1; 2; 3 ]) |> assertTrue
+insertSorted [] 1 === [ 1 ]
+insertSorted [ 2 ] 1 === [ 1; 2 ]
+insertSorted [ 2; 3 ] 1 === [ 1; 2; 3 ]
+insertSorted [ 1; 3 ] 2 === [ 1; 2; 3 ]
+insertSorted [ 1; 2 ] 3 === [ 1; 2; 3 ]
 
-(insertSortedPreservingLength [ 1; 3 ] 0 = [ 1; 3 ]) |> assertTrue
-(insertSortedPreservingLength [ 1; 3 ] 1 = [ 1; 3 ]) |> assertTrue
-(insertSortedPreservingLength [ 1; 3 ] 2 = [ 2; 3 ]) |> assertTrue
-(insertSortedPreservingLength [ 1; 3 ] 3 = [ 3; 3 ]) |> assertTrue
-(insertSortedPreservingLength [ 1; 3 ] 4 = [ 3; 4 ]) |> assertTrue
+insertSortedPreservingLength [ 1; 3 ] 0 === [ 1; 3 ]
+insertSortedPreservingLength [ 1; 3 ] 1 === [ 1; 3 ]
+insertSortedPreservingLength [ 1; 3 ] 2 === [ 2; 3 ]
+insertSortedPreservingLength [ 1; 3 ] 3 === [ 3; 3 ]
+insertSortedPreservingLength [ 1; 3 ] 4 === [ 3; 4 ]

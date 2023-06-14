@@ -18,8 +18,11 @@ let parseNumbers (separator: char) (strings: string) =
 
 let assertTrue value = if value then () else failwith "assert error"
 
+let (===) actual expected = if actual = expected then () else failwithf "assertion failed: %A <> %A" actual expected
+
 let matchesNumbers text =
-    Regex.Matches(text, @"\d+") |> Seq.cast<Match> |> Seq.map (fun m -> Int32.Parse(m.Value)) |> Seq.toArray
+    Regex.Matches(text, @"(\-?)\d+") |> Seq.cast<Match> |> Seq.map (fun m -> Int32.Parse(m.Value)) |> Seq.toArray
+
 
 let matchesNumbers1 text =
     match matchesNumbers text with

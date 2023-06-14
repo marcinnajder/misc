@@ -26,5 +26,5 @@ let puzzle2 input = puzzle input 14
 
 // ** ** ** ** ** ** ** ** ** **
 
-isDistinct "abcd" = true |> assertTrue
-isDistinct "abca" = false |> assertTrue
+isDistinct "abcd" === true
+isDistinct "abca" === false

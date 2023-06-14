@@ -186,6 +186,7 @@
 
           pattern
           (let [[board' shape-counter'] (speed-up-with-many-cycles board shape-counter pattern final-number-of-shapes)]
+            #_(println "HEJ" (map :no log-ids) log-map-of-indexes)
             (recur board' all-moves shape rest-shapes shape-counter' nil i init-log-entry '() {} 0))
 
           :else
@@ -202,6 +203,34 @@
               (let [new-board (insert-shape board shape new-position)]
                 (recur new-board rest-moves (first rest-shapes) (rest rest-shapes) (inc shape-counter) nil i' log' log-ids' log-map-of-indexes' log-i'))
               (recur board rest-moves shape rest-shapes shape-counter new-position i' log' log-ids' log-map-of-indexes' log-i'))))))))
+
+(defn puzzle' [text final-number-of-shapes]
+  (loop [board init-board
+         all-moves (cycle (load-data text))
+         shape (first shape-types)
+         rest-shapes (rest (cycle shape-types))
+         shape-counter 0
+         position nil
+         i 0]
+    (cond
+      (= shape-counter final-number-of-shapes)
+      (calc-height-of-board board)
+
+      :else
+      (let [[old-position new-position rest-moves i']
+            (if
+             (nil? position)
+              (let [[p rest-moves'] (calc-init-postion board shape all-moves)]
+                [p (move-down board shape p) rest-moves' (+ i 4)])
+              (let [[move & rest-moves'] all-moves
+                    p (move-left-or-right board shape position move)]
+                [p (move-down board shape p) rest-moves' (+ i 1)]))]
+        (if
+         (= (second old-position) (second new-position))
+          (let [new-board (insert-shape board shape new-position)]
+            (recur new-board rest-moves (first rest-shapes) (rest rest-shapes) (inc shape-counter) nil i'))
+          (recur board rest-moves shape rest-shapes shape-counter new-position i'))))))
+
 
 (defn puzzle-1 [text]
   (puzzle text 2022))
