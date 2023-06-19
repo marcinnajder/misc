@@ -88,3 +88,6 @@ let puzzle2 input =
     |> Seq.choose (fun p -> calculateMinimalCosts data p |> Map.tryFind data.Finish)
     |> Seq.min
     |> string
+
+// ;; https://www.redblobgames.com/pathfinding/a-star/introduction.html
+// ;; https://www.digitalocean.com/community/tutorials/breadth-first-search-depth-first-search-bfs-dfs

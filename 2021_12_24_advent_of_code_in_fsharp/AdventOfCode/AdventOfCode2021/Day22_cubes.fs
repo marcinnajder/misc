@@ -2,6 +2,8 @@ module AdventOfCode2021.Day22
 
 // ionide v5.7.3
 open System
+//open Common
+open System.Collections.Generic
 
 let input =
     System.IO.File.ReadAllText
@@ -12,19 +14,20 @@ type Cube = { IsOn: bool; X: Range; Y: Range; Z: Range }
 
 let newCube a b c d e f = { IsOn = true; X = { Min = a; Max = b }; Y = { Min = c; Max = d }; Z = { Min = e; Max = f } }
 
-let loadData (input: string) =
-    let onOffPrefixLength = [ (true, "on ".Length); (false, "off ".Length) ] |> Map
-    let xyzPrefixLength = "x=".Length
-    let lines = input.Split Environment.NewLine
-    lines
+
+// matchesNumbers "on x=57743..70226,y=-61040..-49730,z=-9481..1779"
+
+
+
+let loadData2 (input: string) =
+    input.Split Environment.NewLine
     |> Array.map (fun line ->
         let isOn = line.StartsWith("on")
-        let parts = line.Substring(onOffPrefixLength.[isOn]).Split(",")
-        let cubes =
-            parts |> Array.map (fun part -> part.Substring(xyzPrefixLength).Split("..") |> Array.map Int32.Parse)
-        match cubes with
-        | [| [| x1; x2 |]; [| y1; y2 |]; [| z1; z2 |] |] -> { newCube x1 x2 y1 y2 z1 z2 with IsOn = isOn }
+        match matchesNumbers line with
+        | [| x1; x2; y1; y2; z1; z2 |] -> { newCube x1 x2 y1 y2 z1 z2 with IsOn = isOn }
         | _ -> failwith "Wrong format")
+
+// loadData input = loadData2 input
 
 
 let areRangesOverlapping range1 range2 = not (range2.Max < range1.Min || range2.Min > range1.Max)
@@ -80,33 +83,94 @@ let rec listToSeqOfHeadsTails lst =
             yield! listToSeqOfHeadsTails tail
     }
 
+
 let findOnPointsForListOfCubes cubes =
     let splittedCubes = splitCubes cubes
     let points =
         splittedCubes
         |> listToSeqOfHeadsTails
         |> Seq.collect (fun ((ons, offs), tail) ->
-            let allOffs = Seq.append offs (tail |> Seq.collect snd) |> Seq.toList
-            ons |> Seq.collect (fun cube -> findOnPoints cube allOffs))
+            let allOffs = Seq.append offs (Seq.collect snd tail) |> Seq.toList
+            Seq.collect (fun cube -> findOnPoints cube allOffs) ons)
         |> Seq.distinct
     points
 
 
-let data = loadData input
+let data = loadData2 input
 
 
 let bla =
     data
-    // |> Seq.filter (fun cube ->
-    //     (cube.X.Min >= -50 && cube.X.Max <= 50)
-    //     && (cube.Y.Min >= -50 && cube.Y.Max <= 50)
-    //     && (cube.Z.Min >= -50 && cube.Z.Max <= 50))
+    |> Seq.filter (fun cube ->
+        (cube.X.Min >= -50 && cube.X.Max <= 50)
+        && (cube.Y.Min >= -50 && cube.Y.Max <= 50)
+        && (cube.Z.Min >= -50 && cube.Z.Max <= 50))
     |> findOnPointsForListOfCubes
     |> Seq.fold (fun a _ -> a + 1L) 0L
 
+
+// wniosek z testow nizej: punktow nawet w jednym wymiarze jest zbyr duzo aby zapisywac jakies przedzialy Map<int*int, (int*int) list>
+
+
+
+// Seq.allPairs [ Seq.min; Seq.max ] [
+//     (fun (c: Cube) -> c.X)
+//     (fun (c: Cube) -> c.Y)
+//     (fun (c: Cube) -> c.X)
+// ]
+// |> Seq.map ( fun (minOrMax, selector) -> data |> Seq.map (fun c -> (selector c).Min )|> minOrMax, data |> Seq.map (fun c -> (selector c).Max )|> minOrMax)
+// |> Seq.toArray
+
+[ (fun (c: Cube) -> c.X); (fun (c: Cube) -> c.Y); (fun (c: Cube) -> c.Z) ]
+|> Seq.map (fun selector ->
+    data |> Seq.map (fun c -> (selector c).Min) |> Seq.min, data |> Seq.map (fun c -> (selector c).Max) |> Seq.max)
+|> Seq.map (fun (a, b) -> a, b, b - a)
+|> Seq.toArray
+|> ignore
+
+let i: int64 = 200000L * 200000L
+
+// seq {
+//     for x in 0..2000000 do
+//         for y in 0..2000000 do
+//             yield (x, y), 0
+// }
+// |> dict
+// |> ignore
+
+
+
+// let insertPoints (points: Map<int * int, int>) cube =
+//     let innerPoints =
+//         seq {
+//             for x in cube.X.Min .. cube.X.Max do
+//                 for y in cube.Y.Min .. cube.Y.Max do
+//                     yield x, y
+//         }
+//     if cube.IsOn then
+//         innerPoints |> Seq.fold (fun s p -> Map.change p (fun _ -> Some 0) s) points
+//     else
+//         innerPoints |> Seq.fold (fun s p -> Map.remove p s) points
+
+// data |> Seq.take 30 |> Seq.fold insertPoints (Map [])
+
+//data |> Seq.filter (fun c -> not c.IsOn ) |> Seq.map (fun c -> int64 ((c.X.Max - c.X.Min) * (c.Z.Max - c.Z.Min))) |> Seq.sum
+
+// [ data |> Seq.map (fun c -> int64 ((c.X.Max - c.X.Min) * (c.Z.Max - c.Z.Min))) |> Seq.sum
+//   data |> Seq.map (fun c -> int64 ((c.X.Max - c.X.Min) * (c.Y.Max - c.Y.Min))) |> Seq.sum
+//   data |> Seq.map (fun c -> int64 ((c.Z.Max - c.Z.Min) * (c.Y.Max - c.Y.Min))) |> Seq.sum ]
+
+// let a = 161638442878
+
+// 161638442878L - 40000000000L
+
+
+// data |> Seq.map (fun c -> c.X.Min) |> Seq.min
+// data |> Seq.map (fun c -> c.X.Max) |> Seq.max
+
 // let (a:int) = 2758514936282235
 
-let (b: int64) = 2758514936282235L
+//let (b: int64) = 2758514936282235L
 
 // let bla = findOnPointsForListOfCubes data |> Seq.toArray
 
@@ -119,14 +183,9 @@ let (b: int64) = 2758514936282235L
 
 
 
-// let c = newCube 1 2 5 7 10 10
-// if List.isEmpty offCubesOverlapping then
-//     Set.
-
-// let getPoints onCube offCubes =
 
 
 
 
-let puzzle1 (input: string) = input
-let puzzle2 (input: string) = input
+// let puzzle1 (input: string) = input
+// let puzzle2 (input: string) = input
