@@ -1,6 +1,14 @@
+using System.Collections;
+
 namespace AdventOfCode;
 
-public record LList<T>(T Head, LList<T>? Tail) { }
+public partial record LList<T>(T Head, LList<T>? Tail) { }
+
+// public partial record LList<T> : IEnumerable<T>
+// {
+//     public IEnumerator<T> GetEnumerator() => this.ToEnumerable().GetEnumerator();
+//     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+// }
 
 public static class LListM
 {
