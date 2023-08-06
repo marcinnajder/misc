@@ -1,0 +1,25 @@
+{
+  "name": "functional_dependency_injection",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "del-dist": "rm -rf ./dist",
+    "tsc": "tsc",
+    "tsc-watch": "tsc --watch",
+    "ts-node": "ts-node",
+    "ts-node-interfaces": "ts-node ./src/interfaces.ts",
+    "ts-node-registerVisitWithEnv": "ts-node ./src/registerVisitWithEnv.ts",
+    "ts-node-registerVisitWithDeps": "ts-node ./src/registerVisitWithDeps.ts"
+  },
+  "author": "Marcin Najder",
+  "license": "ISC",
+  "dependencies": {
+    "powerfp": "^0.0.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.6"
+  }
+}

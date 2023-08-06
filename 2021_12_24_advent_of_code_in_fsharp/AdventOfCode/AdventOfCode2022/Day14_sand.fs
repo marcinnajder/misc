@@ -88,6 +88,7 @@ let dropSand (board: Board) (floorRow: int option) =
     loop board 0
 
 
+// #time "on"
 // let sw = System.Diagnostics.Stopwatch.StartNew()
 
 let puzzle1 input = dropSand (loadData input) None |> string
