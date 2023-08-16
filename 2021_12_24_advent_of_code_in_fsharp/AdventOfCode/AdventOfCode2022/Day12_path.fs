@@ -61,7 +61,7 @@ let calculateMinimalCosts (data: Data) start =
                     match Map.tryFind n costs with
                     | None -> true
                     | Some nConst -> posCostNext < nConst)
-                |> Seq.toArray
+                |> Seq.toList
 
             let todoQueue' = posNeighbours |> Seq.fold (fun q p -> Queue.conj p q) (Queue.tail todoQueue)
             let costs' = posNeighbours |> Seq.fold (fun c p -> c |> Map.change p (fun _ -> Some posCostNext)) costs

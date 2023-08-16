@@ -112,19 +112,15 @@ let countScoreForBoard (board: Board) =
         | { Value = value } -> Some value)
     |> Seq.sum
 
-
-let puzzle1 (input: string) =
+let puzzle (input: string) chooseBoard =
     let data = loadData input
-    let n, b = data |> findWinningBoards |> Seq.head
+    let n, b = data |> findWinningBoards |> chooseBoard
     let result = n * countScoreForBoard b
     result |> string
 
+let puzzle1 (input: string) = puzzle input Seq.head
 
-let puzzle2 (input: string) =
-    let data = loadData input
-    let n, b = findWinningBoards data |> Seq.last
-    let result = n * countScoreForBoard b
-    result |> string
+let puzzle2 (input: string) = puzzle input Seq.last
 
 
 // *********************************************************************************************************

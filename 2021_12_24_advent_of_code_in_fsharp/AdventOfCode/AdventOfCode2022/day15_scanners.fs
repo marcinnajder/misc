@@ -3,9 +3,9 @@ module AdventOfCode2022.Day15
 open System
 open Common
 
-let input =
-    System.IO.File.ReadAllText
-        "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2022/Day15.txt"
+// let input =
+//     System.IO.File.ReadAllText
+//         "/Volumes/data/github/misc/2021_12_24_advent_of_code_in_fsharp/AdventOfCode/AdventOfCode2022/Day15.txt"
 
 type Entry = { Sensor: int * int; Beacon: int * int; Distance: int }
 

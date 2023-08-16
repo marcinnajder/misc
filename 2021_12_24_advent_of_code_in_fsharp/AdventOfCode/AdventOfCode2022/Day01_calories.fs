@@ -53,3 +53,18 @@ insertSortedPreservingLength [ 1; 3 ] 1 === [ 1; 3 ]
 insertSortedPreservingLength [ 1; 3 ] 2 === [ 2; 3 ]
 insertSortedPreservingLength [ 1; 3 ] 3 === [ 3; 3 ]
 insertSortedPreservingLength [ 1; 3 ] 4 === [ 3; 4 ]
+
+
+//  ** ** **
+
+// the simplest solution using sorting
+
+let loadData' (input: string) =
+    let lines = input.Split $"{Environment.NewLine}{Environment.NewLine}"
+    lines |> Seq.map (fun chunk -> chunk.Split Environment.NewLine |> Seq.sumBy Int32.Parse)
+
+let puzzle' input topN = input |> loadData' |> Seq.sortDescending |> Seq.take topN |> Seq.sum |> string
+
+let puzzle1' input = puzzle' input 1
+
+let puzzle2' input = puzzle' input 3

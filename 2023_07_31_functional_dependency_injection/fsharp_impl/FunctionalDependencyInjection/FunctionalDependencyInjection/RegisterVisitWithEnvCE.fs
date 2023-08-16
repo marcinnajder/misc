@@ -50,9 +50,7 @@ let addOrUpdatePatient (patient: PatientRegistrationInfoDto) =
 let createPayment visitId price email =
     di {
         let! env = id<#IExternalPaymentServiceP>
-
         let externalPaymentId = env.ExternalPaymentService.CreatePayment(visitId, price, email)
-
         let payment =
             { Id = ""
               UserEmail = email
