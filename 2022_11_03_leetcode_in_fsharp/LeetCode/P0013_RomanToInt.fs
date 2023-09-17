@@ -4,6 +4,8 @@
 
 module LeetCode.P0013_RomanToInt
 
+open Utils
+
 let digitsToInt I V X t digits =
     match digits with
     | d :: rest when d = I ->
@@ -45,9 +47,9 @@ let romanToInt (s: string) =
     |> snd
 
 
-let _ = romanToInt "III" // -> 3
-let _ = romanToInt "LVIII" // -> 58
-let _ = romanToInt "MCMXCIV" // ->  1994
+romanToInt "III" === 3
+romanToInt "LVIII" === 58
+romanToInt "MCMXCIV" === 1994
 
 
 

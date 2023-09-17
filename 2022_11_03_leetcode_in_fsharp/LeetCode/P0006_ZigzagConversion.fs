@@ -4,6 +4,8 @@
 
 module LeetCode.P0006_ZigzagConversion
 
+open Utils
+
 let convert (s: string) numRows =
     if numRows = 1 then
         s
@@ -14,7 +16,6 @@ let convert (s: string) numRows =
                 if i < 0 then 1, 1
                 else if i = numRows then numRows - 2, -1
                 else i, step
-
             Some(i', (i' + step', step')))
         |> Seq.zip s
         |> Seq.groupBy (fun (char, i) -> i)
@@ -22,6 +23,6 @@ let convert (s: string) numRows =
         |> Seq.map fst
         |> System.String.Concat
 
-let _ = convert "PAYPALISHIRING" 3 // -> PAHNAPLSIIGYIR
-let _ = convert "PAYPALISHIRING" 4 // -> PINALSIGYAHRPI
-let _ = convert "A" 1 // -> A
+convert "PAYPALISHIRING" 3 === "PAHNAPLSIIGYIR"
+convert "PAYPALISHIRING" 4 === "PINALSIGYAHRPI"
+convert "A" 1 === "A"

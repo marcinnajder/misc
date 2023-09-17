@@ -4,6 +4,7 @@
 
 module LeetCode.P0023_MergeKSortedLists
 
+open Utils
 
 let lists = [ [ 1; 4; 5 ]; [ 1; 3; 4 ]; [ 2; 6 ] ]
 
@@ -29,9 +30,10 @@ let rec mergeKLists lists =
             let done' = (mins |> Seq.map (fun (_, t, _) -> t)) |> Seq.append todo |> mergeKLists
             mins |> Seq.fold (fun s (h, _, _) -> h :: s) done'
 
-let _ =
-    mergeKLists [ [ 1; 4; 5 ]
-                  [ 1; 3; 4 ]
-                  [ 2; 6 ] ] // -> [1; 1; 2; 3; 4; 4; 5; 6]
 
-let _ = mergeKLists ([ [] ]: seq<list<int>>)
+mergeKLists [ [ 1; 4; 5 ]
+              [ 1; 3; 4 ]
+              [ 2; 6 ] ]
+=== [ 1; 1; 2; 3; 4; 4; 5; 6 ]
+
+mergeKLists ([ [] ]: seq<list<int>>) === []

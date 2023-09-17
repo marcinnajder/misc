@@ -4,6 +4,8 @@
 
 module LeetCode.P0392_IsSubsequence
 
+open Utils
+
 let isSubsequence (s: string) (t: string) =
     s
     |> Seq.scan
@@ -16,8 +18,8 @@ let isSubsequence (s: string) (t: string) =
     |> Seq.forall (fun i -> i <> -1)
 
 
-let _ = isSubsequence "abc" "ahbgdc" // -> true
-let _ = isSubsequence "axc" "ahbgdc"
+isSubsequence "abc" "ahbgdc" === false
+isSubsequence "axc" "ahbgdc" === false
 
 let isSubsequence' (s: string) (t: string) =
     t

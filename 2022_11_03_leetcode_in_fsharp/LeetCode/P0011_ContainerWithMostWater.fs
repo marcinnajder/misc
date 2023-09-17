@@ -4,6 +4,8 @@
 
 module LeetCode.P0011_ContainerWithMostWater
 
+open Utils
+
 let maxArea height =
     let lastIndex = Array.length height - 1
     height
@@ -12,8 +14,8 @@ let maxArea height =
     |> Seq.max
 
 
-let _ = maxArea [| 1; 8; 6; 2; 5; 4; 8; 3; 7 |] // -> 49
-let _ = maxArea [| 1; 1 |] // -> 1
+maxArea [| 1; 8; 6; 2; 5; 4; 8; 3; 7 |] === 49
+maxArea [| 1; 1 |] === 1
 
 
 

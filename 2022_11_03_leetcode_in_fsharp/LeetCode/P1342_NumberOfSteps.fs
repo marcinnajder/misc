@@ -2,8 +2,9 @@
 // tags: unfold, takeWhile
 // examples: 14 -> 6
 
+module LeetCode.P1342_NumberOfSteps
 
-module P1342_NumberOfSteps
+open Utils
 
 let numberOfSteps num =
     2 * num // +1 to the final result
@@ -14,8 +15,8 @@ let numberOfSteps num =
     |> Seq.length
 
 
-let _ = numberOfSteps 14 // -> 6
-let _ = numberOfSteps 8 // -> 4
-let _ = numberOfSteps 123 // -> 12
-let _ = numberOfSteps 8 // -> 4
-let _ = numberOfSteps 123 // -> 12
+numberOfSteps 14 === 6
+numberOfSteps 8 === 4
+numberOfSteps 123 === 12
+numberOfSteps 8 === 4
+numberOfSteps 123 === 12

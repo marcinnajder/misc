@@ -4,6 +4,8 @@
 
 module LeetCode.P0066_PlusOne
 
+open Utils
+
 let digits = [ 4; 3; 2; 2 ]
 
 let plusOne digits =
@@ -21,6 +23,6 @@ let plusOne digits =
     |> Seq.skipWhile (fun d -> d = 0)
     |> Seq.toArray
 
-let _ = plusOne [ 4; 3; 2; 2 ] // -> [|4; 3; 2; 3|]
-let _ = plusOne [ 1; 2; 3 ] // -> [|1; 2; 4|]
-let _ = plusOne [ 9 ] // -> [|1; 0|]
+plusOne [ 4; 3; 2; 2 ] === [| 4; 3; 2; 3 |]
+plusOne [ 1; 2; 3 ] === [| 1; 2; 4 |]
+plusOne [ 9 ] === [| 1; 0 |]
