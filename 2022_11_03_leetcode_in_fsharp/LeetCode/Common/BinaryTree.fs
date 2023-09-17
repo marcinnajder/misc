@@ -177,6 +177,8 @@ let rec mapTree mtree =
 
 
 
+
+
 "[]" |> parseNodes |> Seq.toList |> readMTree === MTip
 "[1]" |> parseNodes |> Seq.toList |> readMTree === MNode { Value = 1; Left = MTip; Right = MTip }
 
