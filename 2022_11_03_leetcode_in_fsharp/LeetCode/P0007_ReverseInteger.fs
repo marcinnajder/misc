@@ -6,7 +6,7 @@ module LeetCode.P0007_ReverseInteger
 
 open System
 
-let digitsOfIntReversed x = x |> Seq.unfold (fun n -> if n = 0 then None else Some((n % 10), (n / 10)))
+open Utils
 
 let reverse x =
     x
@@ -15,25 +15,25 @@ let reverse x =
     |> List.fold (fun (ten, total) d -> (ten * 10, total + d * ten)) (1, 0)
     |> snd
 
-let _ = reverse 123 // -> 321
-let _ = reverse -123 // -> -321
-let _ = reverse 120 // -> 21
+reverse 123 === 321
+reverse -123 === -321
+reverse 120 === 21
 
 
 type Status =
     | Processing
     | Completed of int
 
+let digitsOfIntReversed x = x |> Seq.unfold (fun n -> if n = 0 then None else Some((n % 10), (n / 10)))
+
 let reverseSafe x =
     let isInsideRange total increase =
         if x >= 0 then Int32.MaxValue - total >= increase else Int32.MinValue - total <= increase
-
     let digits = digitsOfIntReversed x |> Seq.fold (fun lst d -> d :: lst) [] // reverse items
 
     (digits, 1, 0)
     |> Seq.unfold (fun state ->
         let lst, tens, total = state
-
         match lst with
         | d :: rest ->
             let increase = d * tens

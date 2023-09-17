@@ -4,6 +4,8 @@
 
 module LeetCode.P0118_PascalsTriangle
 
+open Utils
+
 let pascalsTriangle rowNumber =
     [ 1 ]
     |> Seq.unfold (fun prev ->
@@ -16,9 +18,9 @@ let pascalsTriangle rowNumber =
     |> Seq.take rowNumber
     |> Seq.toArray
 
-let _ = pascalsTriangle 0 // -> [ ]
-let _ = pascalsTriangle 1 // -> [ [ 1 ] ]
-let _ = pascalsTriangle 2 // -> [ [ 1 ], [ 1, 1 ] ]
-let _ = pascalsTriangle 3 // -> [ [ 1 ], [ 1, 1 ], [ 1, 2, 1 ] ]
-let _ = pascalsTriangle 4 // -> [ [ 1 ], [ 1, 1 ], [ 1, 2, 1 ], [ 1, 3, 3, 1 ] ]
-let _ = pascalsTriangle 5 // -> [ [ 1 ], [ 1, 1 ], [ 1, 2, 1 ], [ 1, 3, 3, 1 ], [ 1, 4, 6, 4, 1 ] ]
+pascalsTriangle 0 === [||]
+pascalsTriangle 1 === [| [ 1 ] |]
+pascalsTriangle 2 === [| [ 1 ]; [ 1; 1 ] |]
+pascalsTriangle 3 === [| [ 1 ]; [ 1; 1 ]; [ 1; 2; 1 ] |]
+pascalsTriangle 4 === [| [ 1 ]; [ 1; 1 ]; [ 1; 2; 1 ]; [ 1; 3; 3; 1 ] |]
+pascalsTriangle 5 === [| [ 1 ]; [ 1; 1 ]; [ 1; 2; 1 ]; [ 1; 3; 3; 1 ]; [ 1; 4; 6; 4; 1 ] |]

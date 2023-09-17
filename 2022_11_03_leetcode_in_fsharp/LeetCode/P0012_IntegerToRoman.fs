@@ -4,6 +4,8 @@
 
 module LeetCode.P0012_IntegerToRoman
 
+open Utils
+
 let intToDigits (I, V, X) i =
     match i with
     | 1 -> [ (I: char) ]
@@ -26,7 +28,6 @@ let intToRoman num =
     |> Seq.fold (fun lst digits -> digits :: lst) [] // reverse list
     |> System.String.Concat
 
-
-let _ = intToRoman 3 // -> "III"
-let _ = intToRoman 58 // -> "LVIII"
-let _ = intToRoman 1994 // -> "MCMXCIV"
+intToRoman 3 === "III"
+intToRoman 58 === "LVIII"
+intToRoman 1994 === "MCMXCIV"

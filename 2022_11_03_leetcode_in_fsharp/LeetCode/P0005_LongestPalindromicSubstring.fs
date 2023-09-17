@@ -2,8 +2,9 @@
 // tags: unfold
 // examples: "babad" -> "bab"
 
-
 module LeetCode.P0005_LongestPalindromicSubstring
+
+open Utils
 
 let longestPalindromicSubstring (s: string) =
     let i, j =
@@ -20,11 +21,9 @@ let longestPalindromicSubstring (s: string) =
 
     s.Substring(i, j - i + 1)
 
-// longestPalindromicSubstring "bazzxczxckajakteasaqwwwwwpo" // -> kajak
-
-let _ = longestPalindromicSubstring "babad" // -> bab
-let _ = longestPalindromicSubstring "cbbd" // -> bb
-// let _ = longestPalindromicSubstring "bazzxczxckajakteasaqwwwwwpo" // -> kajak
+longestPalindromicSubstring "babad" === "bab"
+longestPalindromicSubstring "cbbd" === "bb"
+longestPalindromicSubstring "bazzxczxckajakteasaqwwwwwpo" === "kajak"
 
 
 let longestPalindromicSubstringOptimized (s: string) =

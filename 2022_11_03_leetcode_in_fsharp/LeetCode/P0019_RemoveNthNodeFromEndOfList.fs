@@ -4,6 +4,8 @@
 
 module LeetCode.P0019_RemoveNthNodeFromEndOfList
 
+open Utils
+
 let rec removeLastNth lst n =
     match lst with
     | [] -> [], 1
@@ -15,8 +17,8 @@ let rec removeLastNth lst n =
 
 let removeNthFromEnd lst n = removeLastNth lst n |> fst
 
-let _ = removeNthFromEnd [ 1; 2; 3; 4; 5 ] 2 // -> [1; 2; 3; 5]
-let _ = removeNthFromEnd [ 1; 2 ] 1 // -> [1]
+removeNthFromEnd [ 1; 2; 3; 4; 5 ] 2 === [ 1; 2; 3; 5 ]
+removeNthFromEnd [ 1; 2 ] 1 === [ 1 ]
 
 
 // previous implementation may cause stack overflow, but we walk through the list only once

@@ -4,14 +4,16 @@
 
 module LeetCode.P0035_SearchInsert
 
+open Utils
+
 let searchInsert nums target =
     { 0 .. (Array.length nums) - 1 }
     |> Seq.tryPick (fun i -> if nums[i] >= target then Some i else None)
     |> Option.defaultValue nums.Length
 
-let _ = searchInsert [| 1; 3; 5; 6 |] 5 // -> 2
-let _ = searchInsert [| 1; 3; 5; 6 |] 2 // -> 1
-let _ = searchInsert [| 1; 3; 5; 6 |] 7 // -> 4
+searchInsert [| 1; 3; 5; 6 |] 5 === 2
+searchInsert [| 1; 3; 5; 6 |] 2 === 1
+searchInsert [| 1; 3; 5; 6 |] 7 === 4
 
 // "You must write an algorithm with O(log n) runtime complexity."
 let searchInsert' (nums: int []) target =

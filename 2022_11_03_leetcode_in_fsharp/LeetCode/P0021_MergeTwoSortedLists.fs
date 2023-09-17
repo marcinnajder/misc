@@ -4,6 +4,8 @@
 
 module LeetCode.P0021_MergeTwoSortedLists
 
+open Utils
+
 let rec mergeTwoLists list1 list2 =
     match list1, list2 with
     | lst, [] -> lst
@@ -13,5 +15,5 @@ let rec mergeTwoLists list1 list2 =
         else if head1 < head2 then head1 :: mergeTwoLists tail1 list2
         else head2 :: mergeTwoLists list1 tail2
 
-let _ = mergeTwoLists [ 1; 2; 4 ] [ 1; 3; 4 ] // -> [1; 1; 2; 3; 4; 4]
-let _ = mergeTwoLists [] ([]: list<int>) // -> []
+mergeTwoLists [ 1; 2; 4 ] [ 1; 3; 4 ] === [ 1; 1; 2; 3; 4; 4 ]
+mergeTwoLists [] ([]: list<int>) === []

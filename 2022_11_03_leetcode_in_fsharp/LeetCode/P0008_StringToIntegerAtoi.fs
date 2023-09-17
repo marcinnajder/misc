@@ -4,6 +4,8 @@
 
 module LeetCode.P0008_StringToIntegerAtoi
 
+open Utils
+
 open System
 
 let rec readDigits chars =
@@ -28,9 +30,9 @@ let myAtoi s =
         | _ -> (tens * 10, total + (d |> string |> Int32.Parse) * tens))
     |> snd
 
-let _ = myAtoi "42" // -> 42
-let _ = myAtoi "   -42" // -> -42
-let _ = myAtoi "4193 with words" // -> 4193
+myAtoi "42" === 42
+myAtoi "   -42" === -42
+myAtoi "4193 with words" === 4193
 
 // todo
 // If the integer is out of the 32-bit signed integer range [-231, 231 - 1],

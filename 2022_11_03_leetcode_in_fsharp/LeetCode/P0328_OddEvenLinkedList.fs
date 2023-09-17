@@ -4,6 +4,8 @@
 
 module LeetCode.P0328_OddEvenLinkedList
 
+open Utils
+
 // mutable list
 type MList = { Value: int; mutable Next: MList option }
 
@@ -55,8 +57,8 @@ let rec mlistToSeq (mlst: MList option) =
         | _ -> ()
     }
 
-let _ = [ 1; 2; 3; 4; 5 ] |> seqToMList |> oddEvenList |> mlistToSeq |> Seq.toArray // ->  [|1; 3; 5; 2; 4|]
-let _ = [ 2; 1; 3; 5; 6; 4; 7 ] |> seqToMList |> oddEvenList |> mlistToSeq |> Seq.toArray // -> [|2; 3; 6; 7; 1; 5; 4|]
+[ 1; 2; 3; 4; 5 ] |> seqToMList |> oddEvenList |> mlistToSeq |> Seq.toArray === [| 1; 3; 5; 2; 4 |]
+[ 2; 1; 3; 5; 6; 4; 7 ] |> seqToMList |> oddEvenList |> mlistToSeq |> Seq.toArray === [| 2; 3; 6; 7; 1; 5; 4 |]
 
 
 // imutable list
@@ -69,5 +71,5 @@ let rec oddEvenList' lst =
         (odd :: odds), (even :: evens)
     | _ -> lst, []
 
-let _ = [ 1; 2; 3; 4; 5 ] |> oddEvenList' |> (fun (odds, evens) -> odds @ evens) // -> [1; 3; 5; 2; 4]
-let _ = [ 2; 1; 3; 5; 6; 4; 7 ] |> oddEvenList' |> (fun (odds, evens) -> odds @ evens) // -> [2; 3; 6; 7; 1; 5; 4]
+[ 1; 2; 3; 4; 5 ] |> oddEvenList' |> (fun (odds, evens) -> odds @ evens) === [ 1; 3; 5; 2; 4 ]
+[ 2; 1; 3; 5; 6; 4; 7 ] |> oddEvenList' |> (fun (odds, evens) -> odds @ evens) === [ 2; 3; 6; 7; 1; 5; 4 ]

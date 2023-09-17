@@ -4,6 +4,8 @@
 
 module LeetCode.P0003_LengthOfLongestSubstring
 
+open Utils
+
 let lengthOfLongestSubstring (s: string) =
     { 0 .. s.Length - 1 }
     |> Seq.scan
@@ -11,11 +13,7 @@ let lengthOfLongestSubstring (s: string) =
             let currentLength =
                 { i .. s.Length - 1 }
                 |> Seq.scan
-                    (fun (set, exits) j ->
-                        if Set.contains s.[j] set then
-                            set, true
-                        else
-                            (Set.add s.[j] set), false)
+                    (fun (set, exits) j -> if Set.contains s.[j] set then set, true else (Set.add s.[j] set), false)
                     (Set.empty, false)
                 |> Seq.takeWhile (fun (set, exits) -> not exits)
                 |> Seq.map fst
@@ -30,6 +28,6 @@ let lengthOfLongestSubstring (s: string) =
     |> Seq.last
 
 
-let _ = lengthOfLongestSubstring "abcabcbb" // -> 3
-let _ = lengthOfLongestSubstring "bbbbb" // -> 1
-let _ = lengthOfLongestSubstring "pwwkew" // -> 2
+lengthOfLongestSubstring "abcabcbb" === 3
+lengthOfLongestSubstring "bbbbb" === 1
+lengthOfLongestSubstring "pwwkew" === 2

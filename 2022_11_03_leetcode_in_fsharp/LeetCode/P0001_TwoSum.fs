@@ -2,19 +2,15 @@
 // tags: collect, find
 // examples: [| 2; 7; 11; 15 |] -> 9
 
-
-// R E P L
 module LeetCode.P0001_TwoSum
 
-
-// let nums = [| 2; 7; 11; 15 |]
-// let target = 9
+open Utils
 
 let twoSum nums target =
     { 0 .. Array.length nums - 1 }
     |> Seq.collect (fun i -> { 0 .. i - 1 } |> Seq.map (fun j -> (j, i)))
     |> Seq.find (fun (j, i) -> nums.[i] + nums.[j] = target)
 
-let _ = twoSum [| 2; 7; 11; 15 |] 9 // -> [0, 1]
-let _ = twoSum [| 3; 2; 4 |] 6 // -> [ 1, 2 ]
-let _ = twoSum [| 3; 3 |] 6 // -> [ 0, 1 ]
+twoSum [| 2; 7; 11; 15 |] 9 === (0, 1)
+twoSum [| 3; 2; 4 |] 6 === (1, 2)
+twoSum [| 3; 3 |] 6 === (0, 1)

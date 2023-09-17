@@ -4,6 +4,8 @@
 
 module LeetCode.P0014_LongestCommonPrefix
 
+open Utils
+
 let longestCommonPrefix (strs: string []) =
     { 0 .. (strs |> Seq.map (fun str -> str.Length) |> Seq.min) - 1 }
     |> Seq.map (fun i ->
@@ -13,12 +15,6 @@ let longestCommonPrefix (strs: string []) =
     |> Seq.map fst
     |> System.String.Concat
 
-let _ =
-    longestCommonPrefix [| "flower"
-                           "flow"
-                           "flight" |] // -> "fl"
 
-let _ =
-    longestCommonPrefix [| "dog"
-                           "racecar"
-                           "car" |] // -> ""
+[| "flower"; "flow"; "flight" |] |> longestCommonPrefix === "fl"
+[| "dog"; "racecar"; "car" |] |> longestCommonPrefix === ""
