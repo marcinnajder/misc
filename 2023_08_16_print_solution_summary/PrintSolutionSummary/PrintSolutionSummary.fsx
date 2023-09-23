@@ -3,7 +3,10 @@ open System.IO
 open System.Text.RegularExpressions
 open System.Xml.Linq
 
-let slnFilePath = "\n\n...... put sln file path here ......\n\n"
+// let slnFilePath = "\n\n...... put sln file path here ......\n\n"
+// let slnFilePath = "/Volumes/data/gitlab/mednote2/comarch.mednote.2.0/src/server/src/Comarch.MedNote.sln"
+// let slnFilePath = "/Volumes/data/github/FunPizzaShop/FunPizzaShop.sln"
+let slnFilePath = "/Volumes/data/github/MyDataBot/MyDataBot.sln"
 
 type Project = { Path: string; ProjectRefs: string []; PackageRefs: string [] }
 
