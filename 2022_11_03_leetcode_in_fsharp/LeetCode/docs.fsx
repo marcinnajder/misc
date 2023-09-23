@@ -27,7 +27,7 @@ let lines, allTagsSeq =
             None)
     |> Seq.sortBy fst
     |> Seq.mapi (fun i (name, info) ->
-        ($"[{i + 1}]({name}.fs). [{name}]({info.Url}) {info.Examples} {String.Join(',', info.Tags)}{Environment.NewLine}"),
+        ($"- [{i + 1}]({name}.fs). [{name}]({info.Url}) {info.Examples} {String.Join(',', info.Tags)}{Environment.NewLine}"),
         info.Tags)
     |> Seq.mapFold (fun allTags (line, tags) -> (line, Seq.append allTags tags)) (Seq.empty)
 
