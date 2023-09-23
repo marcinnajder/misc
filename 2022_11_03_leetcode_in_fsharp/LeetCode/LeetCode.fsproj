@@ -1,17 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="Common/Utils.fs" />
     <Compile Include="Common/BinaryTree.fs" />
-    <Compile Include="*.fs" Exclude="Common/**/*.fs"/>    
+    <Compile Include="*.fs" Exclude="Common/**/*.fs" />
   </ItemGroup>
-
-
-
 </Project>
-

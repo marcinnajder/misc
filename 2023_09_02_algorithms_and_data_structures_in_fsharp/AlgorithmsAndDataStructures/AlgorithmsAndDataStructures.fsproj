@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Common/Utils.fs" />    
+    <Compile Include="BinaryTree.fs" />
+    <Compile Include="BinaryTreeMaxPath.fs" /> 
+    <Compile Include="BinaryTreeDelete.fs" /> 
+    <Compile Include="BinaryTreeOthers.fs" />         
+    <Compile Include="Queue.fs" />         
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+</Project>

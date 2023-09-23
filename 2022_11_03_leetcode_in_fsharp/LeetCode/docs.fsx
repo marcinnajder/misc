@@ -13,7 +13,7 @@ let parseFile filePath =
             | i -> Some(line.Substring(0, i).TrimStart('/').TrimStart(), line.Substring(i + 1).Trim()))
         |> Map
     let url = map |> Map.tryFind "url" |> Option.defaultValue ""
-    let tags = (map |> Map.tryFind "tags" |> Option.defaultValue "").Split(',')
+    let tags = (map |> Map.tryFind "tags" |> Option.defaultValue "").Split(',', StringSplitOptions.TrimEntries)
     let examples = map |> Map.tryFind "examples" |> Option.map (fun v -> $"`{v}`") |> Option.defaultValue ""
     {| Url = url; Tags = tags; Examples = examples |}
 
@@ -27,8 +27,11 @@ let lines, allTagsSeq =
             None)
     |> Seq.sortBy fst
     |> Seq.mapi (fun i (name, info) ->
-        ($"{i + 1}. [{name}]({info.Url}) {info.Examples} {String.Join(',', info.Tags)}{Environment.NewLine}"), info.Tags)
+        ($"[{i + 1}]({name}.fs). [{name}]({info.Url}) {info.Examples} {String.Join(',', info.Tags)}{Environment.NewLine}"),
+        info.Tags)
     |> Seq.mapFold (fun allTags (line, tags) -> (line, Seq.append allTags tags)) (Seq.empty)
+
+
 
 let tagsString =
     allTagsSeq
@@ -48,4 +51,4 @@ let docsContent =
 
 let docsFilePath = Path.Combine(folderPath, "docs.md")
 File.WriteAllText(docsFilePath, docsContent)
-printfn "wygenerowany został plik: %s" docsFilePath
+printfn "file has been generated: %s" docsFilePath
