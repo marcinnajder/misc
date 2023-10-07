@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Common/Utils.fs" />    
+    <Compile Include="AvlTree.fs" />
     <Compile Include="BinaryTree.fs" />
     <Compile Include="BinaryTreeMaxPath.fs" /> 
     <Compile Include="BinaryTreeDelete.fs" /> 

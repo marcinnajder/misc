@@ -177,8 +177,6 @@ let rec mapTree mtree =
 
 
 
-
-
 "[]" |> parseNodes |> Seq.toList |> readMTree === MTip
 "[1]" |> parseNodes |> Seq.toList |> readMTree === MNode { Value = 1; Left = MTip; Right = MTip }
 
@@ -186,3 +184,8 @@ let compareTree text = text |> parseNodes |> Seq.toList |> readMTree |> mapTree 
 
 compareTree "[1,null,2,3]"
 compareTree "[3,9,20,null,null,15,7]"
+
+
+
+
+let bst = "[10,5,15,2,7,13,20,1,3,6,8,12,14,19,25]" |> parseTree

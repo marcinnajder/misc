@@ -18,6 +18,8 @@ let rec insert value tree =
     | Node (v, left, right) ->
         if value <= v then Node(v, insert value left, right) else Node(v, left, insert value right)
 
+Tip |> insert 10 |> insert 15 |> insert 5 === Node(10, Node(5, Tip, Tip), Node(15, Tip, Tip))
+
 
 // ************************************************************************
 // pretty printing tree
@@ -96,7 +98,6 @@ splitAt [ 1; 2; 3 ] 4 === ([ 1; 2; 3 ], 3, [])
 
 let rec readLevel n items =
     let nItems, nItemsLength, restItems = splitAt items n
-
     if nItemsLength < n || List.isEmpty restItems then
         Seq.append nItems (Seq.replicate (n - nItemsLength) None)
         |> Seq.map (function
@@ -105,12 +106,10 @@ let rec readLevel n items =
         |> Seq.toList
     else
         let nextN = 2 * (nItems |> Seq.filter Option.isSome |> Seq.length)
-
         if nextN = 0 then
             List.replicate n Tip
         else
             let nextNodes = readLevel nextN restItems
-
             let map =
                 nItems
                 |> Seq.mapi (fun index item -> Option.map (fun v -> index, v) item)
@@ -118,7 +117,6 @@ let rec readLevel n items =
                 |> Seq.zip (Seq.chunkBySize 2 nextNodes)
                 |> Seq.map (fun (chunk, (index, v)) -> index, Node(v, chunk.[0], chunk.[1]))
                 |> Map
-
             nItems |> List.mapi (fun index item -> if Option.isNone item then Tip else map.[index])
 
 

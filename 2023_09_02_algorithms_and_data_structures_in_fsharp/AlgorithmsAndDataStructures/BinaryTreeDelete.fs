@@ -5,6 +5,22 @@ open BinaryTree
 
 open System
 
+// https://en.wikipedia.org/wiki/Binary_search_tree
+// - tutaj opisu jest algorytm, takze czytalem w ksiazce ziomka 'cormen'
+// - sam algorytm jest taki ze wskazujemy wezel/wartosc ktory chcemy usunac i
+// -- jesli to jest lisc to usuwamy
+// -- jesli ma jedno dziecko to usuwamy element przesuwajac wszystkie dzieci do gory
+// -- jesli ma dwojke dzieci zawsze idziemy do prawego dziecka/podrzewa (takie jest tylko zalozenie bo mozna isc do lewego
+// i wykonywac analogiczne operacje) i znajdujemy 'nastepnika' dla usuwanego elementu (to bedzie minimalny
+// element w prawym podrzewie) i zastepujemy nim usuwany element
+// - poniewaz to jest drzewo immutable to
+// -- jak schodzimy rekurencyjnie w dol szukajace elementu usuwnego to musimy jednoczesnie budowac nowe drzewo
+// -- nie pomozemy po prostu wyszukac sobie 'nastepnika', musimy jakby jedna oprecja usunac go idac od dolu jednoczesnie
+// przebudowujac prawe poddrzewo i zwracajac go
+
+
+// https://leetcode.com/problems/delete-node-in-a-bst/ (tylko moje usuwanie jest idetyczne jak w przykladach leecode bo usuwam od lewego)
+
 let rec pullUpSuccessorOfRightSubtree tree =
     match tree with
     | Tip -> Unchecked.defaultof<_>, Tip

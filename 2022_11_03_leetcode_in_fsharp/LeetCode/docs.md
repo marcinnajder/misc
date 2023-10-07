@@ -1,5 +1,5 @@
 
-pattern-matching (11) list (10) rec (10) tree (9) unfold (7) forall (4) scan (3) takeWhile (3) fold (2) collect (1) find (1) zip (1) groupBy (1) foldBack (1) rev (1) pairwise (1) take (1) indexed (1) tryFindIndex (1) mapi (1) filter (1) 
+tree (16) pattern-matching (11) list (10) rec (10) unfold (7) forall (4) scan (3) takeWhile (3) fold (2) collect (1) find (1) zip (1) groupBy (1) foldBack (1) rev (1) pairwise (1) take (1) indexed (1) tryFindIndex (1) mapi (1) filter (1) 
 
 - [1](P0001_TwoSum.fs). [P0001_TwoSum](https://leetcode.com/problems/two-sum/) `[| 2; 7; 11; 15 |] -> 9` collect,find
 - [2](P0002_AddTwoNumbers.fs). [P0002_AddTwoNumbers](https://leetcode.com/problems/add-two-numbers/) `[ 2; 4; 3 ] [ 5; 6; 4 ] // -> [7; 0; 8]` list,pattern-matching,rec
@@ -25,14 +25,21 @@ pattern-matching (11) list (10) rec (10) tree (9) unfold (7) forall (4) scan (3)
 - [22](P0100_SameTree.fs). [P0100_SameTree](https://leetcode.com/problems/same-tree/) `[1,2,3], [1,2,3] -> true` tree
 - [23](P0102_BinaryTreeLevelOrderTraversal.fs). [P0102_BinaryTreeLevelOrderTraversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) `[3,9,20,null,null,15,7] -> [ [ 3 ]; [ 9; 20 ]; [ 15; 7 ] ]` tree
 - [24](P0104_MaximumDepthOfBinaryTree.fs). [P0104_MaximumDepthOfBinaryTree](https://leetcode.com/problems/maximum-depth-of-binary-tree/) `[3,9,20,null,null,15,7] -> 3` tree
-- [25](P0111_MinimumDepthOfBinaryTree.fs). [P0111_MinimumDepthOfBinaryTree](https://leetcode.com/problems/minimum-depth-of-binary-tree/) `[3,9,20,null,null,15,7] -> 2` tree
-- [26](P0118_PascalsTriangle.fs). [P0118_PascalsTriangle](https://leetcode.com/problems/pascals-triangle/) `2 -> [ [ 1 ], [ 1, 1 ] ]` unfold,pairwise,take
-- [27](P0144_BinaryTreePreorderTraversal.fs). [P0144_BinaryTreePreorderTraversal](https://leetcode.com/problems/binary-tree-preorder-traversal/) `[1,null,2,3] -> [ 1; 2; 3 ]` tree
-- [28](P0145_BinaryTreePostorderTraversal.fs). [P0145_BinaryTreePostorderTraversal](https://leetcode.com/problems/binary-tree-postorder-traversal/) `[1,null,2,3] -> [ 3; 2; 1 ]` tree
-- [29](P0173_BinarySearchTreeIterator.fs). [P0173_BinarySearchTreeIterator](https://leetcode.com/problems/binary-search-tree-iterator/) `[7,3,15,null,null,9,20] -> [ 3; 7; 9; 15; 20 ]` tree
-- [30](P0328_OddEvenLinkedList.fs). [P0328_OddEvenLinkedList](https://leetcode.com/problems/odd-even-linked-list/) `[1,2,3,4,5] -> [1,3,5,2,4]` list,pattern-matching,rec
-- [31](P0387_FirstUniqChar.fs). [P0387_FirstUniqChar](https://leetcode.com/problems/first-unique-character-in-a-string/) `"letmein" -> 0` indexed,tryFindIndex,forall
-- [32](P0392_IsSubsequence.fs). [P0392_IsSubsequence](https://leetcode.com/problems/is-subsequence/) `"abc" "ahbgdc" -> true` scan,forall
-- [33](P1342_NumberOfSteps.fs). [P1342_NumberOfSteps](https://leetcode.com/problems/number-of-steps-to-reduce-a-number-to-zero/) `14 -> 6` unfold,takeWhile
-- [34](P1365_SmallerNumbersThanCurrent.fs). [P1365_SmallerNumbersThanCurrent](https://leetcode.com/problems/how-many-numbers-are-smaller-than-the-current-number/) `[| 8; 1; 2; 2; 3 |] -> [4;0;1;1;3]` mapi,filter
+- [25](P0110_BalancedBinaryTree.fs). [P0110_BalancedBinaryTree](https://leetcode.com/problems/balanced-binary-tree) `[3,9,20,null,null,15,7] -> true` tree
+- [26](P0111_MinimumDepthOfBinaryTree.fs). [P0111_MinimumDepthOfBinaryTree](https://leetcode.com/problems/minimum-depth-of-binary-tree/) `[3,9,20,null,null,15,7] -> 2` tree
+- [27](P0118_PascalsTriangle.fs). [P0118_PascalsTriangle](https://leetcode.com/problems/pascals-triangle/) `2 -> [ [ 1 ], [ 1, 1 ] ]` unfold,pairwise,take
+- [28](P0144_BinaryTreePreorderTraversal.fs). [P0144_BinaryTreePreorderTraversal](https://leetcode.com/problems/binary-tree-preorder-traversal/) `[1,null,2,3] -> [ 1; 2; 3 ]` tree
+- [29](P0145_BinaryTreePostorderTraversal.fs). [P0145_BinaryTreePostorderTraversal](https://leetcode.com/problems/binary-tree-postorder-traversal/) `[1,null,2,3] -> [ 3; 2; 1 ]` tree
+- [30](P0173_BinarySearchTreeIterator.fs). [P0173_BinarySearchTreeIterator](https://leetcode.com/problems/binary-search-tree-iterator/) `[7,3,15,null,null,9,20] -> [ 3; 7; 9; 15; 20 ]` tree
+- [31](P0230_KthSmallestElementInABST.fs). [P0230_KthSmallestElementInABST](https://leetcode.com/problems/kth-smallest-element-in-a-bst) `[3,1,4,null,2] -> 1` tree
+- [32](P0235_LowestCommonAncestorOfABinarySearchTree.fs). [P0235_LowestCommonAncestorOfABinarySearchTree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree) `[6,2,8,0,4,7,9,null,null,3,5], 2, 8 -> 6` tree
+- [33](P0257_BinaryTreePaths.fs). [P0257_BinaryTreePaths](https://leetcode.com/problems/binary-tree-paths) `[1,2,3,null,5] -> ["1->2->5","1->3"]` tree
+- [34](P0328_OddEvenLinkedList.fs). [P0328_OddEvenLinkedList](https://leetcode.com/problems/odd-even-linked-list/) `[1,2,3,4,5] -> [1,3,5,2,4]` list,pattern-matching,rec
+- [35](P0387_FirstUniqChar.fs). [P0387_FirstUniqChar](https://leetcode.com/problems/first-unique-character-in-a-string/) `"letmein" -> 0` indexed,tryFindIndex,forall
+- [36](P0392_IsSubsequence.fs). [P0392_IsSubsequence](https://leetcode.com/problems/is-subsequence/) `"abc" "ahbgdc" -> true` scan,forall
+- [37](P0617_MergeTwoBinaryTrees.fs). [P0617_MergeTwoBinaryTrees](https://leetcode.com/problems/merge-two-binary-trees) `[1,3,2,5], [2,1,3,null,4,null,7] -> [3,4,5,5,4,null,7]` tree
+- [38](P0655_PrintBinaryTree.fs). [P0655_PrintBinaryTree](https://leetcode.com/problems/print-binary-tree/) `[1,2] -> [["","1",""], ["2","",""]]` tree
+- [39](P1342_NumberOfSteps.fs). [P1342_NumberOfSteps](https://leetcode.com/problems/number-of-steps-to-reduce-a-number-to-zero/) `14 -> 6` unfold,takeWhile
+- [40](P1365_SmallerNumbersThanCurrent.fs). [P1365_SmallerNumbersThanCurrent](https://leetcode.com/problems/how-many-numbers-are-smaller-than-the-current-number/) `[| 8; 1; 2; 2; 3 |] -> [4;0;1;1;3]` mapi,filter
+- [41](P2583_KthLargestSumInABinaryTree.fs). [P2583_KthLargestSumInABinaryTree](https://leetcode.com/problems/kth-largest-sum-in-a-binary-tree) `[5,8,9,2,1,3,7,4,6] -> 2` tree
 
