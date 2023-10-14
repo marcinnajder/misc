@@ -1,6 +1,8 @@
 module AdventOfCode2021.Day19
 
+open Common
 open System
+
 
 type Point = int * int * int
 
@@ -182,19 +184,6 @@ let puzzle1 (input: string) =
 
 
 
-let allPairs (items: seq<_>) =
-    seq {
-        use enumerator = items.GetEnumerator()
-        if enumerator.MoveNext() then
-            let mutable lst = List.empty
-            let first = enumerator.Current
-            while enumerator.MoveNext() do
-                let current = enumerator.Current
-                yield first, current
-                yield! lst |> Seq.map (fun item -> current, item)
-                lst <- current :: lst
-    }
-
 let puzzle2 (input: string) =
     let fromCache = true
     if fromCache then
@@ -209,7 +198,7 @@ let puzzle2 (input: string) =
                 { state with State = Seq.append state.State (res |> Seq.map (fun r -> r.SeriesMatchingResult.Shift)) })
         let result =
             walkResult.State
-            |> allPairs
+            |> allUniquePairs
             |> Seq.map (fun ((x1, y1, z1), (x2, y2, z2)) -> abs (x1 - x2) + abs (y1 - y2) + abs (z1 - z2))
             |> Seq.max
         result |> string
