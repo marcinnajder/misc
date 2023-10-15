@@ -74,25 +74,34 @@ allUniqueTriples [| 0; 1; 2; 3 |] |> Seq.toList === [ (0, 1, 2); (0, 1, 3); (0, 
 
 
 
+let insertThenPartition n item lists =
+    if n = 1 then
+        [ [ item ] ], lists
+    else
+        lists
+        |> Seq.fold
+            (fun (completed, lists') (len, lst) ->
+                let len' = len + 1
+                let lst' = item :: lst
+                if len' = n then lst' :: completed, lists' else completed, (len', lst') :: lists')
+            ([], (1, [ item ]) :: lists)
+
+insertThenPartition 1 10 [] === ([ [ 10 ] ], [])
+
+insertThenPartition 3 10 [ (2, [ 0; 0 ]); (1, [ 0 ]) ]
+=== ([ [ 10; 0; 0 ] ], [ (2, [ 10; 0 ]); (1, [ 10 ]); (2, [ 0; 0 ]); (1, [ 0 ]) ])
+
+
+
 let allUniqueTuples n items =
-    items
-    |> Seq.scan
-        (fun (_, lists) item ->
-            lists
-            |> Seq.fold
-                (fun (completed, lists') (len, lst) ->
-                    let len' = len + 1
-                    let lst' = item :: lst
-                    if len' = n then lst' :: completed, lists' else completed, (len', lst') :: lists')
-                ([], (1, [ item ]) :: lists))
-        ([], [])
-    |> Seq.collect fst
+    items |> Seq.scan (fun (_, lists) item -> insertThenPartition n item lists) ([], []) |> Seq.collect fst
 
 allUniqueTuples 2 [ 0; 1; 2; 3 ] |> Seq.map List.sort |> Seq.sort |> Seq.toList
 === (allUniquePairs [ 0; 1; 2; 3 ] |> Seq.map (fun (a, b) -> List.sort [ a; b ]) |> Seq.sort |> Seq.toList)
 
 allUniqueTuples 3 [ 0; 1; 2; 3 ] |> Seq.map List.sort |> Seq.sort |> Seq.toList
 === (allUniqueTriples [| 0; 1; 2; 3 |] |> Seq.map (fun (a, b, c) -> List.sort [ a; b; c ]) |> Seq.sort |> Seq.toList)
+
 
 
 // this is my first implementation that is I still understand ...
@@ -124,20 +133,3 @@ let allUniqueTuples'' n items =
                 yield! allUniqueTuples_ n rest acc
         }
     allUniqueTuples_ n items []
-
-
-
-
-
-// n = 3
-// let findSum (numbers:int list) (target:int) (n:int) =
-//     let len = n - 1
-//     let rec loop numbers' (leftsMap : Map<int,int list>) (listsMap : Map<int,int list>) =
-//         match numbers' with
-//         | [ ] -> None
-//         | next :: rest ->
-//             match Map.findKey next leftsMap with
-//             | Some lst -> Some(next :: lst)
-//             | None ->
-//                 let
-//                 None
