@@ -120,10 +120,14 @@ public class LListTester
     public void ToLList()
     {
         Assert.AreEqual([], Array.Empty<int>().ToLList());
-        Assert.AreEqual([1], new List<int>() { 1 }.ToLList());
-        Assert.AreEqual([1, 2], new List<int>() { 1, 2 }.ToLList());
-    }
+        Assert.AreEqual([], ToEnumerable(Array.Empty<int>()).ToLList());
 
+        Assert.AreEqual([1], new List<int>() { 1 }.ToLList());
+        Assert.AreEqual([1], ToEnumerable(new List<int>() { 1 }).ToLList());
+
+        Assert.AreEqual([1, 2], new List<int>() { 1, 2 }.ToLList());
+        Assert.AreEqual([1, 2], ToEnumerable(new List<int>() { 1, 2 }).ToLList());
+    }
 
     [TestMethod]
     public void CountLSelectLWhereL()
@@ -134,7 +138,7 @@ public class LListTester
     }
 
     [TestMethod]
-    public void ConcatLSkipL()
+    public void ConcatLSkipLSkipWhileL()
     {
         Assert.AreEqual([1, 2, 3, 10, 20, 30], ints.ConcatL([10, 20, 30]));
 
@@ -143,7 +147,12 @@ public class LListTester
         Assert.AreEqual([3], ints.SkipL(2));
         Assert.AreEqual([], ints.SkipL(3));
         Assert.AreEqual([], ints.SkipL(4));
+
+        Assert.AreEqual([], intsEmpty.SkipWhileL(x => x < 2));
+        Assert.AreEqual([2, 3], ints.SkipWhileL(x => x < 2));
+        Assert.AreSame(ints.Tail, ints.SkipWhileL(x => x < 2));
     }
+
 
 
     [TestMethod]
@@ -165,5 +174,35 @@ public class LListTester
         Assert.AreEqual(0, intsEmpty.SingleOrDefault());
         Assert.ThrowsException<InvalidOperationException>(() => ints.Single());
         Assert.AreEqual(11, new LList<int>(11, LList<int>.Empty).SingleOrDefault());
+    }
+
+    // [TestMethod]
+    // public void ToLList2()
+    // {
+    //     // comparing list without ValueRef to list with ValueRef
+    //     Assert.AreEqual([], Array.Empty<int>().ToLList2());
+    //     Assert.AreEqual([], ToEnumerable(Array.Empty<int>()).ToLList2());
+
+    //     Assert.AreEqual([1], new List<int>() { 1 }.ToLList2());
+    //     Assert.AreEqual([1], ToEnumerable(new List<int>() { 1 }).ToLList2());
+
+    //     Assert.AreEqual([1, 2], new List<int>() { 1, 2 }.ToLList2());
+    //     Assert.AreEqual([1, 2], ToEnumerable(new List<int>() { 1, 2 }).ToLList2());
+
+    //     // comparing list with ValueRef to list with ValueRef
+    //     Assert.AreEqual(
+    //         ToEnumerable(new List<int>() { 1, 2 }).ToLList2(),
+    //         ToEnumerable(new List<int>() { 1, 2 }).ToLList2());
+
+    //     // mixing list wittout ValueRef and list with ValueRef
+    //     Assert.AreEqual([-1, 1, 2], new LList<int>(-1, ToEnumerable(new List<int>() { 1, 2 }).ToLList2()));
+    // }
+
+    private static IEnumerable<T> ToEnumerable<T>(IEnumerable<T> items)
+    {
+        foreach (var item in items)
+        {
+            yield return item;
+        }
     }
 }

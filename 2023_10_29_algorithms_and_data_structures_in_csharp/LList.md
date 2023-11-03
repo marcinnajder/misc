@@ -7,7 +7,7 @@ Let's start by defining an immutable list in the simplest possible way using C# 
 ```csharp
 public record LList<T>(T Head, LList<T>? Tail);
 
-var list1 = new LList<int>(1, new LList<int>(2, new LList<int>(3, null))); 
+var list1 = new LList<int>(1, new LList<int>(2, new LList<int>(3, null)));
 LList<int> list2 = new(1, new(2, new(3, null)));
 
 Console.WriteLine(list1.Head); // 1
@@ -15,9 +15,9 @@ Console.WriteLine(list1.Tail!.ToString()); // LList { Head = 2, Tail = LList { H
 Console.WriteLine(list1 == list2); // True
 ```
 
-Record in C# is just a class with some useful functionality builtin. Each node of singly linked list stores some value in `Head` property and the reference to next node in `Tail` property. Those properties provide only getters so the node object and the whole list are immutable so there can not be changed after creation. We can add a new item to the beginning of the list by creating a new node with `Tail` property set to an existing list. We can remove the first element just by returning `Tail` property of the first node. Immutable list is called "persistent data structure" because each "modification" creates a new instance of list where the structure in memory is shared. 
+Record in C# is just a class with some useful functionality builtin. Each node of singly linked list stores some value in `Head` property and the reference to next node in `Tail` property. Those properties provide only getters so the node object and the whole list are immutable so there can not be changed after creation. We can add a new item to the beginning of the list by creating a new node with `Tail` property set to an existing list. We can remove the first element just by returning `Tail` property of the first node. Immutable list is called "persistent data structure" because each "modification" creates a new instance of list where the structure in memory is shared.
 
-Records in C# give us some methods for free. `GetHashCode` and `Equals` methods use all fields defined in the record type. In our case those fields are backing fields for properties `Head` and `Tail` so we can compare two lists by value. `ToString` method returns values of all properties, maybe it's not the perfect representation of list but still better that the default implementation of `ToString`. We will provide our own implementation of `ToString` later.  
+Records in C# give us some methods for free. `GetHashCode` and `Equals` methods use all fields defined in the record type. In our case those fields are backing fields for properties `Head` and `Tail` so we can compare two lists by value. `ToString` method returns values of all properties, maybe it's not the perfect representation of list but still better that the default implementation of `ToString`. We will provide our own implementation of `ToString` later.
 
 There is one small inconvenience in our implementation. The empty list is represented as a `null` value, let's change it.
 
@@ -34,19 +34,19 @@ public record LList<T>
 
     public LList(T head, LList<T> tail) => (this.head, this.tail, length) = (head, tail, tail.Length + 1);
     public LList() => (head, tail, length) = (default!, default!, 0);
-    
-    public bool IsEmpty => Length == 0;    
-    public static LList<T> Empty { get; } = new LList<T>();   
-     
+
+    public bool IsEmpty => Length == 0;
+    public static LList<T> Empty { get; } = new LList<T>();
+
     private R EnsureNonEmpty<R>(R result)
-        => IsEmpty ? throw new InvalidOperationException("List is empty") : result;
+	    => IsEmpty ? throw new InvalidOperationException("List is empty") : result;
 }
 
 LList<int> list3 = new(1, new(2, new(3, new())));
 LList<int> list4 = new(1, new(2, new(3, LList<int>.Empty)));
 ```
 
-New implementation is longer but the public API did not change so much. Now we can create an empty list using a new  parameterless constructor or the static `Empty` property. Thanks to `Empty` property, we can avoid allocating a new memory for each instance of empty list.
+New implementation is longer but the public API did not change so much. Now we can create an empty list using a new parameterless constructor or the static `Empty` property. Thanks to `Empty` property, we can avoid allocating a new memory for each instance of empty list.
 
 Because our list is immutable, we can calculate the `Length` property only once during object creation. We increment by 1 the length of the `Tail` and store its value in additional readonly field `length`. Thanks to this tick access to length of list has a constant time and this will be crucial once we start working with indexes, ranges and pattern matching.
 
@@ -67,13 +67,13 @@ public static class LList
 var list5 = LList.Of(1, 2, 3);
 var list6 = LList.Of<int>(); // empty list
 
-// C#12 "collection expression" 
-LList<int> list7 = [1, 2, 3]; 
+// C#12 "collection expression"
+LList<int> list7 = [1, 2, 3];
 LList<int> list8 = []; // empty list
 LList<int> list9 = [0, ..list7, 4, 5];  // spread operator
 ```
 
-In the next step we will implement C# indexer and `Slice` method. 
+In the next step we will implement C# indexer and `Slice` method.
 
 ```csharp
 public record LList<T>
@@ -103,7 +103,7 @@ Console.WriteLine(ints[..^2]); // [5, 10, 15]
 Console.WriteLine(Object.ReferenceEquals(ints[1..], ints.Tail)); // True !
 ```
 
-Because type `LList<T>`  has property called`Length`, we can also specify indexes "from the end" using `^` operator. Thanks to `Slice` method ranges can be used. That method `Slice` was implemented in a particular way. If the passed range arguments include all items up to the end of the list, the returned list will be shared in memory as a part of the original list. Now we have all pieces necessary to support pattern matching working with collection data types.  
+Because type `LList<T>` has property called`Length`, we can also specify indexes "from the end" using `^` operator. Thanks to `Slice` method ranges can be used. That method `Slice` was implemented in a particular way. If the passed range arguments include all items up to the end of the list, the returned list will be shared in memory as a part of the original list. Now we have all pieces necessary to support pattern matching working with collection data types.
 
 ```csharp
 static class LList
@@ -122,7 +122,7 @@ This code looks like a canonical implementation of recursive function calculatin
 ```csharp
 static class LList
 {
-    public static int CountL<T>(this LList<T> list) => list.Length == 0 ? 0 : 1 + CountL(list.Tail);
+	public static int CountL<T>(this LList<T> list) => list.Length == 0 ? 0 : 1 + CountL(list.Tail);
 }
 ```
 
@@ -131,7 +131,7 @@ Our linked list a perfect candidate for a sequence. It means we easily convert t
 ```csharp
 public record LList<T> : IEnumerable<T>
 {
-    // ...  
+	// ...
     public IEnumerator<T> GetEnumerator()
     {
         var node = this;
@@ -149,20 +149,26 @@ public record LList<T> : IEnumerable<T>
 
 public static class LList
 {
+
     public static LList<T> ToLList<T>(this IEnumerable<T> items)
     {
-        if (items is LList<T> lst)
+        if (items is LList<T> llist)
         {
-            return lst;
+            return llist;
         }
+
+        if (items is IList<T> coll)
+        {
+            return Enumerable.Range(1, coll.Count).Aggregate(LList<T>.Empty, (list, i) => new(coll[^i], list));
+        }
+
         using var iterator = items.GetEnumerator();
         return Next(iterator);
 
-        static LList<T> Next(IEnumerator<T> iter)
-            => iter.MoveNext() ? new(iter.Current, Next(iter)) : LList<T>.Empty;
+        static LList<T> Next(IEnumerator<T> iter) => iter.MoveNext() ? new(iter.Current, Next(iter)) : LList<T>.Empty;
     }
 
-    // overridden operators
+	// overridden operators
     public static T First<T>(this LList<T> list) => list.Head;
     public static T? FirstOrDefault<T>(this LList<T> list) => list.IsEmpty ? default : list.Head;
     public static T Single<T>(this LList<T> list) =>
@@ -171,14 +177,14 @@ public static class LList
             [var item] => item,
             _ => throw new InvalidOperationException("Sequence contains no elements or more than one element")
         };
-    // ... 
+	// ...
 }
 
 LList<int> ints = [5, 10, 15, 20, 25];
 var q =
     from i in ints
     where i % 10 == 0
-    select $"{i:.00}";    
+    select $"{i:.00}";
 Console.WriteLine(q.ToLList()); // [10,00, 20,00]
 ```
 

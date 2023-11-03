@@ -70,20 +70,29 @@ public static class LList
 
     public static LList<T> ToLList<T>(this IEnumerable<T> items)
     {
-        if (items is LList<T> lst)
+        if (items is LList<T> llist)
         {
-            return lst;
+            return llist;
         }
+
+        if (items is IList<T> coll)
+        {
+            return Enumerable.Range(1, coll.Count).Aggregate(LList<T>.Empty, (list, i) => new(coll[^i], list));
+        }
+
         using var iterator = items.GetEnumerator();
+
         return Next(iterator);
 
         static LList<T> Next(IEnumerator<T> iter) => iter.MoveNext() ? new(iter.Current, Next(iter)) : LList<T>.Empty;
     }
 
+    // public static LList<T> ToLList2<T>(this IEnumerable<T> items) => LList<T>.ToLList(items);
+
     public static LList<T> Cons<T>(T head, LList<T> tail) => new(head, tail);
 
 
-    public static int Count<T>(this LList<T> list) => list.Length;
+    //public static int Count<T>(this LList<T> list) => list.Length;
 
     public static T First<T>(this LList<T> list) => list.Head;
 
@@ -143,6 +152,13 @@ public static class LList
             ([_, .. var tail], _) => tail.SkipL(n - 1)
         };
 
+    public static LList<T> SkipWhileL<T>(this LList<T> list, Func<T, bool> f)
+        => list switch
+        {
+            ([]) => [],
+            [var head, .. var tail] => f(head) ? SkipWhileL(tail, f) : list
+        };
+
     //todo: SkipWhile
 
 }
@@ -158,4 +174,84 @@ public static class LList
 //     public int Length { get; } = Tail == default ? 0 : Tail.Length + 1;
 
 //     public LList() : this(default!, default!) { }
+// }
+
+
+
+// implementation of ToLList (IEnumerable<T> -> LList<T>) without potential stack overflow, list mutation internally
+// Scala https://youtu.be/7mTNZeiIK7E?t=1439
+// F# https://github.com/dotnet/fsharp/blob/main/src/FSharp.Core/local.fs#L531
+
+// public partial record LList<T>
+// {
+//     private LengthValue lengthValue;
+//     private T head;
+//     private LList<T> tail;
+
+//     public int Length => lengthValue.Value;
+//     public T Head => EnsureNonEmpty(head);
+//     public LList<T> Tail => EnsureNonEmpty(tail);
+
+//     public LList(T head, LList<T> tail) => (this.head, this.tail, lengthValue) = (head, tail, new LengthValue(tail.Length + 1));
+//     public LList() => (head, tail, lengthValue) = (default!, default!, new LengthValue(0));
+
+//     private R EnsureNonEmpty<R>(R result) => IsEmpty ? throw new InvalidOperationException("List is empty") : result;
+
+//     private LList(T head, LList<T> tail, LengthValue lengthValue) => (this.head, this.tail, this.lengthValue) = (head, tail, lengthValue);
+
+
+//     public static LList<T> ToLList(IEnumerable<T> items)
+//     {
+//         if (items is LList<T> llist)
+//         {
+//             return llist;
+//         }
+
+//         if (items is IList<T> coll)
+//         {
+//             return Enumerable.Range(1, coll.Count).Aggregate(LList<T>.Empty, (list, i) => new(coll[^i], list));
+//         }
+
+//         using var iterator = items.GetEnumerator();
+
+//         if (!iterator.MoveNext())
+//         {
+//             return Empty;
+//         }
+
+//         var valueRef = new ValueRef<int>();
+//         var i = 0;
+//         var first = new LList<T>(iterator.Current, Empty, new LengthValue(i, valueRef));
+//         var last = first;
+
+//         while (iterator.MoveNext())
+//         {
+//             last = last.tail = new LList<T>(iterator.Current, Empty, new LengthValue(++i, valueRef));
+//         }
+
+//         valueRef.Value = i + 1;
+
+//         return first;
+//     }
+
+//     private record class ValueRef<V>
+//     {
+//         public V? Value;
+//     }
+
+//     private class LengthValue
+//     {
+//         private int indexOrLength;
+//         private ValueRef<int>? lengthRef;
+
+//         public int Value => lengthRef == null ? indexOrLength : lengthRef.Value - indexOrLength;
+
+//         public LengthValue(int length) => indexOrLength = length;
+
+//         public LengthValue(int index, ValueRef<int> lengthRef) => (indexOrLength, this.lengthRef) = (index, lengthRef);
+
+//         public override bool Equals(object? obj) => obj is LengthValue l ? Value.Equals(l.Value) : false;
+
+//         public override int GetHashCode() => Value.GetHashCode();
+//     }
 // }
