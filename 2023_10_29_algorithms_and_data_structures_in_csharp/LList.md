@@ -218,4 +218,110 @@ public static class LList
 
 Functions above return `LList<T>` instead of `IEnumerable<T>`, they are eager so running them return the results immediately. But we can take advantage of the linked list structure, the list is just a pair of a `Head` and a `Tail`. Once we reach some point during the process of iterating the items, we can use the `Tail` property. Calling one operator (`list1.ConcatL(list2)`) will work better than calling two LINQ operators ( `list1.ConcatL(list2).ToLList()`).
 
+There is one small thing. Let's look at the implementation of function `ToLList` converting sequence of values into immutable list.
 
+```csharp
+public static class LList
+{
+    public static LList<T> ToLList<T>(this IEnumerable<T> items)
+    {
+        // ... 
+
+        using var iterator = items.GetEnumerator();
+        return Next(iterator);
+
+        static LList<T> Next(IEnumerator<T> iter)
+            => iter.MoveNext() ? new(iter.Current, Next(iter)) : LList<T>.Empty;
+    }
+}
+```
+
+For a very long sequences we can encounter the stack overflow problem. We call recursively `Next` helper function for each element in the sequence and we have to wait for result, only then we can create next node in the list. It's because our list is immutable. We can implement this function differently.
+
+```csharp
+public static class LList
+{
+    public static LList<T> ToLList<T>(this IEnumerable<T> items)
+    {
+        // ...
+        var reversedList = items.Aggregate(LList<T>.Empty, (list, item) => new(item, list));        
+        return reversedList.Aggregate(LList<T>.Empty, (list, item) => new(item, list));
+    }
+}
+```
+
+But here, we have to iterate twice over all items. We can use one trick to avoid this problem, our list can be immutable for the outside world and mutable for internal code. This way we could change some fields of already created nodes. Unfortunately, we have yet another problem. We wanted to have an access to the length of the list in constant time. Each node has `Length` property so we would have to iterate all items twice. First time to create a linked list and count the number of items and the second time to set `Length` for each node in the list. Finally I have found not the prettiest solution, it works at least .
+
+```csharp
+
+public record LList<T>
+{
+    private LengthValue lengthValue;
+    private T head;
+    private LList<T> tail;
+
+    public int Length => lengthValue.Value;
+
+    // ...
+
+    private LList(T head, LList<T> tail, LengthValue lengthValue) => (this.head, this.tail, this.lengthValue) = (head, tail, lengthValue);
+
+
+    public static LList<T> ToLList(IEnumerable<T> items)
+    {
+        if (items is LList<T> llist)
+        {
+            return llist;
+        }
+
+        if (items is IList<T> coll)
+        {
+            return Enumerable.Range(1, coll.Count).Aggregate(LList<T>.Empty, (list, i) => new(coll[^i], list));
+        }
+
+        using var iterator = items.GetEnumerator();
+
+        if (!iterator.MoveNext())
+        {
+            return Empty;
+        }
+
+        var valueRef = new ValueRef<int>();
+        var i = 0;
+        var first = new LList<T>(iterator.Current, Empty, new LengthValue(i, valueRef));
+        var last = first;
+
+        while (iterator.MoveNext())
+        {
+            last = last.tail = new LList<T>(iterator.Current, Empty, new LengthValue(++i, valueRef));
+        }
+
+        valueRef.Value = i + 1;
+
+        return first;
+    }
+
+    private record class ValueRef<V>
+    {
+        public V? Value;
+    }
+
+    private class LengthValue
+    {
+        private int indexOrLength;
+        private ValueRef<int>? lengthRef;
+
+        public int Value => lengthRef == null ? indexOrLength : lengthRef.Value - indexOrLength;
+
+        public LengthValue(int length) => indexOrLength = length;
+
+        public LengthValue(int index, ValueRef<int> lengthRef) => (indexOrLength, this.lengthRef) = (index, lengthRef);
+
+        public override bool Equals(object? obj) => obj is LengthValue l ? Value.Equals(l.Value) : false;
+
+        public override int GetHashCode() => Value.GetHashCode();
+    }
+}
+```
+
+Similar solution has been used in [F#](https://github.com/dotnet/fsharp/blob/main/src/FSharp.Core/local.fs#L531) and [Scala](https://youtu.be/7mTNZeiIK7E?t=1439) languages.

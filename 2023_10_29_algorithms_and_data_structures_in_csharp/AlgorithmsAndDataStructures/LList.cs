@@ -89,6 +89,24 @@ public static class LList
 
     // public static LList<T> ToLList2<T>(this IEnumerable<T> items) => LList<T>.ToLList(items);
 
+
+    // public static LList<T> ToLList<T>(this IEnumerable<T> items)
+    // {
+    //     if (items is LList<T> llist)
+    //     {
+    //         return llist;
+    //     }
+
+    //     if (items is IList<T> coll)
+    //     {
+    //         return Enumerable.Range(1, coll.Count).Aggregate(LList<T>.Empty, (list, i) => new(coll[^i], list));
+    //     }
+
+    //     var reversedList = items.Aggregate(LList<T>.Empty, (list, item) => new(item, list));
+    //     return reversedList.Aggregate(LList<T>.Empty, (list, item) => new(item, list));
+    // }
+
+
     public static LList<T> Cons<T>(T head, LList<T> tail) => new(head, tail);
 
 
