@@ -39,7 +39,7 @@ public record LList<T>
     public static LList<T> Empty { get; } = new LList<T>();
 
     private R EnsureNonEmpty<R>(R result)
-	    => IsEmpty ? throw new InvalidOperationException("List is empty") : result;
+        => IsEmpty ? throw new InvalidOperationException("List is empty") : result;
 }
 
 LList<int> list3 = new(1, new(2, new(3, new())));
@@ -122,7 +122,7 @@ This code looks like a canonical implementation of recursive function calculatin
 ```csharp
 static class LList
 {
-	public static int CountL<T>(this LList<T> list) => list.Length == 0 ? 0 : 1 + CountL(list.Tail);
+    public static int CountL<T>(this LList<T> list) => list.Length == 0 ? 0 : 1 + CountL(list.Tail);
 }
 ```
 
@@ -131,7 +131,7 @@ Our linked list a perfect candidate for a sequence. It means we easily convert t
 ```csharp
 public record LList<T> : IEnumerable<T>
 {
-	// ...
+    // ...
     public IEnumerator<T> GetEnumerator()
     {
         var node = this;
@@ -149,7 +149,6 @@ public record LList<T> : IEnumerable<T>
 
 public static class LList
 {
-
     public static LList<T> ToLList<T>(this IEnumerable<T> items)
     {
         if (items is LList<T> llist)
@@ -168,7 +167,7 @@ public static class LList
         static LList<T> Next(IEnumerator<T> iter) => iter.MoveNext() ? new(iter.Current, Next(iter)) : LList<T>.Empty;
     }
 
-	// overridden operators
+    // overridden operators
     public static T First<T>(this LList<T> list) => list.Head;
     public static T? FirstOrDefault<T>(this LList<T> list) => list.IsEmpty ? default : list.Head;
     public static T Single<T>(this LList<T> list) =>
@@ -177,7 +176,7 @@ public static class LList
             [var item] => item,
             _ => throw new InvalidOperationException("Sequence contains no elements or more than one element")
         };
-	// ...
+    // ...
 }
 
 LList<int> ints = [5, 10, 15, 20, 25];
@@ -188,4 +187,35 @@ var q =
 Console.WriteLine(q.ToLList()); // [10,00, 20,00]
 ```
 
-...
+LINQ provides around 50 extension methods for `IEnumerable<T>` interface. Knowing that the data structure is `LList<T>` we can provide better implementations for some of them, for instance `Count`, `First`, `Single`, ... . We can even implement all LINQ operators but there is a big difference between `IEnumerable<T>` and `LList<T>` in .net.  The first one is lazy, the second one is eager. In most cases where we execute few operators at once, the lazy approach is more preferable. But there is a set operators where the dedicated implementations could be very useful. Let's look at few of them.
+
+```csharp
+public static class LList
+{
+    public static LList<T> ConcatL<T>(this LList<T> list1, LList<T> list2)
+        => list1 switch
+        {
+            ([]) => list2,
+            [var head, .. var tail] => new(head, ConcatL(tail, list2))
+        };
+
+    public static LList<T> SkipL<T>(this LList<T> list, int n)
+        => (list, n) switch
+        {
+            ([], _) => [],
+            (_, 0) => list,
+            ([_, .. var tail], _) => tail.SkipL(n - 1)
+        };
+
+    public static LList<T> SkipWhileL<T>(this LList<T> list, Func<T, bool> f)
+        => list switch
+        {
+            ([]) => [],
+            [var head, .. var tail] => f(head) ? SkipWhileL(tail, f) : list
+        };
+}
+```
+
+Functions above return `LList<T>` instead of `IEnumerable<T>`, they are eager so running them return the results immediately. But we can take advantage of the linked list structure, the list is just a pair of a `Head` and a `Tail`. Once we reach some point during the process of iterating the items, we can use the `Tail` property. Calling one operator (`list1.ConcatL(list2)`) will work better than calling two LINQ operators ( `list1.ConcatL(list2).ToLList()`).
+
+

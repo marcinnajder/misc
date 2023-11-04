@@ -158,14 +158,11 @@ public static class LList
             ([]) => [],
             [var head, .. var tail] => f(head) ? SkipWhileL(tail, f) : list
         };
-
-    //todo: SkipWhile
-
 }
 
 
 
-// public record LList2<T>(T Head, LList2<T>? Tail);
+
 
 // public partial record LList<T>(T Head, LList<T> Tail)
 // {
