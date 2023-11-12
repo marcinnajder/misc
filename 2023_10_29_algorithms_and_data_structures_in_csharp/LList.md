@@ -58,8 +58,15 @@ public record LList<T> { /* ... */ }
 
 public static class LList
 {
-    public static LList<T> Create<T>(ReadOnlySpan<T> items) =>
-        items.Length == 0 ? LList<T>.Empty : new(items[0], Create(items.Slice(1)));
+    public static LList<T> Create<T>(ReadOnlySpan<T> items)
+    {
+        var result = LList<T>.Empty;
+        for (int i = items.Length - 1; i >= 0; i--)
+        {
+            result = new(items[i], result);
+        }
+        return result;
+    }
 
     public static LList<T> Of<T>(params T[] items) => Create(new ReadOnlySpan<T>(items));
 }
@@ -150,20 +157,19 @@ public record LList<T> : IEnumerable<T>
 public static class LList
 {
     public static LList<T> ToLList<T>(this IEnumerable<T> items)
+        => items switch
+        {
+            LList<T> llist => llist,
+            T[] array => Of(array),
+            IList<T> ilist => Enumerable.Range(1, ilist.Count).Aggregate(LList<T>.Empty, (list, i) => new(ilist[^i], list)),
+            var ienumerable => FromSeqUsingRecursion(ienumerable)
+        };
+
+    private static LList<T> FromSeqUsingRecursion<T>(this IEnumerable<T> items)
     {
-        if (items is LList<T> llist)
-        {
-            return llist;
-        }
-
-        if (items is IList<T> coll)
-        {
-            return Enumerable.Range(1, coll.Count).Aggregate(LList<T>.Empty, (list, i) => new(coll[^i], list));
-        }
-
         using var iterator = items.GetEnumerator();
         return Next(iterator);
-
+        
         static LList<T> Next(IEnumerator<T> iter) => iter.MoveNext() ? new(iter.Current, Next(iter)) : LList<T>.Empty;
     }
 
@@ -223,15 +229,12 @@ There is one small thing. Let's look at the implementation of function `ToLList`
 ```csharp
 public static class LList
 {
-    public static LList<T> ToLList<T>(this IEnumerable<T> items)
+    private static LList<T> FromSeqUsingRecursion<T>(this IEnumerable<T> items)
     {
-        // ... 
-
         using var iterator = items.GetEnumerator();
         return Next(iterator);
-
-        static LList<T> Next(IEnumerator<T> iter)
-            => iter.MoveNext() ? new(iter.Current, Next(iter)) : LList<T>.Empty;
+        
+        static LList<T> Next(IEnumerator<T> iter) => iter.MoveNext() ? new(iter.Current, Next(iter)) : LList<T>.Empty;
     }
 }
 ```
@@ -241,11 +244,11 @@ For a very long sequences we can encounter the stack overflow problem. We call r
 ```csharp
 public static class LList
 {
-    public static LList<T> ToLList<T>(this IEnumerable<T> items)
+    private static LList<T> FromSeqUsingListReversion<T>(IEnumerable<T> items)
     {
-        // ...
-        var reversedList = items.Aggregate(LList<T>.Empty, (list, item) => new(item, list));        
-        return reversedList.Aggregate(LList<T>.Empty, (list, item) => new(item, list));
+        return ToReversedList(ToReversedList(items));
+
+        static LList<T> ToReversedList(IEnumerable<T> xs) => xs.Aggregate(LList<T>.Empty, (list, item) => new(item, list));
     }
 }
 ```
@@ -253,11 +256,10 @@ public static class LList
 But here, we have to iterate twice over all items. We can use one trick to avoid this problem, our list can be immutable for the outside world and mutable for internal code. This way we could change some fields of already created nodes. Unfortunately, we have yet another problem. We wanted to have an access to the length of the list in constant time. Each node has `Length` property so we would have to iterate all items twice. First time to create a linked list and count the number of items and the second time to set `Length` for each node in the list. Finally I have found not the prettiest solution, it works at least .
 
 ```csharp
-
 public record LList<T>
 {
-    private LengthValue lengthValue;
-    private T head;
+    private readonly LengthValue lengthValue;
+    private readonly T head;
     private LList<T> tail;
 
     public int Length => lengthValue.Value;
@@ -266,19 +268,8 @@ public record LList<T>
 
     private LList(T head, LList<T> tail, LengthValue lengthValue) => (this.head, this.tail, this.lengthValue) = (head, tail, lengthValue);
 
-
-    public static LList<T> ToLList(IEnumerable<T> items)
+    internal static LList<T> ToLList(IEnumerable<T> items)
     {
-        if (items is LList<T> llist)
-        {
-            return llist;
-        }
-
-        if (items is IList<T> coll)
-        {
-            return Enumerable.Range(1, coll.Count).Aggregate(LList<T>.Empty, (list, i) => new(coll[^i], list));
-        }
-
         using var iterator = items.GetEnumerator();
 
         if (!iterator.MoveNext())
