@@ -102,7 +102,7 @@ public static class LList
         static LList<T> ToReversedList(IEnumerable<T> xs) => xs.Aggregate(LList<T>.Empty, (list, item) => new(item, list));
     }
 
-    private static LList<T> FromSeqUsingListMutation<T>(IEnumerable<T> items) => LList<T>.ToLList(items);
+    // private static LList<T> FromSeqUsingListMutation<T>(IEnumerable<T> items) => LList<T>.ToLList(items);
 
     public static LList<T> Cons<T>(T head, LList<T> tail) => new(head, tail);
 
