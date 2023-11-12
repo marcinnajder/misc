@@ -61,54 +61,50 @@ public partial record LList<T> : IEnumerable<T>
 
 public static class LList
 {
-    public static LList<T> Create<T>(ReadOnlySpan<T> items) =>
-        items.Length == 0 ? LList<T>.Empty : new(items[0], Create(items.Slice(1)));
+    // public static LList<T> Create<T>(ReadOnlySpan<T> items) =>
+    //     items.Length == 0 ? LList<T>.Empty : new(items[0], Create(items.Slice(1)));
+
+    public static LList<T> Create<T>(ReadOnlySpan<T> items)
+    {
+        var result = LList<T>.Empty;
+        for (int i = items.Length - 1; i >= 0; i--)
+        {
+            result = new(items[i], result);
+        }
+        return result;
+    }
 
     public static LList<T> Of<T>(params T[] items) => Create(new ReadOnlySpan<T>(items));
 
     // public static LList<T> Empty<T>() => LList<T>.Empty;
 
     public static LList<T> ToLList<T>(this IEnumerable<T> items)
+        => items switch
+        {
+            LList<T> llist => llist,
+            T[] array => Of(array),
+            IList<T> ilist => Enumerable.Range(1, ilist.Count).Aggregate(LList<T>.Empty, (list, i) => new(ilist[^i], list)),
+            var ienumerable => FromSeqUsingRecursion(ienumerable)
+        };
+
+    private static LList<T> FromSeqUsingRecursion<T>(this IEnumerable<T> items)
     {
-        if (items is LList<T> llist)
-        {
-            return llist;
-        }
-
-        if (items is IList<T> coll)
-        {
-            return Enumerable.Range(1, coll.Count).Aggregate(LList<T>.Empty, (list, i) => new(coll[^i], list));
-        }
-
         using var iterator = items.GetEnumerator();
-
         return Next(iterator);
 
         static LList<T> Next(IEnumerator<T> iter) => iter.MoveNext() ? new(iter.Current, Next(iter)) : LList<T>.Empty;
     }
 
-    // public static LList<T> ToLList2<T>(this IEnumerable<T> items) => LList<T>.ToLList(items);
+    private static LList<T> FromSeqUsingListReversion<T>(IEnumerable<T> items)
+    {
+        return ToReversedList(ToReversedList(items));
 
+        static LList<T> ToReversedList(IEnumerable<T> xs) => xs.Aggregate(LList<T>.Empty, (list, item) => new(item, list));
+    }
 
-    // public static LList<T> ToLList<T>(this IEnumerable<T> items)
-    // {
-    //     if (items is LList<T> llist)
-    //     {
-    //         return llist;
-    //     }
-
-    //     if (items is IList<T> coll)
-    //     {
-    //         return Enumerable.Range(1, coll.Count).Aggregate(LList<T>.Empty, (list, i) => new(coll[^i], list));
-    //     }
-
-    //     var reversedList = items.Aggregate(LList<T>.Empty, (list, item) => new(item, list));
-    //     return reversedList.Aggregate(LList<T>.Empty, (list, item) => new(item, list));
-    // }
-
+    private static LList<T> FromSeqUsingListMutation<T>(IEnumerable<T> items) => LList<T>.ToLList(items);
 
     public static LList<T> Cons<T>(T head, LList<T> tail) => new(head, tail);
-
 
     //public static int Count<T>(this LList<T> list) => list.Length;
 
@@ -199,8 +195,8 @@ public static class LList
 
 // public partial record LList<T>
 // {
-//     private LengthValue lengthValue;
-//     private T head;
+//     private readonly LengthValue lengthValue;
+//     private readonly T head;
 //     private LList<T> tail;
 
 //     public int Length => lengthValue.Value;
@@ -215,18 +211,8 @@ public static class LList
 //     private LList(T head, LList<T> tail, LengthValue lengthValue) => (this.head, this.tail, this.lengthValue) = (head, tail, lengthValue);
 
 
-//     public static LList<T> ToLList(IEnumerable<T> items)
+//     internal static LList<T> ToLList(IEnumerable<T> items)
 //     {
-//         if (items is LList<T> llist)
-//         {
-//             return llist;
-//         }
-
-//         if (items is IList<T> coll)
-//         {
-//             return Enumerable.Range(1, coll.Count).Aggregate(LList<T>.Empty, (list, i) => new(coll[^i], list));
-//         }
-
 //         using var iterator = items.GetEnumerator();
 
 //         if (!iterator.MoveNext())
