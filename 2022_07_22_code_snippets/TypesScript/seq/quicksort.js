@@ -166,8 +166,14 @@ function memoize(iterable) {
 function* return123() {
     yield 1;
     yield 2;
-    return 3;
+    yield 3;
 }
+
+
+
+
+
+
 
 // var return123_ = return123();
 var return123_ = memoize(return123());
@@ -188,3 +194,124 @@ iterator3.next();
 
 // 2. overriding 'filter' function version that caches generated values
 var filter = (...args) => memoize(require("powerseq").filter(...args));
+
+
+
+
+
+// using generator function as an interator object
+function memoize3(iterable) {
+    const items = [], iterator = iterable[Symbol.iterator]();
+
+    return {
+        [Symbol.iterator]: function* () {
+            let i = 0;
+
+            while (true) {
+                if (i < items.length) {
+                    yield items[i++];
+                } else {
+                    const { value, done } = iterator.next();
+                    if (done) {
+                        return;
+                    }
+                    yield items[i++] = value;
+                }
+            }
+        }
+    };
+}
+
+// closure instead of this
+function memoize4(iterable) {
+    const results = [], iterator = iterable[Symbol.iterator]();
+
+    return {
+        [Symbol.iterator]() {
+            var i = 0;
+            return {
+                next() {
+                    if (i < results.length) {
+                        return results[i++];
+                    }
+
+                    const last = results[i - 1];
+                    if (last?.done) {
+                        return last;
+                    }
+
+                    return results[i++] = iterator.next();
+                }
+            };
+        }
+    };
+}
+
+
+// how generators work
+
+function* map1(iterable, f) {
+    for (var item of iterable) {
+        yield f(item);
+    }
+}
+
+function map2(iterable, f) {
+    var iterator = iterable[Symbol.iterator]();
+    return {
+        [Symbol.iterator]() {
+            return this;
+        },
+        next() {
+            var result = iterator.next();
+            return result.done ? result : { value: f(result.value), done: false };
+        }
+    };
+}
+
+var q1 = map1(return123(), x => x * 1000);
+
+[...q1];
+
+for (var item of q1) {
+    console.log(item);
+}
+
+
+function* filter1(iterable, f) {
+    for (var item of iterable) {
+        if (f(item)) {
+            yield item;
+        }
+    }
+}
+
+function filter2(iterable, f) {
+    var iterator = iterable[Symbol.iterator]();
+    return {
+        [Symbol.iterator]() {
+            return this;
+        },
+        next() {
+            while (true) {
+                var result = iterator.next();
+                if (result.done) {
+                    return result;
+                }
+                if (f(result.value)) {
+                    return result;
+                }
+            }
+        }
+    };
+}
+
+
+var q2 = filter2(return123(), x => x % 2 === 1);
+
+[...q2];
+
+for (var item of q2) {
+    console.log(item);
+}
+
