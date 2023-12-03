@@ -25,11 +25,23 @@ fun <T> llistOf(vararg items: T): LList<T>? {
     return items.foldRight(null as LList<T>?) { item, lst -> LList(item, lst) }
 }
 
+fun <T> llistOfIter(items: Iterable<T>): LList<T>? {
+    fun next(iterator: Iterator<T>): LList<T>? =
+        if (iterator.hasNext()) LList(iterator.next(), next(iterator)) else emptyLList()
+    return next(items.iterator())
+}
+
+fun <T> llistOfSeq(items: Sequence<T>) = llistOfIter(items.asIterable())
+
 fun <T> llistSize(lst: LList<T>?): Int = if (lst == null) 0 else 1 + llistSize(lst.tail)
 
 // extensions
 fun <T> LList<T>?.toSequence() = llistToSequence(this)
+fun <T> LList<T>?.toIterable() = llistToSequence(this).asIterable()
 fun <T> LList<T>?.size() = llistSize(this)
+fun <T> Iterable<T>.toLList() = llistOfIter(this)
+fun <T> Sequence<T>.toLList() = llistOfSeq(this)
+
 
 fun llistTests() {
     llistToSequence(LList(1, LList(2, null))).toList() eq listOf(1, 2)
@@ -47,6 +59,11 @@ fun llistTests() {
     with(llistOf(1, 2, 3)!!) { print("head: $head") } // LList(head=1, ...)
     llistOf(1, 2, 3)?.apply { print("headŚ: $head") } // LList(head=1, ...)
     llistOf(1, 2, 3)?.also { print("head: $it.head") } // LList(head=1, ...)
+
+
+    llistOfIter(listOf<Int>()) eq null
+    llistOfIter(listOf(1)) eq llistOf(1)
+    llistOfIter(listOf(1, 2)) eq llistOf(1, 2)
 }
 
 

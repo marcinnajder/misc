@@ -54,7 +54,8 @@ fun puzzle2(input: String): String {
                     index == i -> op
                     else -> data.getOrNull(index)
                 }
-            }.let { (resultType, acc) -> if (resultType == ResultType.IndexOutOfBound) acc else null }
+                //}.let { (resultType, acc) -> if (resultType == ResultType.IndexOutOfBound) acc else null }
+            }.let { (resultType, acc) -> acc.takeIf { resultType == ResultType.IndexOutOfBound } }
         }
         .toString()
 }
