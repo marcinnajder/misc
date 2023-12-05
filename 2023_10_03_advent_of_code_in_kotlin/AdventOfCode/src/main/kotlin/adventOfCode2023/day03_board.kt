@@ -3,7 +3,7 @@ package adventOfCode2023.day03_board
 import common.eq
 import common.partitionBy
 
-typealias Line = Pair<Map<Int, Char>, Map<Int, String>>
+data class Line(val symbols: Map<Int, Char>, val numbers: Map<Int, String>)
 
 fun parseLine(line: String): Line =
     line.asSequence().withIndex()
@@ -17,36 +17,37 @@ fun parseLine(line: String): Line =
                 value.isDigit() -> Pair(symbols, numbers + Pair(index, pack.map { it.value }.joinToString("")))
                 else -> Pair(symbols + (index to value), numbers)
             }
-        }.let { (symbols, numbers) -> Pair(symbols.toMap(), numbers.toMap()) }
+        }.let { (symbols, numbers) -> Line(symbols.toMap(), numbers.toMap()) }
 
 
 fun loadData(input: String) = input.lineSequence().map(::parseLine)
 
-val emptyLine: Line = Pair(emptyMap(), emptyMap())
+val emptyLine = Line(emptyMap(), emptyMap())
 
 fun puzzle(input: String, findNumbers: (lines: List<Line>) -> Sequence<Int>) =
     (sequenceOf(emptyLine) + loadData(input) + sequenceOf(emptyLine)).windowed(3).flatMap(findNumbers).sum().toString()
 
 fun puzzle1(input: String) =
     puzzle(input) { (prev, current, next) ->
-        current.second.asSequence().mapNotNull { (indexN, number) ->
+        current.numbers.asSequence().mapNotNull { (indexN, number) ->
             val indexes = (indexN - 1)..(indexN + number.length)
             when {
-                sequenceOf(indexes.first, indexes.last).any { it in current.first } -> number.toInt()
-                indexes.any { it in prev.first } || indexes.any { it in next.first } -> number.toInt()
+                sequenceOf(indexes.first, indexes.last).any { it in current.symbols } -> number.toInt()
+                indexes.any { it in prev.symbols } || indexes.any { it in next.symbols } -> number.toInt()
                 else -> null
             }
         }
     }
 
-fun IntProgression.isOverlapping(range: IntProgression) = this.any { it in range }
+fun IntProgression.isOverlapping(range: IntProgression) =
+    this.any { it in range } // could be implemented without iteration comparing ends of ranges
 
 fun puzzle2(input: String) =
-    puzzle(input) { lines ->
-        lines[1].first.asSequence().mapNotNull { (indexS, symbol) ->
+    puzzle(input) { (prev, current, next) ->
+        current.symbols.asSequence().mapNotNull { (indexS, symbol) ->
             if (symbol == '*') {
                 val indexes = (indexS - 1)..(indexS + 1)
-                val adjacentNumbers = lines.asSequence().flatMap { it.second.asSequence() }
+                val adjacentNumbers = sequenceOf(prev, current, next).flatMap { it.numbers.asSequence() }
                     .mapNotNull { (indexN, number) -> if (indexes.isOverlapping(indexN..<indexN + number.length)) number.toInt() else null }
                     .take(3).toList()
                 if (adjacentNumbers.count() == 2) adjacentNumbers.reduce { a, b -> a * b } else null
