@@ -1,14 +1,13 @@
 package adventOfCode2023.day04_cards
 
 import common.eq
+import common.parseNumbers
 
 data class Card(val winning: Set<Int>, val numbers: Set<Int>)
 
-fun parseNumbers(text: String) =
-    text.splitToSequence(" ").mapNotNull { if (it.isEmpty()) null else it.toInt() }.toSet()
-
 fun parseLine(line: String) =
-    line.substringAfter(":").split("|").let { (winning, numbers) -> Card(parseNumbers(winning), parseNumbers(numbers)) }
+    line.substringAfter(":").split("|")
+        .let { (winning, numbers) -> Card(parseNumbers(winning).toSet(), parseNumbers(numbers).toSet()) }
 
 fun loadData(input: String) = input.lineSequence().map(::parseLine)
 

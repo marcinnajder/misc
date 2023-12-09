@@ -1,7 +1,7 @@
 package adventOfCode2023.day07_poker
 
-import common.eq
 
+import common.eq
 
 typealias CardsToPoints = Map<Char, Int>
 

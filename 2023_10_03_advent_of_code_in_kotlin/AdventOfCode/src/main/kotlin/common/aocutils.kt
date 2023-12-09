@@ -1,9 +1,8 @@
 package common
 
-import java.lang.AssertionError
+fun parseNumbers(text: String, separator: String = " ") =
+    text.splitToSequence(separator).mapNotNull { if (it.isEmpty()) null else it.toInt() }
 
-infix fun Any?.eq(obj2: Any?) {
-    if (this != obj2) {
-        throw AssertionError("'$this' <> '$obj2'")
-    }
-}
+
+fun parseNumbersL(text: String, separator: String = " ") =
+    text.splitToSequence(separator).mapNotNull { if (it.isEmpty()) null else it.toLong() }
