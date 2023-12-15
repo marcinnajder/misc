@@ -1,34 +1,8 @@
-import java.lang.AssertionError
-import kotlin.math.min
-import kotlin.math.max
+package adventOfCode2023.day08_nww
 
-infix fun Any?.eq(obj2: Any?) {
-    if (this != obj2) {
-        throw AssertionError("'$this' <> '$obj2'")
-    }
-}
-
-fun parseNumbers(text: String, separator: String = " ") =
-    text.splitToSequence(separator).mapNotNull { if (it.isEmpty()) null else it.toInt() }
-
-fun parseNumbersL(text: String, separator: String = " ") =
-    text.splitToSequence(separator).mapNotNull { if (it.isEmpty()) null else it.toLong() }
-
-
-fun <T> Sequence<T>.cycle() = sequence {
-    while (true) {
-        yieldAll(this@cycle)
-    }
-}
-
-
-val input =
-    java.io.File("/Volumes/data/github/misc/2023_10_03_advent_of_code_in_kotlin/AdventOfCode/src/main/kotlin/adventOfCode2023/day08.txt")
-        .readText()
-
+import common.cycle
 
 data class Data(val directions: Sequence<Char>, val mapping: Map<String, Pair<String, String>>)
-
 
 fun loadData(input: String): Data {
     val lines = input.lineSequence()
@@ -46,12 +20,12 @@ fun findFirst(data: Data, initValue: String, condition: (String) -> Boolean) =
 
 fun puzzle1(input: String) = findFirst(loadData(input), "AAA") { it == "ZZZ" }.toString()
 
+
 // works correctly but slowly, there are to many iterations because "the step" is small
 fun findLeastCommonMultiple(numbers: List<Long>) =
     numbers.max().let { maxValue ->
         sequenceOf(maxValue).cycle().scan(maxValue) { n, m -> n + m }.find { n -> numbers.all { n % it == 0L } }
     }
-
 
 fun puzzle2(input: String): String {
     val data = loadData(input)
@@ -87,34 +61,4 @@ fun findLCMOfListOfNumbers(numbers: List<Long>): Long {
 }
 // **
 
-
 // https://calculator-online.net/pl/lcm-calculator/
-
-//.first().first
-
-
-//var initValues = data.mapping.keys
-//    .filter { it.endsWith("A") }
-//    .map { v -> findFirst(v) { s -> s.endsWith("Z") }.first().first }
-//    .let { numbers ->
-//        val max = numbers.max()
-//        sequenceOf(max).cycle().scan(max) { sum, n -> sum + n }
-//            .map { n -> numbers.map { n % it == 0 } }
-//            // .map { n -> n % max == 0 }
-//            .take(30)
-//            .toList()
-//    }
-
-
-//var initValues = data.mapping.keys.filter { it.endsWith("A") }
-//    .map { runNTimes(it, 3) }
-
-//data.directions.scan(initValues) { state, direction ->
-//    state.map { data.mapping.getValue(it).let { (l, r) -> if (direction == 'L') l else r } }
-//}
-//    .first { it.any { t -> t.endsWith("Z") } }
-
-
-
-
-

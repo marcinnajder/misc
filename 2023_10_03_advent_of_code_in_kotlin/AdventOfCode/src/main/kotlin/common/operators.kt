@@ -87,6 +87,12 @@ fun <T, R> Sequence<T>.partitionBy(f: (T) -> R?) = sequence {
     }
 }
 
+fun <T> Sequence<T>.cycle() = sequence {
+    while (true) {
+        yieldAll(this@cycle)
+    }
+}
+
 
 fun operatorsTests() {
     sequenceOf(0, 1, 2).allUniquePairs().toList() eq listOf(Pair(1, 0), Pair(2, 1), Pair(2, 0))
