@@ -93,6 +93,19 @@ fun <T> Sequence<T>.cycle() = sequence {
     }
 }
 
+fun <T> Sequence<T>.expand(f: (T) -> Sequence<T>) = sequence {
+    val empty = emptySequence<T>()
+    var nextItems = this@expand
+
+    while (nextItems !== empty) { // referential comparison.
+        val items = nextItems
+        nextItems = empty
+        for (item in items) {
+            nextItems += f(item)
+            yield(item)
+        }
+    }
+}
 
 fun operatorsTests() {
     sequenceOf(0, 1, 2).allUniquePairs().toList() eq listOf(Pair(1, 0), Pair(2, 1), Pair(2, 0))
@@ -119,5 +132,9 @@ fun operatorsTests() {
         listOf(2, 2),
         listOf(3, 3)
     )
+
+    sequenceOf(1, 2, 3).expand { emptySequence<Int>() }.toList() eq listOf(1, 2, 3)
+    emptySequence<Int>().expand { emptySequence<Int>() }.toList() eq listOf<Int>()
+    sequenceOf(2).expand { if (it == 2) sequenceOf(1, 1) else emptySequence() }.toList() eq listOf(2, 1, 1)
 }
 

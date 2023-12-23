@@ -5,7 +5,7 @@ import kotlin.time.measureTime
 fun main(args: Array<String>) {
     val folderPath =
         "/Volumes/data/github/misc/2023_10_03_advent_of_code_in_kotlin/AdventOfCode/src/main/kotlin/"
-    val input = File("$folderPath/adventOfCode2023/day05.txt").readText();
+    val input = File("$folderPath/adventOfCode2023/day11.txt").readText();
 
 //    val time = measureTime {
 //        //adventOfCode2023.day05_seeds.loadData(input)
@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
 //    }
 //    print("time: $time")
 
-    println(adventOfCode2023.day05_seeds.puzzle1(input))
-    println(adventOfCode2023.day05_seeds.puzzle2(input))
+    println(adventOfCode2023.day11_universe.puzzle1(input))
+    println(adventOfCode2023.day11_universe.puzzle2(input))
     // println("Program arguments: ${args.joinToString()}")
 }
