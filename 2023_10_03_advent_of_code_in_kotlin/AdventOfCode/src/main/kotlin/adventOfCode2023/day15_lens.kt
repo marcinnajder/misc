@@ -3,7 +3,7 @@ package adventOfCode2023.day15_lens
 import common.eq
 
 fun loadData(input: String) =
-    input.split(",")
+    input.splitToSequence(",")
 
 fun decode(code: String) =
     code.fold(0) { sum, c -> ((sum + c.code) * 17) % 256 }
@@ -18,7 +18,7 @@ fun parseCode(code: String) =
     }
 
 fun puzzle2(input: String) =
-    loadData(input).asSequence().map(::parseCode) // LinkedHashMap<K, V> preserves the order of insertion
+    loadData(input).map(::parseCode) // LinkedHashMap<K, V> preserves the order of insertion
         .fold(MutableList(256) { linkedMapOf<String, Int>() }) { boxes, (label, length) ->
             boxes.apply {
                 // remove entry when 'length==null', add or update entry otherwise
