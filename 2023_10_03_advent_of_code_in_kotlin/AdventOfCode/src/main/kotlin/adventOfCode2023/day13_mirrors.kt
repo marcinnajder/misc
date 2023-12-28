@@ -19,7 +19,9 @@ fun findReflectionRowId(
 
 
 fun calcPointsForRows(rows: List<String>, comparer: RowsComparer): Int? =
-    findReflectionRowId(LList(rows[0], null), rows.toLList()!!.tail, 1, comparer)
+    rows.toLList()!!.let { (head, tail) ->
+        findReflectionRowId(llistOf(head), tail, 1, comparer)
+    }
 
 fun transpose(rows: List<String>) = sequence {
     val iterators = rows.map { it.iterator() }
@@ -42,14 +44,25 @@ fun puzzle1(input: String) =
     }.toString()
 
 
+fun differsBySingleItem(row1: String, row2: String) =
+    row1.asSequence().zip(row2.asSequence()).singleOrNull { (c1, c2) -> c1 != c2 } != null
+
 fun puzzle2(input: String) =
+    loadData(input).sumOf {
+        calcPointsForRowsAndColumns(it) { rows1, rows2 ->
+            rows1.zip(rows2).filter { (row1, row2) -> row1 != row2 }
+                .flatMap { (row1, row2) -> 1..if (differsBySingleItem(row1, row2)) 1 else 2 }
+                .singleOrNull() != null
+        }
+    }
+
+
+fun puzzle22(input: String) =
     loadData(input).sumOf {
         calcPointsForRowsAndColumns(it) x@{ rows1, rows2 ->
             var rowWithSmudge = false;
             for ((row1, row2) in rows1.zip(rows2).filter { (row1, row2) -> row1 != row2 }) {
-                if (!rowWithSmudge && row1.asSequence().zip(row2.asSequence())
-                        .singleOrNull { (c1, c2) -> c1 != c2 } !== null
-                ) {
+                if (!rowWithSmudge && differsBySingle(row1, row2)) {
                     rowWithSmudge = true
                 } else {
                     return@x false
@@ -57,4 +70,4 @@ fun puzzle2(input: String) =
             }
             return@x rowWithSmudge
         }
-    }.toString()
+    }
