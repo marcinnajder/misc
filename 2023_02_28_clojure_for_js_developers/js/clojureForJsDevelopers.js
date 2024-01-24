@@ -344,15 +344,15 @@ get(vector(1, 2, 3), 1); // 2
 get(); // 2
 
 assoc(p1, "age", 5);
-assoc(p1, "age", 5, "address", "wroclaw");
+assoc(p1, "age", 5, "address", "wroclaw"); // => { address: 'wroclaw', age: 5, id: 1, name: 'marcin' }
 assoc(vector(10, 20, 30), 0, 100, 1, 200);
 assoc(vector(10, 20, 30), 5, 100); // => index out of bounds
 assoc("mama", 0, "M", 3, "o"); // => Mamo
 assoc("mama", 5, "!");// => index out of bounds
 
 
-update(vector(1, 2, 3), 0, v => v + 10);
-update(vector(1, 2, 3), 0, plus, 10, 5);
+update(vector(1, 2, 3), 0, v => v + 10); // => [ 11, 2, 3 ]
+update(vector(1, 2, 3), 0, plus, 10, 5); // => [ 11, 2, 3 ]
 update(p1, "age", v => v - 100);
 update(p1, "age", minus, 100);
 update(p1, "age", _ => 0);
@@ -420,7 +420,7 @@ function reduce(f, val, coll) {
     }
 }
 
-map(x => x * 10, filter(oddp, list(1, 2, 3, 4, 5, 6)));
+map(filter(oddp, list(1, 2, 3, 4, 5, 6)), x => x * 10);
 
 reduce((p, c) => p + c, 0, list());
 reduce((p, c) => p + c, 0, list(1, 2, 3));

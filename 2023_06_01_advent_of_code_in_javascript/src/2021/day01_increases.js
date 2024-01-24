@@ -1,6 +1,6 @@
 var { readFileSync } = require("fs");
 var { EOL } = require("os");
-var { pipe, filter, map, toarray, buffer, count, sum } = require("powerseq");
+var { pipe, filter, map, buffer, count, sum } = require("powerseq");
 
 
 function loadData(input) {

@@ -13,6 +13,6 @@
   "author": "Marcin Najder",
   "license": "ISC",
   "dependencies": {
-    "powerseq": "^1.0.4"
+    "powerseq": "2.0.0"
   }
 }

@@ -1,6 +1,6 @@
 ﻿// https://leetcode.com/problems/two-sum/
 
-var { find, flatmap, range, pipe, find, } = require("powerseq");
+var { find, flatmap, range, pipe, find } = require("powerseq");
 
 
 function twoSum(nums, target) {

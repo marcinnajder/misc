@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "powerfp": "^0.0.3",
-    "powerseq": "^1.0.4"
+    "powerseq": "2.0.0"
   },
   "devDependencies": {},
   "engines": {

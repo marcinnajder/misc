@@ -1,5 +1,5 @@
 import { MalType_number_, MalFuncType, MalType, malEqual, string_, nil, list, true_, false_, atom, MalType_fn, fn, MalType_false_, listToMap, MalType_map, mapToList, map, keyToString, KeyType, stringToKey, MalType_with_meta } from "./types";
-import { flatmap, toobject, of } from "powerseq";
+import { flatmap, toobject } from "powerseq";
 import { ok, error, matchUnion, resultMapM, ResultS, isUnion, TypedObj, UnionChoice, Result_ok } from "powerfp";
 import * as fs from "fs";
 import { pr_str, PrintLineType } from "./printer";
@@ -58,7 +58,7 @@ export const ns = {
   //"read-string": ([text]: MalType_string_[]) => read_str(text.value).map(malOp => malOp.type === "some" ? malOp.value : list([], "list")),
 
   "slurp": ([fileName]: MalType_string_[]) => {
-    try { return ok(string_(fs.readFileSync(fileName.value, "utf8"))); } catch (err) { return error(err.toString()); }
+    try { return ok(string_(fs.readFileSync(fileName.value, "utf8"))); } catch (err) { return error((err as any).toString()); }
   },
 
   "atom": ([mal]: MalType[]) => ok(atom(mal)),

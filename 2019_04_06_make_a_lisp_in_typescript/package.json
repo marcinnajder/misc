@@ -4,6 +4,8 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
+    "tsc": "tsc",
+    "watch": "tsc -w",
     "start": "node ./dist/src/index.js",
     "del-dist": "shx rm -rf ./dist",
     "test": "node ./dist/tests/runMalStepsTests.js",
@@ -13,11 +15,11 @@
   "license": "ISC",
   "dependencies": {
     "powerfp": "0.0.1",
-    "typescript": "^3.5.2"
+    "typescript": "5.3.3"
   },
   "devDependencies": {
-    "@types/node": "^11.13.0",
-    "powerseq": "^1.0.4",
-    "shx": "^0.3.2"
+    "@types/node": "20.11.6",
+    "powerseq": "2.0.0",
+    "shx": "0.3.4"
   }
 }

@@ -4,9 +4,9 @@
   "description": "",
   "main": "choices.js",
   "dependencies": {
-    "@types/node": "9.6.2",
-    "powerseq": "0.0.10",
-    "typescript": "2.8.1"
+    "@types/node": "20.11.6",
+    "powerseq": "2.0.0",
+    "typescript": "5.3.3"
   },
   "devDependencies": {},
   "scripts": {

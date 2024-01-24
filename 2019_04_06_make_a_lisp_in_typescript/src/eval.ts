@@ -235,7 +235,7 @@ function apply_tryCatch(args: MalType[], env: Env): ResultS<MalType> {
     });
   } catch (err) {
     const [, errorSymbol, catchBodyMal] = catchMal.items;
-    return eval_(catchBodyMal, new Env(some(env), [errorSymbol.name], [err]));
+    return eval_(catchBodyMal, new Env(some(env), [errorSymbol.name], [err as any]));
   }
 }
 

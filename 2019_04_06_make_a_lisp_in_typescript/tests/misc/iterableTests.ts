@@ -227,7 +227,7 @@ function tests() {
       (testsObj as any)[p]();
     }
     catch (err) {
-      console.log(err.message);
+      console.log((err as Error).message);
       //throw err;
     }
   }

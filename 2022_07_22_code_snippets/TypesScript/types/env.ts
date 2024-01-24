@@ -1,4 +1,4 @@
-import { Option, some, none, pipe, error, ok, Result, matchValue, isUnion } from "powerfp";
+import { Option, some, none, error, ok, Result } from "powerfp";
 
 // domain
 type Id = string;

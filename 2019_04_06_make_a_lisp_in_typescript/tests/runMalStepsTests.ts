@@ -3,7 +3,7 @@ import * as path from "path";
 import * as fs from "fs";
 import * as os from "os";
 import assert = require("assert");
-import { pipe, map, toarray, filter, scan, intersect, count, reduce, distinctuntilchanged } from "powerseq";
+import { pipe, map, toarray, filter, scan, intersect, count, distinctuntilchanged } from "powerseq";
 import { step_read_print, step_repl, step_eval, StepFunc } from "../src/steps";
 import { defaultEnv, Env } from "../src/env";
 import { assertNever } from "../src/types";

@@ -14,8 +14,8 @@
   "license": "ISC",
   "dependencies": {
     "powerfp": "^0.0.3",
-    "powerseq": "^1.0.4",
+    "powerseq": "2.0.0",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.4"
+    "typescript": "5.3.3"
   }
 }

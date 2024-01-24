@@ -1,8 +1,7 @@
 import * as dayjs from 'dayjs';
 import * as isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import * as customParseFormat from 'dayjs/plugin/customParseFormat';
-import { pipe, flatmap, concat, map, distinct, toarray, find, filter, groupby, take } from "powerseq";
-import { pipe as pipe_ } from "powerfp";
+import { pipe, flatmap, concat, map, toarray, filter, groupby, take } from "powerseq";
 
 dayjs.extend(isSameOrBefore);
 dayjs.extend(customParseFormat);
@@ -79,7 +78,7 @@ interface FindQuery {
 }
 
 function findSchedules(schedules: Schedule[], query: FindQuery) {
-    return pipe_(
+    return pipe(
         schedules,
         ss => query.doctorId ? filter(ss, s => s.doctorId === query.doctorId) : ss,
         ss => query.unitId ? filter(ss, s => s.unitId === query.unitId) : ss,
@@ -176,8 +175,8 @@ function groupSchedulesByDoctors(schedules: Schedule[]): Schedule[][] {
     return pipe(
         schedules,
         filter(s => !!s.validFrom),
-        groupby(s => s.doctorId, s => s,
-            (_, items) => toarray(items).sort(({ validFrom: vf1 }, { validFrom: vf2 }) => vf1 === vf2 ? 0 : vf1! < vf2! ? 1 : -1)),
+        groupby(s => s.doctorId),
+        map(([_, items]) => toarray(items).sort(({ validFrom: vf1 }, { validFrom: vf2 }) => vf1 === vf2 ? 0 : vf1! < vf2! ? 1 : -1)),
         toarray()
     );
 }

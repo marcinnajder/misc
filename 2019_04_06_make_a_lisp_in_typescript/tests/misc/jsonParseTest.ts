@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import { pipe, takewhile, scan, toarray, last, map } from "powerseq";
+import { pipe, takewhile, scan, last, map } from "powerseq";
 import { EOL } from "os";
 import { join } from "path";
 
@@ -13,16 +13,20 @@ function test() {
   }
   catch (err) {
 
-    //Unexpected end of JSON input 
-    const prefix = "in JSON at position ";
-    const prefixIndex = err.message.indexOf(prefix);
-    console.log({ prefixIndex });
+    if (err instanceof Error) {
+      //Unexpected end of JSON input 
+      const prefix = "in JSON at position ";
+      const prefixIndex = err.message.indexOf(prefix);
+      console.log({ prefixIndex });
 
-    if (prefixIndex !== -1) {
-      console.log(err.message);
-      const charNumber = parseInt(err.message.substr(prefixIndex + prefix.length));
-      console.log({ charNumber });
-      findLineAndColumn(jsonContent, charNumber);
+      if (prefixIndex !== -1) {
+        console.log(err.message);
+        const charNumber = parseInt(err.message.substr(prefixIndex + prefix.length));
+        console.log({ charNumber });
+        findLineAndColumn(jsonContent, charNumber);
+      } else {
+        console.log(err);
+      }
     } else {
       console.log(err);
     }

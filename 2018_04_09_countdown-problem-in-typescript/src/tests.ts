@@ -150,7 +150,7 @@ function inc(a: number) {
   return a + 1;
 }
 
-function toString<T>(a: T) {
+function toString<T extends Object>(a: T) {
   return a.toString();
 }
 

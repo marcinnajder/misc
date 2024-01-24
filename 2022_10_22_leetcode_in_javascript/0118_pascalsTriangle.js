@@ -1,22 +1,8 @@
 ﻿
 // https://leetcode.com/problems/pascals-triangle/
 
-var { pipe, take, toarray, map, expand } = require("powerseq");
+var { pipe, take, toarray, map, expand, pairwise } = require("powerseq");
 
-
-function* pairwise(items) {
-    var iterator = items[Symbol.iterator]();
-    var result;
-
-    if (!(result = iterator.next()).done) {
-
-        var prev = result.value;
-        while (!(result = iterator.next()).done) {
-            yield [prev, result.value];
-            var prev = result.value;
-        }
-    }
-}
 
 function pascalsTriangle(rowNumber) {
     return pipe(

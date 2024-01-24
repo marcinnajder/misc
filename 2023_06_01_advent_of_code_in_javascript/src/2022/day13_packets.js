@@ -1,6 +1,6 @@
 var { readFileSync } = require("fs");
 var { EOL } = require("os");
-var { pipe, map, toarray, buffer, count, sum, filter, zip, find, groupby, skip, take, toobject, reduce } = require("powerseq");
+var { pipe, map, toarray, buffer, count, sum, filter, zip, find, groupbytoobject } = require("powerseq");
 
 
 function compareNumber(a, b) {
@@ -12,7 +12,7 @@ function loadData(input, parseLine_ = JSON.parse) {
         input.split(EOL),
         filter(line => line !== ""),
         map(parseLine_),
-        toarray
+        toarray()
     );
 }
 
@@ -52,8 +52,7 @@ function puzzle2(input) {
         pipe(
             input,
             loadData,
-            groupby(p => comaprePackets(p, devider2)),
-            toobject(gr => gr.key, gr => [...gr]));
+            groupbytoobject(p => comaprePackets(p, devider2)));
     var lowerThan6Count = count(greaterThen2, p => comaprePackets(p, devider6) == -1);
     return (lowerThan2.length + 1) * (lowerThan2.length + 1 + lowerThan6Count + 1);
 }
@@ -77,10 +76,6 @@ function readTokens(tokens, items) {
 }
 
 
-function parseLine(line) {
-    var tokens = line.match(/\d+|\[|\]/g);
-    return readTokens(tokens[Symbol.iterator](), [])[0];
-}
 
 
 
