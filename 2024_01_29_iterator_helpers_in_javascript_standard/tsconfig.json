@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "es2017",
+    "strict": true,        
+    "sourceMap": false,
+    "inlineSources": false,
+    "declaration": true,
+    "lib": [
+        "es2017"
+    ],
+    "moduleResolution": "node",        
+    "rootDir": "./",        
+    "outDir": "./dist",
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src/**/*.ts"      
+  ]
+}
