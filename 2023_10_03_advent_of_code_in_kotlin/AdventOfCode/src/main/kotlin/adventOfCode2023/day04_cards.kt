@@ -25,7 +25,7 @@ fun puzzle2(input: String): String {
         val result = countWinningNumbers(card)
         val amountOfCards = amountsOfCards[index]
 
-        for (i in (index + 1)..<(index + 1 + result).coerceAtMost(cards.count())) {
+        for (i in (index + 1)..<(index + 1 + result).coerceAtMost(cards.size)) {
             amountsOfCards[i] += amountOfCards
         }
     }

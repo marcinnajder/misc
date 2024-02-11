@@ -4,11 +4,12 @@ typealias Game = List<List<Pair<String, Int>>>
 
 fun parseLine(line: String): Game =
     line.substringAfter(":").split(";")
-        .map { it.split(",").map { p -> p.trim().split(" ").let { (count, color) -> Pair(color, count.toInt()) } } }
+        .map { it.split(",").map { p -> p.trim().split(" ").let { (count, color) -> color to count.toInt() } } }
 
 fun loadData(input: String) = input.lines().map(::parseLine)
 
 val requiredBags = mapOf("red" to 12, "green" to 13, "blue" to 14)
+
 
 fun puzzle1(input: String) =
     loadData(input).mapIndexedNotNull { index, game ->

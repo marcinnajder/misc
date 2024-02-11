@@ -2,15 +2,9 @@ package adventOfCode2023.day05_seeds
 
 import common.*
 
-data class Line(val srcRange: LongProgression, val dest: Long)
+data class Line(val srcRange: LongRange, val dest: Long)
 
 data class Data(val seeds: List<Long>, val mappings: List<List<Line>>)
-
-fun LongProgression.containsValue(value: Long) = value >= this.first && value <= this.last
-
-fun LongProgression.isOverlapping(progression: LongProgression) =
-    (this.containsValue(progression.first) || this.containsValue(progression.last)) ||
-            (progression.containsValue(this.first) || progression.containsValue(this.last))
 
 fun compareLines(line1: Line, line2: Line) =
     if (line1.srcRange.isOverlapping(line2.srcRange)) 0 else line1.srcRange.first.compareTo(line2.srcRange.first)
@@ -32,10 +26,10 @@ fun loadData(input: String): Data {
 fun moveValue(mapping: Line, value: Long) =
     mapping.dest + value - mapping.srcRange.first
 
-fun moveLine(mapping: Line, line: LongProgression) =
+fun moveLine(mapping: Line, line: LongRange) =
     moveValue(mapping, line.first)..moveValue(mapping, line.last)
 
-fun splitLine(line: LongProgression, splitter: Long) =
+fun splitLine(line: LongRange, splitter: Long) =
     Pair(line.first..splitter, splitter + 1..line.last)
 
 
@@ -57,11 +51,11 @@ fun puzzle1(input: String) =
     puzzle(input, { it.toSet() }, ::transformValues, { it.min() })
 
 
-fun transformLine(mappings: LList<Line>?, input: LongProgression, output: LList<LongProgression>?)
-        : LList<LongProgression>? {
+fun transformLine(mappings: LList<Line>?, input: LongRange, output: LList<LongRange>?)
+        : LList<LongRange>? {
 
     if (mappings == null) {
-        return mergeLines(output, input);
+        return mergeLinesL(output, input);
     }
 
     val (mapping, restMappings) = mappings
@@ -69,31 +63,31 @@ fun transformLine(mappings: LList<Line>?, input: LongProgression, output: LList<
     val isInputEndInsideMapping = input.last <= mapping.srcRange.last
 
     if (isInputStartInsideMapping && isInputEndInsideMapping) { // input entirely inside mapping
-        return mergeLines(output, moveLine(mapping, input))
+        return mergeLinesL(output, moveLine(mapping, input))
     }
 
     if (isInputStartInsideMapping) { // exactly two parts (first half is inside mapping, second it not)
         val (firstPart, secondPart) = splitLine(input, mapping.srcRange.last)
-        return transformLine(restMappings, secondPart, mergeLines(output, moveLine(mapping, firstPart)))
+        return transformLine(restMappings, secondPart, mergeLinesL(output, moveLine(mapping, firstPart)))
     }
 
     val (firstPart, secondPart) = splitLine(input, mapping.srcRange.first - 1)
-    val outputWithFirstPart = mergeLines(output, firstPart)
+    val outputWithFirstPart = mergeLinesL(output, firstPart)
 
     if (isInputEndInsideMapping) { // exactly two parts (first half is not inside mapping, second is)
-        return mergeLines(outputWithFirstPart, moveLine(mapping, secondPart))
+        return mergeLinesL(outputWithFirstPart, moveLine(mapping, secondPart))
     }
 
     // more than two parts
     val (firstOfSecondPart, secondOfSecondPart) = splitLine(secondPart, mapping.srcRange.last)
     return transformLine(
         restMappings, secondOfSecondPart,
-        mergeLines(outputWithFirstPart, moveLine(mapping, firstOfSecondPart))
+        mergeLinesL(outputWithFirstPart, moveLine(mapping, firstOfSecondPart))
     )
 }
 
 fun transformLines(lines: List<Line>, mapping: List<Line>) =
-    lines.fold(emptyLList<LongProgression>()) { state, line ->
+    lines.fold(emptyLList<LongRange>()) { state, line ->
         val mappingsMatched = mapping.dropWhile { compareLines(line, it) != 0 }
             .takeWhile { compareLines(line, it) == 0 }.toLList()
         transformLine(mappingsMatched, line.srcRange, state)

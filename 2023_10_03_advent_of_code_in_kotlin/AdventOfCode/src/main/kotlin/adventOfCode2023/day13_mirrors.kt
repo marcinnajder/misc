@@ -62,7 +62,7 @@ fun puzzle22(input: String) =
         calcPointsForRowsAndColumns(it) x@{ rows1, rows2 ->
             var rowWithSmudge = false;
             for ((row1, row2) in rows1.zip(rows2).filter { (row1, row2) -> row1 != row2 }) {
-                if (!rowWithSmudge && differsBySingle(row1, row2)) {
+                if (!rowWithSmudge && differsBySingleItem(row1, row2)) {
                     rowWithSmudge = true
                 } else {
                     return@x false

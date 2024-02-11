@@ -117,6 +117,7 @@ fun enumerateAllPositions(board: Board) =
         line.mapIndexedNotNull { column, c -> Triple(c, row, column) }
     }
 
+/** BFS (breadth first search) */
 fun findOuterPositions(board: Board): Set<Pair<Int, Int>> {
     val wall = enumerateAllPositions(board).mapNotNull { (c, row, column) ->
         if (c == ' ') null else Pair(row, column)
@@ -126,7 +127,7 @@ fun findOuterPositions(board: Board): Set<Pair<Int, Int>> {
     val queue: Queue<Pair<Int, Int>> = LinkedList()
     queue.add(Pair(0, 0))
 
-    while (queue.isNotEmpty()) { // breadth first search
+    while (queue.isNotEmpty()) {
         val currentPosition = queue.poll()!!
         val (row, column) = currentPosition
 

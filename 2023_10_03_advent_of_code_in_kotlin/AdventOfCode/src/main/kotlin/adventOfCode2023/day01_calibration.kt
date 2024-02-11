@@ -6,7 +6,7 @@ val onlyDigits: Mapping = (1..9).asSequence().map { it.toString() }.map { it to 
 
 val alsoSpelledOut: Mapping =
     onlyDigits + sequenceOf("one", "two", "three", "four", "five", "six", "seven", "eight", "nine")
-        .mapIndexed() { index, value -> value to "${index + 1}" }
+        .mapIndexed { index, value -> value to "${index + 1}" }
         .toList()
 
 fun parseLine(text: String, mapping: Mapping): Int {

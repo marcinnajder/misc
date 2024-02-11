@@ -92,83 +92,28 @@ fun <T> Iterable<T>.toLList() = llistOfIter(this)
 fun <T> Sequence<T>.toLList() = llistOfSeq(this)
 
 
-val input =
-    java.io.File("/Volumes/data/github/misc/2023_10_03_advent_of_code_in_kotlin/AdventOfCode/src/main/kotlin/adventOfCode2023/day13.txt")
-        .readText()
+operator fun IntRange.component1() = this.first
+operator fun IntRange.component2() = this.last
+fun IntRange.length() = this.last - this.first + 1
 
-
-fun loadData(input: String) =
-    input.lineSequence().partitionBy { it.isEmpty() }.filter { it.size > 1 }
-
-typealias RowsComparer = (Sequence<String>, Sequence<String>) -> Boolean
-
-fun findReflectionRowId(
-    topRows: LList<String>?, bottomRows: LList<String>?, rowId: Int, comparer: RowsComparer
-): Int? =
-    when {
-        topRows == null || bottomRows == null -> null
-        comparer(topRows.toSequence(), bottomRows.toSequence()) -> rowId
-        else -> findReflectionRowId(LList(bottomRows.head, topRows), bottomRows.tail, rowId + 1, comparer)
-    }
-
-
-fun calcPointsForRows(rows: List<String>, comparer: RowsComparer): Int? =
-    findReflectionRowId(LList(rows[0], null), rows.toLList()!!.tail, 1, comparer)
-
-fun transpose(rows: List<String>) = sequence {
-    val iterators = rows.map { it.iterator() }
-    while (iterators[0].hasNext()) {
-        yield(iterators.asSequence().map { it.next() }.joinToString(""))
+fun mergeLines(lines: LList<IntRange>?, line: IntRange): LList<IntRange> {
+    return when {
+        lines == null -> LList(line, null)
+        else -> {
+            val (fromL, toL) = line
+            val (head, tail) = lines
+            val (fromH, toH) = head
+            when {
+                toH + 1 < fromL -> LList(head, mergeLines(tail, line))
+                toL + 1 < fromH -> LList(line, lines)
+                else -> mergeLines(tail, min(fromH, fromL)..max(toH, toL))
+            }
+        }
     }
 }
 
-fun calcPointsForRowsAndColumns(rows: List<String>, comparer: RowsComparer): Int =
-    when (val rowIndex = calcPointsForRows(rows, comparer)) {
-        null -> calcPointsForRows(transpose(rows).toList(), comparer)!!
-        else -> rowIndex * 100
-    }
 
-fun puzzle1(input: String) =
-    loadData(input).sumOf {
-        calcPointsForRowsAndColumns(it) { rows1, rows2 ->
-            rows1.zip(rows2).all { (row1, row2) -> row1 == row2 }
-        }
-    }.toString()
-
-
-fun puzzle2(input: String) =
-    loadData(input).sumOf {
-        calcPointsForRowsAndColumns(it) x@{ rows1, rows2 ->
-//            rows1.zip(rows2).filter { (row1, row2) -> row1 != row2 }
-//                .singleOrNull { (row1, row2) ->
-//                    row1.asSequence().zip(row2.asSequence()).singleOrNull { (c1, c2) -> c1 != c2 } != null
-//                } != null
-            var rowWithSmudge = false;
-            for ((row1, row2) in rows1.zip(rows2).filter { (row1, row2) -> row1 != row2 }) {
-                if (!rowWithSmudge && row1.asSequence().zip(row2.asSequence())
-                        .singleOrNull { (c1, c2) -> c1 != c2 } !== null
-                ) {
-                    rowWithSmudge = true
-                } else {
-                    return@x false
-                }
-            }
-            return@x rowWithSmudge
-        }
-    }
-
-
-//            rows1.toSequence().zip(rows2.toSequence())
-//                .scan(Pair(false, true)) { (rowWithSmudge, result), (row1, row2) ->
-//                    when {
-//                        row1 == row2 -> Pair(rowWithSmudge, true)
-//                        // exactly one char is different
-//                        row1.asSequence().zip(row2.asSequence()).singleOrNull { (c1, c2) -> c1 != c2 } !== null ->
-//                            Pair(true, !rowWithSmudge)
-//
-//                        else -> Pair(rowWithSmudge, false)
-//                    }
-//                }.all { (_, result) -> result }
-
-
+val input =
+    java.io.File("/Volumes/data/github/misc/2023_10_03_advent_of_code_in_kotlin/AdventOfCode/src/main/kotlin/adventOfCode2023/day14.txt")
+        .readText()
 

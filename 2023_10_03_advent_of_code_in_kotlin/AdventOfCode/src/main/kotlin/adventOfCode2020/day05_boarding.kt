@@ -4,7 +4,7 @@ import common.*
 
 fun loadData(input: String) = input.lineSequence()
 
-fun decodeChars(chars: CharSequence, range: IntProgression, leftHalf: Char) =
+fun decodeChars(chars: CharSequence, range: IntRange, leftHalf: Char) =
     chars.fold(range) { r, c ->
         val middle = (r.first + r.last) / 2
         when (c) {

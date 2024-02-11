@@ -2,6 +2,7 @@ package adventOfCode2023.day03_board
 
 import common.eq
 import common.partitionBy
+import common.isOverlapping
 
 data class Line(val symbols: Map<Int, Char>, val numbers: Map<Int, String>)
 
@@ -39,9 +40,6 @@ fun puzzle1(input: String) =
         }
     }
 
-fun IntProgression.isOverlapping(range: IntProgression) =
-    this.any { it in range } // could be implemented without iteration comparing ends of ranges
-
 fun puzzle2(input: String) =
     puzzle(input) { (prev, current, next) ->
         current.symbols.asSequence().mapNotNull { (indexS, symbol) ->
@@ -60,7 +58,16 @@ fun puzzle2(input: String) =
 
 fun tests() {
     (1..3).isOverlapping(1..3) eq true
+
     (1..3).isOverlapping(2..4) eq true
+    (2..4).isOverlapping(1..3) eq true
+
+    (1..3).isOverlapping(0..4) eq true
+    (0..4).isOverlapping(1..3) eq true
+
     (1..3).isOverlapping(3..5) eq true
+    (3..5).isOverlapping(5..7) eq true
+
     (1..3).isOverlapping(4..5) eq false
+    (4..5).isOverlapping(1..3) eq false
 }
