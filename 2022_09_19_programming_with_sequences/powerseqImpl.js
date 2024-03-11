@@ -589,8 +589,8 @@ var { groupby, map, pipe, count, filter, toarray } = require("powerseq");
 var groupByCompany = groupby(products,
     p => p.categories.includes("Apple") ? "apple" : (p.categories.includes("Samsung") ? "samsung" : "other"));
 
-for (var group of groupByCompany) {
-    console.log(group.key, "->", [...group]);
+for (var [key, group] of groupByCompany) {
+    console.log(group.key, "->", group);
 }
 
 
@@ -609,15 +609,16 @@ for (var group of groupByCompany) {
     products,
     // pairwise(),
     groupby(p => p.name),
-    map(gr => ({ name: gr.key, count: count(gr) })))]
-//map(gr => ({ name: gr.key, items: toarray(gr) })))
+    map(([key, values]) => ({ name: key, count: values.length }))
+)]
+
 
 
 
 var result = [...pipe(
     products,
     groupby(p => p.name),
-    map(gr => ({ name: gr.key, count: count(gr) })),
+    map(([key, values]) => ({ name: key, count: values.length })),
     filter(({ count }) => count > 1)
 )];
 
@@ -625,8 +626,8 @@ var result = [...pipe(
 var productsWithTheSameNames = pipe(
     products,
     groupby(p => p.name),
-    filter(gr => count(gr) > 1),
-    map(gr => gr.key),
+    filter(([key, values]) => values.length > 1),
+    map(([key, values]) => key),
     toarray()
 );
 

@@ -1,5 +1,5 @@
 import { inspect } from "util";
-import { pipe, map, toarray, filter } from "powerseq";
+import { pipe, map, toarray, filter, filtermap } from "powerseq";
 
 interface Results {
     [id: string]: { label: string; value: string; };
@@ -26,8 +26,7 @@ function formatColumns(layout: string[][], answersObj: Results) {
     return pipe(layout,
         map(row =>
             pipe(row,
-                map(id => answersObj[id]),
-                filter(a => !!a),
+                filtermap(id => answersObj[id]),
                 map(({ label, value }) => ({ text: `${label}: ${value}` })),
                 toarray())
         ),

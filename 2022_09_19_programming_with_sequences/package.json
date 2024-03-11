@@ -1,0 +1,20 @@
+{
+  "name": "2022_09_19_programming_with_sequences",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "watch": "tsc --watch"
+  },
+  "author": "Marcin Najder",
+  "license": "ISC",
+  "dependencies": {
+    "powerseq": "^2.0.0",
+    "typescript": "^5.3.3",
+    "@types/node": "20.10.5",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1",
+    "eslint": "^8.56.0"
+  }
+}

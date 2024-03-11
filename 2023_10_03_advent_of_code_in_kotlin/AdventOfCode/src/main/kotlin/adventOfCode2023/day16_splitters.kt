@@ -1,6 +1,7 @@
 package adventOfCode2023.day16_splitters
 
 import java.util.*
+import common.eq
 
 enum class Direction { Left, Right, Top, Bottom }
 
@@ -56,25 +57,23 @@ fun isMoveInsideBoard(move: Move, board: Board) =
     }
 
 fun executeMove(move: Move, board: Board) = sequence {
-    if (isMoveInsideBoard(move, board)) {
-        when (board.lines[move.toPosition.row][move.toPosition.column]) {
-            '|' ->
-                if (move.fromDirection.isLeftOrRight())
-                    yieldAll(sequenceOf(Direction.Top, Direction.Bottom).map { move.moveToDirection(it) })
-                else
-                    yield(move.moveForward())
+    when (board.lines[move.toPosition.row][move.toPosition.column]) {
+        '|' ->
+            if (move.fromDirection.isLeftOrRight())
+                yieldAll(sequenceOf(Direction.Top, Direction.Bottom).map { move.moveToDirection(it) })
+            else
+                yield(move.moveForward())
 
-            '-' ->
-                if (move.fromDirection.isLeftOrRight())
-                    yield(move.moveForward())
-                else
-                    yieldAll(sequenceOf(Direction.Left, Direction.Right).map { move.moveToDirection(it) })
+        '-' ->
+            if (move.fromDirection.isLeftOrRight())
+                yield(move.moveForward())
+            else
+                yieldAll(sequenceOf(Direction.Left, Direction.Right).map { move.moveToDirection(it) })
 
-            '/' -> yield(move.moveToDirection(move.fromDirection.toSlashReflected()))
-            '\\' -> yield(move.moveToDirection(move.fromDirection.toSlashReflected().toOpposite()))
+        '/' -> yield(move.moveToDirection(move.fromDirection.toSlashReflected()))
+        '\\' -> yield(move.moveToDirection(move.fromDirection.toSlashReflected().toOpposite()))
 
-            else -> yield(move.moveForward())
-        }
+        else -> yield(move.moveForward())
     }
 }.filter { m -> isMoveInsideBoard(m, board) }
 
@@ -120,4 +119,23 @@ fun puzzle2(input: String) =
     }
 
 
+fun tests() {
+    val board = Board(emptyList(), rowCount = 5, columnCount = 10)
+    isMoveInsideBoard(Move(Direction.Left, Position(row = 0, column = board.columnCount)), board) eq false
+    isMoveInsideBoard(Move(Direction.Left, Position(row = 0, column = board.columnCount - 1)), board) eq true
 
+    isMoveInsideBoard(Move(Direction.Right, Position(row = 0, column = -1)), board) eq false
+    isMoveInsideBoard(Move(Direction.Right, Position(row = 0, column = 0)), board) eq true
+
+    isMoveInsideBoard(Move(Direction.Top, Position(row = board.rowCount, column = 0)), board) eq false
+    isMoveInsideBoard(Move(Direction.Top, Position(row = board.rowCount - 1, column = 0)), board) eq true
+
+    isMoveInsideBoard(Move(Direction.Bottom, Position(row = -1, column = 0)), board) eq false
+    isMoveInsideBoard(Move(Direction.Bottom, Position(row = 0, column = 0)), board) eq true
+
+
+    Move(Direction.Left, Position(0, 0)).moveForward() eq Move(Direction.Left, Position(0, 1))
+    Move(Direction.Right, Position(0, 0)).moveForward() eq Move(Direction.Right, Position(0, -1))
+    Move(Direction.Top, Position(0, 0)).moveForward() eq Move(Direction.Top, Position(1, 0))
+    Move(Direction.Bottom, Position(0, 0)).moveForward() eq Move(Direction.Bottom, Position(-1, 0))
+}

@@ -1,13 +1,14 @@
 ﻿
 // https://leetcode.com/problems/plus-one/
 
-var { scan, reverse, pipe, toarray, map, concat, skipwhile } = require("powerseq");
+var { scan, reverse, pipe, toarray, map, concat, skipwhile, skip } = require("powerseq");
 
 function plusOne(digits) {
     return pipe(
         concat([0], digits),
         reverse(),
         scan(([_, carry], digit) => carry === 0 ? [digit, 0] : (digit === 9 ? [0, 1] : [digit + 1, 0]), [0, 1]),
+        skip(1),
         map(([d, _]) => d),
         reverse(),
         skipwhile(d => d === 0),

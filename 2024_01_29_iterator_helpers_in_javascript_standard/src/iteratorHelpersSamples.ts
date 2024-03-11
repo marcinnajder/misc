@@ -1,4 +1,4 @@
-import { distinct, pipe } from "powerseq";
+import { distinct, filter, pipe } from "powerseq";
 import { Iterator_ } from "./iteratorHelpers";
 
 
@@ -82,3 +82,30 @@ const result2 = [1, 2, 2, 3, 4, 4].values().filter(x => x % 2 === 0).pipe_(iter 
 
 console.log(result1); // [2, 4]
 console.log(result2); // [2, 4]
+
+// ---- samples for blog post articles
+
+//var array = [5, 10, 15];
+//var array = [5, 10, 15][Symbol.iterator]();
+
+// for (var item of array) {
+//     console.log(item);
+// }
+// for (var item of array) {
+//     console.log(item);
+// }
+
+
+
+
+
+for (const digit of filter("ab5c10d15ef", c => c >= "0" && c <= "9")) {
+    console.log(digit); // 5, 1, 0, 1, 5
+}
+
+for (const digit of Iterator_.from("ab5c10d15ef").filter(c => c >= "0" && c <= "9").toArray()) {
+    console.log(digit); // 5, 1, 0, 1, 5
+}
+
+console.log([1, 2, 3, 4, 5].values().filter(n => n % 2 === 0).toArray());
+
