@@ -98,7 +98,6 @@ function isIterable<T>(iter: Iter<T>): iter is Iterable<T> {
     return (iter as any)[Symbol.iterator] !== undefined;
 }
 
-
 export class Iterator_<T> extends IteratorHelpers<T>  {
     private constructor(private iterator: Iterator<T>) {
         super();
@@ -124,7 +123,6 @@ function assign(target: any, source: any) {
         }
     }
 }
-
 
 
 const iteratorHelpersProto = Object.getPrototypeOf(Object.getPrototypeOf(Iterator_.from([])));

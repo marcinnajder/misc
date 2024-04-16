@@ -1,9 +1,10 @@
+import sun.security.util.Length
 import java.lang.AssertionError
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.max
-
+import kotlin.math.pow
 
 infix fun Any?.eq(obj2: Any?) {
     if (this != obj2) {
@@ -127,171 +128,64 @@ fun <T> Sequence<T>.expand(f: (T) -> Sequence<T>) = sequence {
 }
 
 
+fun process(chars: String, numbers: List<Int>): Long {
+    val cache = mutableMapOf<String, Long>()
+
+    fun processChar(cIndex: Int, nIndex: Int, number: Int): Long {
+        return cache.getOrPut("$cIndex,$nIndex,$number") getValue@{
+            val endOfChars = cIndex == chars.length
+            val endOfNumbers = nIndex == numbers.size
+
+            fun processDot() =
+                when {
+                    number == 0 -> processChar(cIndex + 1, nIndex, 0)
+                    number != numbers[nIndex] -> 0
+                    else -> processChar(cIndex + 1, nIndex + 1, 0)
+                }
+
+            fun processHash() =
+                if (number + 1 > numbers[nIndex]) 0 else processChar(cIndex + 1, nIndex, number + 1)
+
+            return when {
+                endOfChars && endOfNumbers -> 1
+                endOfChars -> if ((nIndex == numbers.size - 1) && (number == numbers[nIndex])) 1 else 0
+                endOfNumbers -> if (chars[cIndex] == '#') 0 else processChar(cIndex + 1, nIndex, number)
+                else -> when (chars[cIndex]) {
+                    '.' -> processDot() // finish segment
+                    '#' -> processHash() // increment segment length
+                    else -> processHash() + processDot()
+                }
+            }
+        }
+    }
+
+    return processChar(0, 0, 0)
+}
+
+process("???.###".trim('.'), listOf(1, 1, 3)) eq 1L
+process(".??..??...?##.".trim('.'), listOf(1, 1, 3)) eq 4L
+process("?#?#?#?#?#?#?#?".trim('.'), listOf(1, 3, 1, 6)) eq 1L
+process("????.#...#...".trim('.'), listOf(4, 1, 1)) eq 1L
+process("????.######..#####.".trim('.'), listOf(1, 6, 5)) eq 4L
+process("?###????????".trim('.'), listOf(3, 2, 1)) eq 10L
+
 val input =
-    java.io.File("/Volumes/data/github/misc/2023_10_03_advent_of_code_in_kotlin/AdventOfCode/src/main/kotlin/adventOfCode2023/day10.txt")
+    java.io.File("/Volumes/data/github/misc/2023_10_03_advent_of_code_in_kotlin/AdventOfCode/src/main/kotlin/adventOfCode2023/day12.txt")
         .readText()
 
 
-enum class Direction { Left, Right, Top, Bottom }
+typealias Entry = Pair<String, List<Int>>
 
-fun Direction.toOpposite() = when (this) {
-    Direction.Left -> Direction.Right
-    Direction.Right -> Direction.Left
-    Direction.Top -> Direction.Bottom
-    Direction.Bottom -> Direction.Top
-}
+fun loadData(input: String): Sequence<Entry> =
+    input.lineSequence()
+        .map { it.split(' ').let { (left, right) -> Pair(left, parseNumbers(right, ",").toList()) } }
 
-val pipes: Map<Char, Map<Direction, Direction>> = sequenceOf(
-    Triple('-', Direction.Left, Direction.Right),
-    Triple('|', Direction.Top, Direction.Bottom),
-    Triple('7', Direction.Bottom, Direction.Left),
-    Triple('F', Direction.Bottom, Direction.Right),
-    Triple('J', Direction.Top, Direction.Left),
-    Triple('L', Direction.Top, Direction.Right),
-).map { (pipe, a, b) -> pipe to mapOf(a to b, b to a) }.toMap()
+fun puzzle(input: String, transformEntry: (Entry) -> Entry) =
+    loadData(input).take(5).map(transformEntry).sumOf { (left, right) -> process(left.trim('.'), right) }.toString()
 
+fun puzzle1(input: String) =
+    puzzle(input) { it }
 
-data class Board(
-    val lines: List<String>,
-    val startingRow: Int,
-    val startingColumn: Int,
-    val width: Int,
-    val height: Int
-)
-
-fun loadData(input: String): Board {
-    val lines = input.lines()
-    val (row, column) = lines.asSequence().withIndex()
-        .firstNotNullOf { (i, l) -> l.indexOf('S').let { if (it == -1) null else Pair(i, it) } }
-    return Board(lines, row, column, lines[0].length, lines.size)
-}
-
-
-fun movePosition(direction: Direction, row: Int, column: Int) =
-    when (direction) {
-        Direction.Right -> Pair(row, column + 1)
-        Direction.Left -> Pair(row, column - 1)
-        Direction.Top -> Pair(row - 1, column)
-        Direction.Bottom -> Pair(row + 1, column)
-    }
-
-fun getAdjacentDirections(board: Board, row: Int, column: Int) =
-    sequence {
-        if (row > 0) yield(Direction.Top)
-        if (row < board.height - 1) yield(Direction.Bottom)
-        if (column > 0) yield(Direction.Left)
-        if (column < board.width - 1) yield(Direction.Right)
-    }
-
-fun getAdjacentPositions(board: Board, row: Int, column: Int) =
-    getAdjacentDirections(board, row, column).map { movePosition(it, row, column) }
-
-
-fun findFirstMove(data: Board) =
-    getAdjacentDirections(data, data.startingRow, data.startingColumn)
-        .firstNotNullOf { outputDirection ->
-            movePosition(outputDirection, data.startingRow, data.startingColumn)
-                .let { (row, column) ->
-                    val shape = data.lines[row][column]
-                    val inputDirection = outputDirection.toOpposite()
-                    if (shape in pipes && inputDirection in pipes[shape]!!)
-                        Triple(inputDirection, row, column)
-                    else
-                        null
-                }
-        }
-
-
-fun getPositionsOfWall(board: Board) =
-    sequenceOf(findFirstMove(board)).expand { (inputDirection, row, column) ->
-        val pipe = board.lines[row][column]
-        if (pipe != 'S') {
-            val outputDirection = pipes.getValue(pipe).getValue(inputDirection)
-            val (nextRow, nextColumn) = movePosition(outputDirection, row, column)
-            sequenceOf(Triple(outputDirection.toOpposite(), nextRow, nextColumn))
-        } else {
-            emptySequence()
-        }
-    }.map { (_, row, column) -> Pair(row, column) }
-
-fun expandPosition(value: Int) = 1 + (value * 2)
-
-fun expandBoard(data: Board, routeSet: Set<Pair<Int, Int>>): Board {
-    val width = (data.width * 2) + 2
-    val height = (data.height * 2) + 2
-    val startingColumn = expandPosition(data.startingColumn)
-    val startingRow = expandPosition(data.startingRow * 2)
-    val emptyLine = " ".repeat(width)
-    val lines = sequenceOf(emptyLine) +
-            data.lines.asSequence().flatMapIndexed { row, line ->
-                val firstLine = line.asSequence().flatMapIndexed { column, c ->
-                    if (Pair(row, column) in routeSet)
-                        sequenceOf('X', if (c == 'S' || Direction.Right in pipes.getValue(c)) 'X' else ' ')
-                    else
-                        sequenceOf(' ', ' ')
-                }.joinToString("")
-                val secondLine = line.asSequence().flatMapIndexed { column, c ->
-                    if (Pair(row, column) in routeSet)
-                        sequenceOf(if (c == 'S' || Direction.Bottom in pipes.getValue(c)) 'X' else ' ', ' ')
-                    else
-                        sequenceOf(' ', ' ')
-                }.joinToString("")
-                sequenceOf(" $firstLine ", " $secondLine ")
-            } + sequenceOf(emptyLine)
-    return Board(lines.toList(), startingRow, startingColumn, width, height)
-}
-
-fun enumerateAllPositions(board: Board) =
-    board.lines.asSequence().flatMapIndexed { row, line ->
-        line.asSequence().mapIndexed { column, c -> Triple(c, row, column) }
-    }
-
-/** BFS (breadth first search) */
-fun findOuterPositions(board: Board): Set<Pair<Int, Int>> {
-    val wall = enumerateAllPositions(board).mapNotNull { (c, row, column) ->
-        if (c == ' ') null else Pair(row, column)
-    }.toSet()
-
-    val visited = mutableSetOf(Pair(0, 0))
-    val queue: Queue<Pair<Int, Int>> = LinkedList()
-    queue.add(Pair(0, 0))
-
-    while (queue.isNotEmpty()) {
-        val currentPosition = queue.poll()!!
-        val (row, column) = currentPosition
-
-        val next = getAdjacentPositions(board, row, column)
-            .filter { it !in wall && it !in visited }.toList()
-
-        queue.addAll(next)
-        visited.addAll(next)
-        // caution: "visited" means also those waiting in the queue, we don't want to duplicate items in queue
-    }
-
-    return visited
-}
-
-
-fun puzzle1(input: String) = (getPositionsOfWall(loadData(input)).count() / 2).toString()
-
-fun puzzle2(input: String): String {
-    val board = loadData(input)
-    val wall = getPositionsOfWall(board).toSet()
-    val expandedBoard = expandBoard(board, wall)
-    val outsidePositions = findOuterPositions(expandedBoard)
-
-    "." + expandedBoard.lines.joinToString("|") + "."
-
-
-    for (line in expandedBoard.lines) {
-        println(line)
-        print(",")
-    }
-
-    return enumerateAllPositions(board)
-        .count { (_, row, column) ->
-            Pair(row, column) !in wall && Pair(expandPosition(row), expandPosition(column)) !in outsidePositions
-        }.toString()
-}
-
+fun puzzle2(input: String) =
+    puzzle(input) { (left, right) -> Pair((1..5).joinToString("?") { left }, (1..5).flatMap { right }) }
 

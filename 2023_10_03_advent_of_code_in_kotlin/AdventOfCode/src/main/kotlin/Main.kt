@@ -1,6 +1,8 @@
 import adventOfCode2020.*
 import java.io.File
+import kotlin.math.pow
 import kotlin.time.measureTime
+
 
 fun main(args: Array<String>) {
     val folderPath =
@@ -11,9 +13,9 @@ fun main(args: Array<String>) {
 //        //adventOfCode2023.day05_seeds.loadData(input)
 //        println(adventOfCode2023.day05_seeds.puzzle2(input))
 //    }
-//    print("time: $time")
+    //print("time: $time")
 
     println(adventOfCode2023.day16_splitters.puzzle1(input))
     println(adventOfCode2023.day16_splitters.puzzle2(input))
-    // println("Program arguments: ${args.joinToString()}")
+    println("Program arguments: ${args.joinToString()}")
 }
