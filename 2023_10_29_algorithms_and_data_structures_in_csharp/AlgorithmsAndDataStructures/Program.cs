@@ -1,132 +1,74 @@
-﻿using System.Reflection;
+﻿using System.Formats.Asn1;
+using System.Numerics;
+using System.Reflection;
 using System.Runtime;
 using AlgorithmsAndDataStructures;
 
 
-_ = SuperTest().Excute().ContinueWith(_ => Console.WriteLine("done"));
-
-Console.ReadLine();
-
-static IEnumerable<Task> SuperTest()
-{
-    for (int i = 0; i < 5; i++)
-    {
-        yield return Task.Delay(1000);
-        Console.WriteLine(i);
-    }
-}
-
-static class Yo
-{
-    public static Task Excute(this IEnumerable<Task> enumerable)
-    {
-        TaskCompletionSource tcs = new TaskCompletionSource();
-        var enumerator = enumerable.GetEnumerator();
-
-        Action moveNext = null;
-        moveNext = () =>
-        {
-            if (enumerator.MoveNext())
-            {
-                enumerator.Current.ContinueWith(_ => moveNext());
-            }
-            else
-            {
-                tcs.SetResult();
-            }
-        };
-
-        moveNext();
-
-        return tcs.Task;
-    }
-}
 
 
 
-// IEnumerable<Task> SearchComarchEnumerable()
-// {
-//     var google = new GimageSearchClient();
+int[] ints = new int[] { 1, 2, 3, 123312 };
 
-//     // Task<IList<IImageResult>> imagesTask2 = google.SearchTask("comarch", 10);
+var q = from x in ints where x > 10 select x * 10;
+Console.WriteLine(q);
 
-//     // yield return imagesTask2;
 
-//     // var images2 = imagesTask2.Result;
-
-//     for (int i = 0; i < 100; i++)
-//     {
-//         Task<IList<IImageResult>> imagesTask = google.SearchTask("comarch", 10);
-
-//         yield return imagesTask;
-
-//         var images = imagesTask.Result;
-//     }
-
-//     // foreach (var image in images)
-//     // {
-//     //     // Console.WriteLine(image.Url);
-//     // }
+// class BindingFlags{
+//     public MyStruct a;
 // }
 
-internal class GimageSearchClient
-{
-    public GimageSearchClient()
-    {
-    }
-
-    internal Task<IList<IImageResult>> SearchTask(string v1, int v2)
-    {
-        throw new NotImplementedException();
-    }
-}
-
-internal interface IImageResult
-{
-}
 
 
 
-// // w C# mamy 'string interpolation' zaczynajac od $"...
-// var text = $"jest {name} i mam {age} lat"; // jest marcin i mam 20 lat
-
-// // ale dodali takze """... i $"""... aby sprytnie eskejpować problematyczne znaki
-// // nizej nie ma potrzeby pisac """ poniewaz nie uzywamy problematycznych znakow takich jak ", {, }, ... 
-// var data1 = $"[{age}, {age}, 123]"; // -> [20, 20, 123]
-// var data2 = $"""[{age}, {age}, 123]"""; // -> [20, 20, 123]
-
-// // ale tutaj juz trzeba pisac """ bo jest znak "
-// var data3 = $"""[{age}, {age}, 123, "mama" ]"""; // -> [20, 20, 123, "mama" ]
-
-// // gdy chcemy napisac JSON ktory ma obiekt JS i jednoczesnie uzyc string interpolation, to nizej sie nie skompiluje
-// // var data4 = $"""{ "name": {name}}""";
-
-// // mozna dodac dwa $$ mowiac dwa {{ teraz wkleja wartosc 
-// var data4 = $$"""{"name": "{{name}}" } """; // -> {"name": "marcin" }
+// if (int.TryParse("123", out var liczba) == true)
+// {
+//     Console.WriteLine(liczba);
+// }
 
 
-// var people = $""" { {age}, {age}, 123}"""; // to si nie
+// Console.WriteLine(liczba);
 
-// Console.WriteLine(data1);
-// Console.WriteLine(data2);
-// Console.WriteLine(data3);
-// Console.WriteLine(data4);
-
-
-// LList<int> list2 = [.. list1];
+// int? TryParseInt(string text) => throw new AsnReader()
 
 
 
-// SynchronizationContext.Current!.Post((a) => { }, null);
 
-// Task.Delay(100).ContinueWith()
+// var add = (int a, int b) => a + b;
+// var add2 = (int a) => (int b) => a + b;
+
+// var inc = add2(1);
+// var aaaaa = inc(100);
 
 
-// ThreadPoolTaskScheduler
-// Task.Factory.StartNew()
-// static void PrintAllMethods<T>(bool inherited = false) => PrintAllMethods2(typeof(T), inherited);
+// cuurried function
 
-// static void PrintAllMethods2(Type type, bool inherited = false)
+
+
+
+
+
+
+
+// List<int> ints = [1, 2, 3, 1];
+// List<string> strings = ["a", "b", "ab", "abcdef"];
+
+// var q = ints.GroupJoin(strings, i => i, s => s.Length, (i, ss) => new { i, ss = String.Join(",", ss) });
+
+// Console.WriteLine(string.Join(",", q)); // { i = 1, ss = a,b },{ i = 2, ss = ab },{ i = 3, ss =  }
+
+
+
+// // System.Linq.Enumerable.Union()
+
+
+// //var t = string.Join("-", new[] { 1, 2, 3, 4 }.Chunk(3).Select(c => string.Join(",", c)));
+
+// //Console.WriteLine(t);
+
+// //System.Linq.Enumerable.Chunk()
+
+// static void PrintAllMethods(Type type, bool inherited = false)
 // {
 //     IEnumerable<Type> types = inherited ? GetParents(type) : [type];
 

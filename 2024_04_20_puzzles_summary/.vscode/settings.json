@@ -1,0 +1,7 @@
+{
+    "files.exclude": {
+        "**/bin/": false,
+        "**/obj/": false,
+        "**/TestResults/": true
+    }
+}

@@ -1,4 +1,4 @@
-package adventOfCode2023.day12_safe
+package adventOfCode2023.day12_combinations
 
 import common.parseNumbers
 import common.eq
@@ -27,10 +27,6 @@ fun process(chars: String, numbers: List<Int>): Long {
             fun processHash() =
                 if (number + 1 > numbers[nIndex]) 0 else processChar(cIndex + 1, nIndex, number + 1)
 
-            // caution: avoid using "return" keyword inside lambda function because of the way how kotlin works !!
-            // - if we remove '@currentLambda' below, everything works the same but the cache is not used :////
-            // - such a "return" inside lambda return from the function containing lambda
-            // ("process" function in this case and the code after "return" is not executed at all)
             return@currentLambda when {
                 endOfChars && endOfNumbers -> 1
                 endOfChars -> if ((nIndex == numbers.size - 1) && (number == numbers[nIndex])) 1 else 0
