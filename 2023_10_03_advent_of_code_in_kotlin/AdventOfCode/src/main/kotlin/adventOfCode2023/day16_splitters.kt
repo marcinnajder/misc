@@ -42,7 +42,6 @@ fun Move.moveToDirection(direction: Direction) =
                 Direction.Top -> this.toPosition.copy(row = row - 1)
             }
         )
-
     }
 
 fun Move.moveForward() = this.moveToDirection(this.fromDirection.toOpposite())
@@ -79,7 +78,7 @@ fun executeMove(move: Move, board: Board) = sequence {
 
 
 /** BFS (breadth first search) */
-fun findOuterPositions(firstMove: Move, board: Board): Int {
+fun findVisitedPositions(firstMove: Move, board: Board): Int {
     val visitedMoves = mutableSetOf(firstMove)
     val queue: Queue<Move> = LinkedList()
     queue.add(firstMove)
@@ -98,7 +97,7 @@ fun findOuterPositions(firstMove: Move, board: Board): Int {
 }
 
 fun puzzle1(input: String) =
-    loadData(input).let { board -> findOuterPositions(Move(Direction.Left, Position(0, 0)), board) }.toString()
+    loadData(input).let { board -> findVisitedPositions(Move(Direction.Left, Position(0, 0)), board) }.toString()
 
 fun puzzle2(input: String) =
     loadData(input).let { board ->
@@ -115,7 +114,7 @@ fun puzzle2(input: String) =
                     }
                 }
             }
-        }.maxOf { findOuterPositions(it, board) }.toString()
+        }.maxOf { findVisitedPositions(it, board) }.toString()
     }
 
 
