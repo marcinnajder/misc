@@ -31,15 +31,15 @@ fun Direction.toOpposite() = when (this) {
 
 val allDirections = Direction.entries.toList()
 
-val onlyForwardsMap: Map<Direction, List<Direction>> =
+val onlyForwardsMap: Map<Direction, List<Direction>> = // L -> [L,B,T]
     allDirections.associateWith { d -> d.toOpposite().let { opp -> allDirections.filter { dd -> dd != opp } } }
 
-val onlyTurnsMap: Map<Direction, List<Direction>> =
+val onlyTurnsMap: Map<Direction, List<Direction>> = //  L -> [B,T]
     allDirections.associateWith { d ->
         d.toOpposite().let { opp -> allDirections.filter { dd -> dd != opp && dd != d } }
     }
 
-val onlyStraightsOnMap: Map<Direction, List<Direction>> =
+val onlyStraightsOnMap: Map<Direction, List<Direction>> = //  L -> [L]
     allDirections.associateWith { d -> listOf(d) }
 
 
@@ -68,7 +68,9 @@ fun getNextMoves(move: Move, board: Board, minStraightOn: Int, maxStraightOn: In
 /** BFS (breadth first search) */
 fun findMinCost(board: Board, minStraightOn: Int, maxStraightOn: Int): Int {
     val firstMoves = listOf(Move(Direction.Right, 0, Position(0, 0)), Move(Direction.Bottom, 0, Position(0, 0)))
+
     val visitedMinCosts = mutableMapOf(*firstMoves.map { it to 0 }.toTypedArray())
+
     val queue: Queue<Move> = LinkedList(firstMoves)
 
     while (queue.isNotEmpty()) {
@@ -84,11 +86,13 @@ fun findMinCost(board: Board, minStraightOn: Int, maxStraightOn: Int): Int {
                 visitedMinCosts[nextMove] = nextMoveMinCost
                 queue.add(nextMove)
                 // caution: "visited" means also those waiting in the queue, we don't want to duplicate items in queue
+                // (what's why adding to "visit" collection is done just after adding to the queue, not after pulling element from queue)
             }
         }
     }
 
     val finishPosition = Position(board.height - 1, board.width - 1)
+
     val predicate: (Move) -> Boolean =
         if (minStraightOn > 1) {
             { move -> move.position == finishPosition && move.prevCount >= minStraightOn }
@@ -99,7 +103,7 @@ fun findMinCost(board: Board, minStraightOn: Int, maxStraightOn: Int): Int {
     return visitedMinCosts.mapNotNull { (move, minCost) -> if (predicate(move)) minCost else null }.min()
 }
 
-fun puzzle1(input: String) = findMinCost(loadData(input), 1, 4).toString()
+fun puzzle1(input: String) = findMinCost(loadData(input), 1, 3).toString()
 fun puzzle2(input: String) = findMinCost(loadData(input), 4, 10).toString()
 
 fun tests() {

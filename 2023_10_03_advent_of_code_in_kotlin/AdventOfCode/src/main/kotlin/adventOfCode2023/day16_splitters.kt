@@ -91,6 +91,7 @@ fun findVisitedPositions(firstMove: Move, board: Board): Int {
         queue.addAll(nextMoves)
         visitedMoves.addAll(nextMoves)
         // caution: "visited" means also those waiting in the queue, we don't want to duplicate items in queue
+        // (what's why adding to "visit" collection is done just after adding to the queue, not after pulling element from queue)
     }
 
     return mutableSetOf<Position>().let { visitedMoves.mapTo(it) { m -> m.toPosition } }.size

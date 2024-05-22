@@ -10,13 +10,15 @@ fun main(args: Array<String>) {
     val input = File("$folderPath/adventOfCode2023/day17.txt").readText();
 
 
-    val time = measureTime {
-        //adventOfCode2023.day05_seeds.loadData(input)
-        println(adventOfCode2023.day17_graph.puzzle2(input))
-    }
-    print("time: $time")
+//    val time = measureTime {
+////        adventOfCode2023.day05_seeds.loadData(input)
+////        println(adventOfCode2023.day17_graph.puzzle2(input))
+//        println(adventOfCode2023.day17_graph.puzzle1(input))
+//        println(adventOfCode2023.day17_graph.puzzle2(input))
+//    }
+//    print("time: $time")
 
-//    println(adventOfCode2023.day17_graph.puzzle1(input))
-//    println(adventOfCode2023.day17_graph.puzzle2(input))
+    println(adventOfCode2023.day17_graph.puzzle1(input))
+    println(adventOfCode2023.day17_graph.puzzle2(input))
     println("Program arguments: ${args.joinToString()}")
 }

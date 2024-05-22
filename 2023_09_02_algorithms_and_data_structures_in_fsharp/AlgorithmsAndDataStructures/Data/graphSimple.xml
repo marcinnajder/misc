@@ -1,0 +1,15 @@
+<node value="1">
+    <node value="2" weight="1">
+        <node value="4" weight="3">
+            <node value="7" weight="2" />
+        </node>
+        <node value="5" weight="2">
+            <node value="7" weight="1" />
+        </node>
+    </node>
+    <node value="3" weight="2">
+        <node value="6" weight="1">
+            <node value="7" weight="2" />
+        </node>
+    </node>
+</node>

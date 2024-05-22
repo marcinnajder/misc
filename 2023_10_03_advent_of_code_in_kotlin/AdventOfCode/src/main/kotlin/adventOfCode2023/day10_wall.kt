@@ -137,6 +137,7 @@ fun findOuterPositions(board: Board): Set<Pair<Int, Int>> {
         queue.addAll(next)
         visited.addAll(next)
         // caution: "visited" means also those waiting in the queue, we don't want to duplicate items in queue
+        // (what's why adding to "visit" collection is done just after adding to the queue, not after pulling element from queue)
     }
 
     return visited
