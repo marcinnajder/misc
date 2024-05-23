@@ -179,13 +179,11 @@ let neighbours (r, c) rMax cMax =
     }
 
 let loadGraphFromGrid (rows: int array array) =
-    let maxR = rows.Length - 1
-    let maxC = rows.[0].Length - 1
-    let positions = { 0..maxR } |> Seq.collect (fun r -> { 0..maxC } |> Seq.map (fun c -> r, c))
-    positions
+    let rMax = rows.Length - 1
+    let cMax = rows.[0].Length - 1
+    Seq.allPairs { 0..rMax } { 0..cMax }
     |> Seq.collect (fun p ->
-        neighbours p maxR maxC |> Seq.map (fun n -> { From = p; To = n; Weight = rows[fst n][snd n] }))
-    |> Seq.toArray
+        neighbours p rMax cMax |> Seq.map (fun n -> { From = p; To = n; Weight = rows[fst n][snd n] }))
 
 
 // testing dijkstra with data from https://adventofcode.com/2021/day/15
