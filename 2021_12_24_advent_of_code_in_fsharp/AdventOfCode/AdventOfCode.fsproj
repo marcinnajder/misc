@@ -9,10 +9,12 @@
   </ItemGroup>
   <ItemGroup>  
     <Compile Include="Common/Common.fs" />
+    <Compile Include="Common/GraphM.fs" />
     <Compile Include="AdventOfCode2015/*.fs" />
     <Compile Include="AdventOfCode2021/*.fs" />
     <Compile Include="AdventOfCode2020/*.fs" />
     <Compile Include="AdventOfCode2022/*.fs" />
-    <Compile Include="Program.fs" />
+    <Compile Include="AdventOfCode2023/*.fs" />
+    <Compile Include="Program.fs" />    
   </ItemGroup>
 </Project>
