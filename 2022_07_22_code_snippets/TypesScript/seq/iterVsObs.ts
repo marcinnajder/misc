@@ -1,41 +1,66 @@
 import * as assert from "assert";
-import { SumType, matchUnion, none } from "powerfp";
-import { pipe, range as rangeSeq, toarray } from "powerseq";
-
-
-// Iterable vs Observable
-// interface Iterable<T> {
-//     iterator(): Iterator<T>;
-// }
-// interface Iterator<T> {
-//     next(): { done: boolean; value: T };
-// }
-
-// interface Observable<T> {
-//     subscribe(observer: Observator<T>): (() => void);
-// }
-// interface Observator<T> {
-//     onNext(value: T): void;
-//     onError(error: Error): void;
-//     onCompleted(): void;
-// }
+import { SumType, TypedObj, matchUnion as matchUnionFP, none } from "powerfp";
+import { pipe, range as rangeSeq, toarray, map, find } from "powerseq";
 
 const value = <T>(value: T) => ({ type: "value", value }) as const /*as IterR<number>*/;
 const completed = { type: "completed" } as const;
 const error = (error: Error) => ({ type: "error", err: error }) as const;
 
-type Res<T> = SumType<typeof value<T> | typeof completed | typeof error>;
+// ** poprawiona implementacja 'matchUnion' z 'powerfp'
 
-type Dis = () => void;
+// - okzalo sie ze takie typowe wywolanie 'matchUnion' zwraca 'unknown', ale akurat tak sie pisze kod ze blad nie leci ale typowania nie ma
+// - myslalem ze to kwestia tego ze teraz jest nowa wersja TS a pisane bylo dla starej, tak sprawdzilem i kiedys takze tak bylo
+// - 'matchUnion<T extends TypedObj, R>(unionType: T, obj: MatchTypedObj<T, R>): R;' taka byla sygnatura, ciezko sprawdzi w istniejacym kodzie
+// jak dzialalo typowanie bo przyklady w repo powerfp sa bardzo bardzo proste (przykladowo w testach jednostkowych jawnie pisane sa argumenty generyczne),
+// w repo cms2 uzyte jest tylko raz cms2 i to specyficznie:
+// -- chodzi o to ze jak wywola sie tak `const res = matchUnion(..., ...)` to metoda nie wnioskuje i jest typ 'unknown', byc moze zalozenie bylo 
+// takie ze jawnie trzeba podac np 'const res = matchUnion<..., string>(..., ...)' 
+// -- ciekawe jest to ze czasami dobrze sie wywnioskuje typ zwracany np gdy napiszemy 'const res: string = matchUnion(..., ...)' lub gdy mamy 
+// 'return matchUnion(..., ...)' i wiadomo jaki jest typ funkcji, to wtedy wnioskowanie dziala, tak bylo w repo cms2:
+// addAuthorizationHeader(request: Request): Request { return matchUnion(this.currentCredentialsO, { ... 
+
+// - no wiec probowalem to naprawic, ale jako tak aby nie atualizowac biblioteki bo to kupa roboty
+// - kiedys bylo ExhaustiveMatchTypedObj<T, R> bo zalezy nam aby jakos R wywnioskowal sie obiektu matchotowania { ...: () => <tutaj> } ale
+// problem jest taki ze nie chcemy podawac jawnie typu rezultat podczas wywolania metody wiec wnioskuje sie na 'unknown', byc moze
+// da sie lepiej napisac to typowanie aby jednak dzialalo, ale ja tutaj obralem troche inne podejscie
+// - teraz nie ma R ExhaustiveMatchTypedObj<T>, ale przez to musialem uzyc 'any' jako zezultat 'ValueOrFunc<Extract<T, {type: P; }>, any>;'
+// - poniewaz R nie juz wnioskowany jakby "od gory do dolu" tylko jest podany 'any' to okazalo sie ze nie moge juz wspierac takiej definicji
+// 'ValueOrFunc<T, R> = ((value: T) => R) | R;' poniewaz tutaj R=any i wszystko sprowadzane jest do 'any' czyli kompletnie nie dziala to
+// ze argument moze byc funkcja przyjmujaca T, czyli cala idea wnioskowania obslugi przypadkow nie dziala, jest tak 'ValueOrFunc<T, R> = ((value: T) => R)' :/
+// - finalnie sygnatura funkcji jest taka 'matchUnion<T extends TypedObj, M extends MatchTypedObj<T>>(unionType: T, obj: M): ExtractResult<M>' czyli 
+// pojawil jest wnioskowany typ M a nastepnie dla niego potrafimy wyciagnac rezultat calej funkcji za pomoca nowego typu 'ExtractResult<M>' ktory uzywa 
+// 'conditional types' wiec moze i tak trzeba by podniesc powerfp aby to zmienic w bibliotece
+
+
+// type ValueOrFunc<T, R> =  // poprzednio
+type ValueOrFunc<T, R> = ((value: T) => R);
+
+type ExhaustiveMatchTypedObj<T extends TypedObj<string>> = {
+    [P in T["type"]]: ValueOrFunc<Extract<T, { type: P; }>, any>;
+};
+
+type MatchTypedObj<T extends TypedObj<string>> =
+    ExhaustiveMatchTypedObj<T> | (Partial<ExhaustiveMatchTypedObj<T>> & { _: ValueOrFunc<T, any> });
+
+type ExtractResult<M> = M extends { [P in keyof M]: infer PR } ? (PR extends (...args: any) => infer R ? R : PR) : never;
+
+function matchUnion<T extends TypedObj, M extends MatchTypedObj<T>>(unionType: T, obj: M): ExtractResult<M> {
+    return matchUnionFP(unionType, obj) as any;
+}
+
+
+// ** Ites vs Obs
+
+type Res<T> = SumType<typeof value<T> | typeof completed | typeof error>;
 
 type Iter<T> = () => () => Res<T> /*& Dis*/;
 
+type Dis = () => void;
 type Obs<T> = (sub: (res: Res<T>) => void) => Dis;
 
 type Reverse<F> = F extends (...args: infer Args) => infer Result ? (args: Reverse<Result>) => Reverse<Args> : F;
 
 type Obs2<T> = Reverse<Iter<T>>; // type Obs2<T> = (args: (args: Res<T>) => []) => []
-
 
 
 // ** Iter
@@ -123,11 +148,15 @@ function mapIter<T, R>(items: Iter<T>, f: (item: T) => R): Iter<R> {
 
         function next(): Res<R> {
             try {
-                return matchUnion(iterator(), {
+
+                const x: Res<R> = matchUnion(iterator(), {
                     error: res => res,
-                    completed: completed,
+                    //completed: completed,
+                    completed: res => res,
                     value: res => value(f(res.value))
                 });
+
+                return x;
             }
             catch (err: any) {
                 return error(err);
@@ -270,3 +299,75 @@ function mapObs<T, R>(obs: Obs<T>, f: (item: T) => R): Obs<R> {
 
 pipe(intervalObs(10), obs => takeObs(obs, 3), obs => mapObs(obs, x => x.toString()), fromObsToIter).then(items => assert.deepEqual(items, ["0", "1", "2"]));
 
+
+// ** fragmenty kodu do artykulu opisujacego
+
+
+// Iterable vs Observable
+// interface Iterable<T> {
+//     iterator(): Iterator<T>;
+// }
+// interface Iterator<T> {
+//     next(): { done: boolean; value: T };
+// }
+
+// interface Observable<T> {
+//     subscribe(observer: Observator<T>): (() => void);
+// }
+// interface Observator<T> {
+//     onNext(value: T): void;
+//     onError(error: Error): void;
+//     onCompleted(): void;
+// }
+
+
+// var xxx123 = matchUnion(null as any as Res<string>, {
+//     // completed: () => 123,
+//     // error: res => res.err,
+//     // value: res => res.value,
+//     completed: () => 123,
+//     error: res => res.err,
+//     value: res => res,
+// });
+
+
+// -- F# -- 
+// let results = [ 5; 10; 15 ] |> Seq.map Value // seq<Res<int>>
+// let firstResult = results |> Seq.head // Res<int>
+// let text =
+//     match firstResult with
+//     | Error err -> "blad: " + err.Message
+//     | Completed -> "koniec"
+//     | Value value -> "wartosc: " + value.ToString()
+
+// type Iter_<T> = () => () => null | T;
+// type Obs_<T> = Reverse<Iter_<T>>;
+// // type Obs_<T> = (args: (args: Reverse<T> | null) => []) => []
+// type Func = Reverse<(arg1: number) => string>;
+
+// {
+//     const results: Iterable<Res<number>> = pipe([5, 10, 15], map(value));
+//     const firstResult = pipe(results, find())!; // Res<number>
+//     const text = matchUnion(firstResult, {
+//         error: ({ err }) => "blad: " + err.message,
+//         _: (res) => "nie blad " + res
+//     });
+// }
+
+
+const ys = pipe([1, 2, 3, 4, 5],
+    fromSeqToIter,
+    xs => filterIter(xs, x => x % 2 === 0),
+    xs => mapIter(xs, x => x.toString()),
+    fromIterToSeq,
+    toarray());
+assert.deepStrictEqual(ys, ["2", "4"]);
+
+
+pipe(
+    intervalObs(10),
+    xs => takeObs(xs, 3),
+    xs => filterObs(xs, x => x % 2 === 0),
+    xs => mapObs(xs, x => x.toString()),
+    fromObsToIter)
+    .then(items => assert.deepEqual(items, ["0", "2"]));
