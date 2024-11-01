@@ -45,8 +45,7 @@ console.log("element of type 'file': ", findElementOfType([root], "file"));
 function getUniqueElementTypes(element: Element) {
     return pipe(
         traverse([element]),
-        map(ee => ee.type),
-        distinct(),
+        distinct(ee => ee.type),
         toarray()
     );
 }
