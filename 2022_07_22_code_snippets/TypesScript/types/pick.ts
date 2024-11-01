@@ -110,28 +110,7 @@ type TestPickM = PickM<ABCD, [["a", "aa"], ["b", "bb"]]>; // { aa: number; } & {
 //     Es extends [[infer K, infer V], ...infer Rest]
 //     ? { [key in (string & V)]: T[K] } & PickM_<T, Rest> : unknown;
 
-var aaaa = pickM(abcd, [["d", "dd"], ["c", "cc"], "a"] as const);
-
-var p = pickM({ id: 1, age: 123, name: "marcin" }, [["id", "ID"], "name"] as const);
-
-
-
-function pickM<T, Es extends Entry<T>[]>(obj: T, enties: Es): PickM<T, Duplicate<Es>> {
-    var result = {} as any;
-    for (const entry of enties) {
-        const [pFrom, pTo] = Array.isArray(entry) ? entry : [entry, entry] as EntryPair<T>;
-        const value = obj[pFrom];
-        if (typeof value !== "undefined") {
-            result[pTo] = value;
-        }
-    }
-    return result;
-}
-
-const pm1 = pickM({ id: 1, name: "marcin", age: 12 }, ["id", ["name", "patientName"]] as const);
-console.log(pm1);
-const pm2 = pickM(abcd, ["a", "d"] as const);
-console.log(pm2);
+// var aaaa = pickM(abcd, [["d", "dd"], ["c", "cc"], "a"] as const);
 
 
 function pick<T, P extends keyof T>(obj: T, ...props: P[]): Pick<T, P> {
@@ -150,3 +129,30 @@ const p1 = pick({ id: 1, name: "marcin", age: 12 }, "id", "name");
 console.log(p1);
 const p2 = pick(abcd, "a", "d");
 console.log(p2);
+
+
+function pickM<T, Es extends Entry<T>[]>(obj: T, entries: Es): PickM<T, Duplicate<Es>> {
+    var result = {} as any;
+    for (const entry of entries) {
+        if (Array.isArray(entry)) {
+            const value = obj[entry[0]];
+            if (typeof value !== "undefined") {
+                result[entry[1]] = value;
+            }
+        } else {
+            const value = obj[entry];
+            if (typeof value !== "undefined") {
+                result[entry] = value;
+            }
+        }
+    }
+    return result;
+}
+
+const pm1 = pickM({ id: 1, name: "marcin", age: 12 }, ["id", ["name", "patientName"]] as const);
+console.log(pm1);
+const pm2 = pickM(abcd, ["a", "d"] as const);
+console.log(pm2);
+
+
+
