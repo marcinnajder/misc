@@ -5,8 +5,6 @@ import (
 	"strings"
 )
 
-// https://github.com/shraddhaag/aoc
-
 type Direction int
 
 const (
@@ -95,17 +93,17 @@ func move(x, y, steps int, dir Direction) (xx int, yy int) {
 	panic(fmt.Sprintf("unknown direction: %v", dir))
 }
 
-type Appearance struct {
+type Occurrence struct {
 	X, Y       int
 	Directions []Direction
 }
 
-func Puzzle(input, word string, counter func([]Appearance) int) string {
+func Puzzle(input, word string, counter func([]Occurrence) int) string {
 	wordrunes := []rune(word)
 	wordlen := len(wordrunes)
 	lines := loadData(input)
 	boardSize := len(lines)
-	appearances := make([]Appearance, 0)
+	occurrences := make([]Occurrence, 0)
 
 	for y, line := range lines { //
 		for x, char := range line {
@@ -127,21 +125,21 @@ func Puzzle(input, word string, counter func([]Appearance) int) string {
 				}
 
 				if len(dirs) > 0 && step == wordlen {
-					appearances = append(appearances, Appearance{x, y, dirs})
+					occurrences = append(occurrences, Occurrence{x, y, dirs})
 				}
 			}
 		}
 	}
 
-	count := counter(appearances)
+	count := counter(occurrences)
 	return fmt.Sprint(count)
 }
 
 func Puzzle1(input string) string {
-	return Puzzle(input, "XMAS", func(appearances []Appearance) int {
+	return Puzzle(input, "XMAS", func(occurrences []Occurrence) int {
 		count := 0
-		for _, a := range appearances {
-			count += len(a.Directions)
+		for _, o := range occurrences {
+			count += len(o.Directions)
 		}
 		return count
 	})
@@ -151,18 +149,18 @@ func Puzzle2(input string) string {
 	word := "MAS"
 	halfsteps := (len(word) - 1) / 2
 
-	return Puzzle(input, word, func(appearances []Appearance) int {
+	return Puzzle(input, word, func(occurrences []Occurrence) int {
 		count := 0
-		middles := make(map[string]any) // set
-		for _, a := range appearances {
-			for _, dir := range a.Directions {
+		middles := make(map[string]struct{}) // set
+		for _, o := range occurrences {
+			for _, dir := range o.Directions {
 				if dir == DirsTL || dir == DirsTR || dir == DirsBL || dir == DirsBR { // only diagonal directions
-					x, y := move(a.X, a.Y, halfsteps, dir)
+					x, y := move(o.X, o.Y, halfsteps, dir)
 					middle := fmt.Sprintf("%d-%d", x, y)
 					if _, ok := middles[middle]; ok {
 						count++
 					} else {
-						middles[middle] = nil
+						middles[middle] = struct{}{}
 					}
 				}
 			}

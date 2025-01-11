@@ -7,7 +7,7 @@ import (
 )
 
 func loadData(input string) [][]int {
-	return utils.ParseIntsLines(input)
+	return utils.ParseLinesOfInts(input)
 }
 
 func findBrokenIndex(numbers []int) int {

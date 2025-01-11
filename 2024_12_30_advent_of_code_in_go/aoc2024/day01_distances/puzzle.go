@@ -19,7 +19,7 @@ func loadData(input string) Data {
 	right := make([]int, len(lines))
 
 	for i, line := range lines {
-		numbers := utils.ParseInts(line)
+		numbers := utils.ParseIntsWithFields(line)
 		left[i] = numbers[0]
 		right[i] = numbers[1]
 	}
@@ -44,11 +44,7 @@ func Puzzle1(input string) string {
 func occurrences[T comparable](items []T) map[T]int {
 	result := make(map[T]int)
 	for _, item := range items {
-		if n, ok := result[item]; ok {
-			result[item] = n + 1
-		} else {
-			result[item] = 1
-		}
+		result[item] += 1 // nice trick :) map returns default value when there is no key
 	}
 	return result
 }
