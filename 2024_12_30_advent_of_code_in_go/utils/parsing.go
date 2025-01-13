@@ -29,14 +29,21 @@ func ParseLines(text string) []string {
 	return strings.Split(text, "\n")
 }
 
+func ParseLinesOfRunes(input string) [][]rune {
+	lines := ParseLines(input)
+	linesRunes := make([][]rune, len(lines))
+	for i, line := range lines {
+		linesRunes[i] = []rune(line)
+	}
+	return linesRunes
+}
+
 func ParseLinesOfInts(input string) [][]int {
 	lines := ParseLines(input)
 	linesNumbers := make([][]int, len(lines))
-
 	for i, line := range lines {
 		numbers := ParseIntsWithFields(line)
 		linesNumbers[i] = numbers
 	}
-
 	return linesNumbers
 }

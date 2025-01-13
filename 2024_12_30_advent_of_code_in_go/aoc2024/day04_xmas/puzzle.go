@@ -1,8 +1,8 @@
 package day04_xmas
 
 import (
+	"aoc/utils"
 	"fmt"
-	"strings"
 )
 
 type Direction int
@@ -19,12 +19,7 @@ const (
 )
 
 func loadData(input string) [][]rune {
-	lines := strings.Fields(input)
-	linesRunes := make([][]rune, len(lines))
-	for i, line := range lines {
-		linesRunes[i] = []rune(line)
-	}
-	return linesRunes
+	return utils.ParseLinesOfRunes(input)
 }
 
 // singletons
@@ -154,7 +149,8 @@ func Puzzle2(input string) string {
 		middles := make(map[string]struct{}) // set
 		for _, o := range occurrences {
 			for _, dir := range o.Directions {
-				if dir == DirsTL || dir == DirsTR || dir == DirsBL || dir == DirsBR { // only diagonal directions
+				switch dir {
+				case DirsTL, DirsTR, DirsBL, DirsBR: // diagonal only
 					x, y := move(o.X, o.Y, halfsteps, dir)
 					middle := fmt.Sprintf("%d-%d", x, y)
 					if _, ok := middles[middle]; ok {
