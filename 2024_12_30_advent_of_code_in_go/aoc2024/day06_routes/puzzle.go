@@ -3,6 +3,8 @@ package day06_routes
 import (
 	"aoc/utils"
 	"fmt"
+	"iter"
+	"maps"
 	"strings"
 )
 
@@ -15,17 +17,18 @@ const (
 	DirsL
 )
 
-type Point utils.Tuple2[int, int]
+type Point struct {
+	x, y int
+}
+
+type Move struct {
+	point Point
+	dir   Direction
+}
 
 type Data struct {
 	lines [][]rune
 	start Point
-}
-
-type Turn struct {
-	x   int
-	y   int
-	dir Direction
 }
 
 func loadData(input string) Data {
@@ -37,16 +40,16 @@ func loadData(input string) Data {
 	return Data{lines, Point{x, y}}
 }
 
-func move(x int, y int, dir Direction) (xx int, yy int) {
+func movePoint(p Point, dir Direction) Point {
 	switch dir {
 	case DirsT:
-		return x, y - 1
+		return Point{p.x, p.y - 1}
 	case DirsB:
-		return x, y + 1
+		return Point{p.x, p.y + 1}
 	case DirsR:
-		return x + 1, y
+		return Point{p.x + 1, p.y}
 	case DirsL:
-		return x - 1, y
+		return Point{p.x - 1, p.y}
 	}
 	panic(fmt.Sprintf("unknown direction: %v", dir))
 }
@@ -54,27 +57,28 @@ func move(x int, y int, dir Direction) (xx int, yy int) {
 func walk(data Data, obstacle Point) (outOrCycle bool, visited map[Point]struct{}) {
 	size := len(data.lines[0])
 	visitedPoints := make(map[Point]struct{}) // set
-	visitedTurns := make(map[Turn]struct{})   // set
-	x, y := data.start.Item1, data.start.Item2
+	visitedTurns := make(map[Move]struct{})   // set
+	point := data.start
 	dir := DirsT
 
 	for {
-		visitedPoints[Point{x, y}] = struct{}{}
-		xx, yy := move(x, y, dir)
+		visitedPoints[point] = struct{}{}
 
-		if xx < 0 || yy < 0 || xx >= size || yy >= size {
+		nextPoint := movePoint(point, dir)
+		if nextPoint.x < 0 || nextPoint.y < 0 || nextPoint.x >= size || nextPoint.y >= size {
 			return true, visitedPoints // out of bounds
 		}
-		if (obstacle.Item1 == xx && obstacle.Item2 == yy) || data.lines[yy][xx] == '#' {
-			turn := Turn{x: xx, y: yy, dir: dir}
-			if _, ok := visitedTurns[turn]; ok {
+
+		if (obstacle.x == nextPoint.x && obstacle.y == nextPoint.y) || data.lines[nextPoint.y][nextPoint.x] == '#' {
+			move := Move{point: nextPoint, dir: dir}
+			if _, ok := visitedTurns[move]; ok {
 				return false, visitedPoints // cycle
 			} else {
-				visitedTurns[turn] = struct{}{}
+				visitedTurns[move] = struct{}{}
 			}
 			dir = Direction((int(dir) + 1) % 4)
 		} else {
-			x, y = xx, yy
+			point = nextPoint
 		}
 	}
 }
@@ -85,7 +89,7 @@ func Puzzle1(input string) string {
 	return fmt.Sprint(len(visited))
 }
 
-// the simplest possible implementation (without: caching previous routes, stepping with ranges insted of points, ...)
+// the simplest possible implementation (without: caching previous routes, stepping with ranges instead of points, ...)
 func Puzzle2(input string) string {
 	data := loadData(input)
 	_, visited := walk(data, Point{-1, -1})
@@ -98,6 +102,87 @@ func Puzzle2(input string) string {
 		if !outOrCycle {
 			sum++
 		}
+	}
+
+	return fmt.Sprint(sum)
+}
+
+// ***** optimized implementation (puzzle2 ~600ms, puzzle2_ ~30ms or ~80ms depending on the cache of the route)
+
+func walkSeq(data Data, obstacle Point, prev Move) iter.Seq[Move] {
+	return func(yield func(move Move) bool) {
+		size := len(data.lines[0])
+		point := prev.point
+		dir := prev.dir
+
+		for {
+			nextPoint := movePoint(point, dir)
+			if nextPoint.x < 0 || nextPoint.y < 0 || nextPoint.x >= size || nextPoint.y >= size {
+				return // out of bounds
+			}
+			if (obstacle.x == nextPoint.x && obstacle.y == nextPoint.y) || data.lines[nextPoint.y][nextPoint.x] == '#' {
+				dir = Direction((int(dir) + 1) % 4)
+			} else {
+				point = nextPoint
+				if !yield(Move{point, dir}) {
+					return // stop pulling
+				}
+			}
+		}
+	}
+}
+
+func walkUntilOutOrCycle(data Data, obstacle Point, prev Move, visitedTurns map[Move]struct{}) (outOrCycle bool) {
+	prevMove := prev
+
+	for move := range walkSeq(data, obstacle, prev) {
+		if prevMove.dir != move.dir { // turns are much less than moves, searching in smaller map is much faster
+			if _, ok := visitedTurns[move]; ok {
+				return false // cycle
+			}
+			visitedTurns[move] = struct{}{}
+			prevMove = move
+		}
+	}
+
+	return true // out of bounds
+}
+
+func Puzzle1_(input string) string {
+	data := loadData(input)
+	visited := make(map[Point]struct{}) // set
+	visited[data.start] = struct{}{}    // include starting point
+	for move := range walkSeq(data, Point{-1, -1}, Move{data.start, DirsT}) {
+		visited[move.point] = struct{}{}
+	}
+	return fmt.Sprint(len(visited))
+}
+
+func Puzzle2_(input string) string {
+	data := loadData(input)
+	visitedPoints := make(map[Point]struct{}) // set
+	visitedTurns := make(map[Move]struct{})   // set
+
+	visitedPoints[data.start] = struct{}{}
+	prevMove := Move{data.start, DirsT}
+	sum := 0
+
+	for move := range walkSeq(data, Point{-1, -1}, prevMove) {
+		if _, ok := visitedPoints[move.point]; ok { // do not check the same point twice
+			continue
+		}
+		visitedPoints[move.point] = struct{}{}
+
+		outOrCycle := walkUntilOutOrCycle(data, move.point, prevMove /*clone map !!*/, maps.Clone(visitedTurns)) // ~30 ms for puzzle2_ (walk from currently visited)
+		// outOrCycle := walkUntilOutOrCycle(data, move.point, Move{data.start, DirsT}, make(map[Move]struct{})) // ~80 ms for puzzle2_ (walk from beginning)
+		if !outOrCycle {
+			sum++
+		}
+
+		if prevMove.dir != move.dir {
+			visitedTurns[move] = struct{}{}
+		}
+		prevMove = move
 	}
 
 	return fmt.Sprint(sum)

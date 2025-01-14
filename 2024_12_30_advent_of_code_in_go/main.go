@@ -10,6 +10,7 @@ import (
 	"aoc/aoc2024/day07_equations"
 	"fmt"
 	"os"
+	"time"
 )
 
 // - "go run ." - odpalenie 'main'
@@ -32,10 +33,13 @@ func executePuzzle(puzzlePath string, puzzle1 func(string) string, puzzle2 func(
 	if err != nil {
 		panic(err)
 	}
-
 	inputString := string(inputBytes)
+
+	start := time.Now()
+
 	result1 := puzzle1(inputString)
-	fmt.Printf("%s puzzle1: %s \n", puzzlePath, result1)
+	fmt.Printf("%s puzzle1: %s (%v) \n", puzzlePath, result1, time.Since(start))
+
 	result2 := puzzle2(inputString)
-	fmt.Printf("%s puzzle2: %s \n", puzzlePath, result2)
+	fmt.Printf("%s puzzle2: %s (%v) \n", puzzlePath, result2, time.Since(start))
 }

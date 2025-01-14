@@ -17,9 +17,13 @@ func TestLoadData(t *testing.T) {
 
 func TestPuzzle1(t *testing.T) {
 	input := utils.ReadTextFile("./data_.txt")
-	r := Puzzle1(input)
-	//fmt.Println(r)
+	r := Puzzle1_(input)
+	fmt.Println(r)
 	assert.Equal(t, "41", r)
+
+	r_ := Puzzle1_(input)
+	assert.Equal(t, r, r_)
+
 }
 
 func TestWalk(t *testing.T) {
@@ -41,5 +45,8 @@ func TestPuzzle2(t *testing.T) {
 	input := utils.ReadTextFile("./data_.txt")
 	r := Puzzle2(input)
 	fmt.Println(r)
-	assert.Equal(t, "41", r)
+	assert.Equal(t, "6", r)
+
+	r_ := Puzzle2_(input)
+	assert.Equal(t, r, r_)
 }

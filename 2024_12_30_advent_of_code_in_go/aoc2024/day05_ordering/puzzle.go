@@ -18,15 +18,10 @@ func loadData(input string) Data {
 	i := 0
 
 	ordering := make(map[string]struct{})
-	for ; i < len(lines); i++ {
-		line := lines[i]
-		if line == "" {
-			break
-		}
+	for line := lines[i]; i < len(lines) && line != ""; i, line = i+1, lines[i] {
 		ordering[line] = struct{}{}
 	}
 
-	i++ // skip empty line
 	numbers := make([][]int, len(lines)-i)
 	for j := 0; i < len(lines); i, j = i+1, j+1 {
 		line := lines[i]
