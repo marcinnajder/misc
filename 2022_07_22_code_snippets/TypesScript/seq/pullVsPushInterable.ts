@@ -38,8 +38,7 @@ var iterable1 = rangeIter(1, 3);
 var iterator2 = iterable1[Symbol.iterator]()
 console.log(iterator2.next())
 console.log(iterator2.next())
-iterator2.return(); // dispose/stop/close/cancel/.. !!!
-
+//iterator2.return(); // dispose/stop/close/cancel/.. !!!
 
 var iterable3 = rangeIter(1, 3);
 for (const el of iterable3) {
@@ -163,7 +162,7 @@ function zipPush<T1, T2>(seq1: PushSeq<T1>, seq2: PushSeq<T2>): PushSeq<[T1, T2]
     return _yield => {
         seq1(value1 => {
 
-            // ????
+            // ???? :/
             seq2(value2 => {
 
                 return true;
@@ -260,9 +259,9 @@ var { next: zip_next } = zipPull(iterToPull([5, 10, 15]), iterToPull(['a', 'b'])
 // konwersja PULL <---> PUSH
 
 
-function pullToPush<T>(pullseq: PullSeq<T>): PushSeq<T> {
+function pullToPush<T>(seq: PullSeq<T>): PushSeq<T> {
     return _yield => {
-        const { next, stop } = pullseq;
+        const { next, stop } = seq;
         let result: Result<T>;
 
         while (!(result = next()).done) {
@@ -276,11 +275,10 @@ function pullToPush<T>(pullseq: PullSeq<T>): PushSeq<T> {
 
 // pullToPush(iterToSeqPull([5, 10, 15]))(printAll);
 
-function pushToPull<T>(pullseq: PushSeq<T>): PullSeq<T> {
+function pushToPull<T>(seq: PushSeq<T>): PullSeq<T> {
 
     function next() {
-
-        pullseq(v => {
+        seq(v => {
             // ??????
             return true;
         })
@@ -366,7 +364,7 @@ function customPromiseFactory(): BPFactory {
     }
 }
 
-function pushToPullAwait<T>(pullseq: PushSeqAwait<T>, bpf: BPFactory): PullSeq<T> {
+function pushToPullAwait<T>(seq: PushSeqAwait<T>, bpf: BPFactory): PullSeq<T> {
     let value: T;
     let done = false
     let started = false;
@@ -376,7 +374,7 @@ function pushToPullAwait<T>(pullseq: PushSeqAwait<T>, bpf: BPFactory): PullSeq<T
             if (!started) {
                 started = true;
 
-                pullseq(v => {
+                seq(v => {
                     value = v;
                     return bpf.create();
                 }).then(_ => done = true)
@@ -413,8 +411,8 @@ async function testPushToPullAwait(pf: BPFactory) {
     }
 }
 
-// testPushToPullAwait(customPromise());
-// testPushToPullAwait(realPromise());
+// testPushToPullAwait(customPromiseFactory());
+// testPushToPullAwait(realPromiseFactory());
 
 
 // - testowanie pushToPullAwait czyli wykorzystanie async/await i Promise
@@ -476,8 +474,8 @@ function rangeYield(from: number, count: number): PushSeqYield<number> {
 }
 
 
-function pushToPullYield<T>(pullseq: PushSeqYield<T>): PullSeq<T> {
-    const iterator = pullseq(box)[Symbol.iterator]();
+function pushToPullYield<T>(seq: PushSeqYield<T>): PullSeq<T> {
+    const iterator = seq(box)[Symbol.iterator]();
     return {
         next() {
             return iterator.next(true) as Result<T>;
@@ -490,14 +488,37 @@ function pushToPullYield<T>(pullseq: PushSeqYield<T>): PullSeq<T> {
 
 
 
-var pullSeq = pushToPullYield(rangeYield(100, 3));
-// console.log(pullSeq.next());
-// console.log(pullSeq.next());
-// console.log(pullSeq.next());
-// console.log(pullSeq.next());
-// console.log(pullSeq.next());
+var pullseq7 = pushToPullYield(rangeYield(100, 3));
+
+// console.log(pullseq7.next());
+// console.log(pullseq7.next());
+// console.log(pullseq7.next());
+// console.log(pullseq7.next());
+// console.log(pullseq7.next());
+// pullseq7.stop()
 
 
+// go --> map push iterator  
+// func Map[T, R any](f func(T) R) Operator[T, R] {
+// 	return func(s iter.Seq[T]) iter.Seq[R] {
+// 		return func(yield func(R) bool) {
+// 			for v := range s {
+// 				if !yield(f(v)) {
+// 					return
+// 				}
+// 			}
+// 		}
+// 	}
+// }
+
+// go --> map push iterator  
+// function mapPush<T, R>(seq: PushSeq<T>, f: (item: T) => R): PushSeq<R> {
+//     return _yield => {
+//         seq(v => {
+//             return  _yield(f(v));
+//         });
+//     };
+// }
 
 function mapPushYield1<T, R>(seq: PushSeqYield<T>, f: (item: T) => R): PushSeqYield<R> {
     return function* (_yield) {
@@ -531,9 +552,22 @@ function mapPushYield2<T, R>(seq: PushSeqYield<T>, f: (item: T) => R): PushSeqYi
 
 const { next: map_next } = pushToPullYield(mapPushYield1(rangeYield(500, 3), x => "$" + x));
 
-console.log(map_next());
-console.log(map_next());
-console.log(map_next());
-console.log(map_next());
+// console.log(map_next());
+// console.log(map_next());
+// console.log(map_next());
+// console.log(map_next());
 
+
+// - implementacja wykorzystujaca yield
+// - tutaj nie mamy juz do czynienia z Promise wiec w sposob synchroniczny mozemy jednoznaczenie (dokladnie w momencie ktorym chcemy) wznawiac
+// wykonanie generatora
+// - tutaj tylko dla analogii z iteratorami typu push z go pozostawilismy funkcje _yield zweacajaca bool, chodzi o to aby skladoniowo zachowac 
+// podobienstwo do poprzednich przykladow bo my bardziej probujemy implementowac podejscie go jak po prostu typowe uzycie generatorow js
+// - faktycznie funkcja _yield przekazana do funkcji iteratora to 'identity' czyli nic nie robi, ale samo iterowanie wykonujemy przekazujac 
+// "iterator.next(true)" czyli finalnie kod iteratora dowiaduje sie tym czy isc dalej czy nie, moze np posprzatac na koniec
+// - probowalem na koniec napisac sobie powiedzy map/... z yield w taki sposob aby przypominala implementacje map dla "push iterators" tzn
+// aby generatory/yield uzyte byl jakby tylko hack/szczegol_implementacyjny, ale finalnie srednio sie udalo bo od razu w kodzie widac
+// generator ktorego jedyny sposob to iteracja czyli musimy jakby bezposrdnio z nim pracowac
+// - sama moja implementacja "Map" w go korzysta z petli "for item := range ..." czyli wygodnego iterowania jakby "foreach", wiec tak to
+// zaimplementowalem na koncu w 'mapPushYield2'
 
