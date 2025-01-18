@@ -11,7 +11,8 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/dist/types/mappingObjectStructure.js",
+            "sourceMaps": true,
+            "program": "${workspaceFolder}/dist/seq/pullVsPushInterable.js",            
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ]

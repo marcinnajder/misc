@@ -3,10 +3,24 @@ open System.IO
 open System.Text.RegularExpressions
 open System.Xml.Linq
 
+
 // let slnFilePath = "\n\n...... put sln file path here ......\n\n"
 // let slnFilePath = "/Volumes/data/gitlab/mednote2/comarch.mednote.2.0/src/server/src/Comarch.MedNote.sln"
 // let slnFilePath = "/Volumes/data/github/FunPizzaShop/FunPizzaShop.sln"
-let slnFilePath = "/Volumes/data/github/MyDataBot/MyDataBot.sln"
+// let slnFilePath = "/Volumes/data/github/MyDataBot/MyDataBot.sln"
+//let slnFilePath = "/Volumes/data/github/eShop/eShop.sln" // eshop mikroserwisowy pelny
+// let slnFilePath = "/Volumes/data/github/eShopOnWeb/eShopOnWeb.sln" // eshop web
+// let slnFilePath = "/Volumes/data/github/aspire-samples/samples/AspireShop/AspireShop.sln" // eshop mikroserwisowy jako przyklad aspire
+let slnFilePath = "/Volumes/data/bitbucket/kanban.microservices/Kanban.Microservices.sln"
+// let slnFilePath = "/Volumes/data/Kanban/Kanban.sln"
+
+
+
+
+
+
+// let slnFilePath = "/Volumes/data/bitbucket/kanban.microservices/Kanban.Microservices.sln"
+
 
 type Project = { Path: string; ProjectRefs: string []; PackageRefs: string [] }
 
@@ -39,7 +53,12 @@ let parsePojectFile (projectFilePath: string) =
         |> Seq.toArray
     let packageRefs =
         xmlRoot.Descendants("PackageReference")
-        |> Seq.map (fun xel -> String.Join("@", [ "Include"; "Version" ] |> Seq.map (fun a -> xel.Attribute(a).Value)))
+        |> Seq.map (fun xel ->
+            String.Join(
+                "@",
+                [ "Include"; "Version" ]
+                |> Seq.choose (fun a -> xel.Attribute(a) |> Option.ofObj |> Option.map (fun aa -> aa.Value))
+            ))
         |> Seq.toArray
     { Path = projectFilePath; ProjectRefs = projectRefs; PackageRefs = packageRefs }
 
