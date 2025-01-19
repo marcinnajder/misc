@@ -1,4 +1,4 @@
-package day08_antennas
+package day09_compacting
 
 import (
 	"aoc/utils"
@@ -39,10 +39,7 @@ func lineAntinodes(p1, p2 Point, size, nfirst int) iter.Seq[Point] {
 			for i := 1; i <= nfirst; i++ {
 				x := p.x + dx*dir*i
 				y := p.y + dy*dir*i
-				if x < 0 || y < 0 || x >= size || y >= size {
-					break
-				}
-				if !yield(Point{x, y}) {
+				if x >= 0 && y >= 0 && x < size && y < size && !yield(Point{x, y}) {
 					return
 				}
 			}
