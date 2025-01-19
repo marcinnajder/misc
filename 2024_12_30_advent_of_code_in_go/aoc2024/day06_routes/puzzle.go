@@ -8,22 +8,23 @@ import (
 	"strings"
 )
 
-type Direction int
+type Dir int
 
 const (
-	DirsT Direction = iota // clockwise
-	DirsR
-	DirsB
-	DirsL
+	DirT Dir = iota // clockwise
+	DirR
+	DirB
+	DirL
 )
 
 type Point struct {
-	x, y int
+	x int
+	y int
 }
 
 type Move struct {
 	point Point
-	dir   Direction
+	dir   Dir
 }
 
 type Data struct {
@@ -40,15 +41,15 @@ func loadData(input string) Data {
 	return Data{lines, Point{x, y}}
 }
 
-func movePoint(p Point, dir Direction) Point {
+func movePoint(p Point, dir Dir) Point {
 	switch dir {
-	case DirsT:
+	case DirT:
 		return Point{p.x, p.y - 1}
-	case DirsB:
+	case DirB:
 		return Point{p.x, p.y + 1}
-	case DirsR:
+	case DirR:
 		return Point{p.x + 1, p.y}
-	case DirsL:
+	case DirL:
 		return Point{p.x - 1, p.y}
 	}
 	panic(fmt.Sprintf("unknown direction: %v", dir))
@@ -56,10 +57,10 @@ func movePoint(p Point, dir Direction) Point {
 
 func walk(data Data, obstacle Point) (outOrCycle bool, visited map[Point]struct{}) {
 	size := len(data.lines[0])
-	visitedPoints := make(map[Point]struct{}) // set
+	visitedPoints := make(map[Point]struct{}) // setPoint
 	visitedTurns := make(map[Move]struct{})   // set
 	point := data.start
-	dir := DirsT
+	dir := DirT
 
 	for {
 		visitedPoints[point] = struct{}{}
@@ -71,12 +72,13 @@ func walk(data Data, obstacle Point) (outOrCycle bool, visited map[Point]struct{
 
 		if (obstacle.x == nextPoint.x && obstacle.y == nextPoint.y) || data.lines[nextPoint.y][nextPoint.x] == '#' {
 			move := Move{point: nextPoint, dir: dir}
+
 			if _, ok := visitedTurns[move]; ok {
 				return false, visitedPoints // cycle
 			} else {
 				visitedTurns[move] = struct{}{}
 			}
-			dir = Direction((int(dir) + 1) % 4)
+			dir = Dir((int(dir) + 1) % 4)
 		} else {
 			point = nextPoint
 		}
@@ -121,7 +123,7 @@ func walkSeq(data Data, obstacle Point, prev Move) iter.Seq[Move] {
 				return // out of bounds
 			}
 			if (obstacle.x == nextPoint.x && obstacle.y == nextPoint.y) || data.lines[nextPoint.y][nextPoint.x] == '#' {
-				dir = Direction((int(dir) + 1) % 4)
+				dir = Dir((int(dir) + 1) % 4)
 			} else {
 				point = nextPoint
 				if !yield(Move{point, dir}) {
@@ -152,7 +154,7 @@ func Puzzle1_(input string) string {
 	data := loadData(input)
 	visited := make(map[Point]struct{}) // set
 	visited[data.start] = struct{}{}    // include starting point
-	for move := range walkSeq(data, Point{-1, -1}, Move{data.start, DirsT}) {
+	for move := range walkSeq(data, Point{-1, -1}, Move{data.start, DirT}) {
 		visited[move.point] = struct{}{}
 	}
 	return fmt.Sprint(len(visited))
@@ -164,7 +166,7 @@ func Puzzle2_(input string) string {
 	visitedTurns := make(map[Move]struct{})   // set
 
 	visitedPoints[data.start] = struct{}{}
-	prevMove := Move{data.start, DirsT}
+	prevMove := Move{data.start, DirT}
 	sum := 0
 
 	for move := range walkSeq(data, Point{-1, -1}, prevMove) {
