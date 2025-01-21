@@ -1,60 +1,49 @@
 package day09_compacting
 
-// func TestLoadData(t *testing.T) {
-// 	input := utils.ReadTextFile("./data_.txt")
-// 	data := loadData(input)
-// 	//fmt.Println(data)
-// 	assert.Equal(t, 2, len(data.antennas))
-// 	assert.Equal(t, 4, len(data.antennas['0']))
-// 	assert.Equal(t, 3, len(data.antennas['A']))
-// 	assert.True(t, slices.Contains(data.antennas['0'], Point{8, 1}))
-// 	assert.False(t, slices.Contains(data.antennas['0'], Point{8, 2}))
-// }
+import (
+	"aoc/utils"
+	"fmt"
+	"testing"
 
-// func TestCalcAntinodes(t *testing.T) {
-// 	// map[48:[{8 1} {5 2} {7 3} {4 4}] 65:[{6 5} {8 8} {9 9}]]}
-// 	p1, p2 := calcAntinodes(Point{8, 8}, Point{9, 9})
-// 	assert.Equal(t, Point{7, 7}, p1)
-// 	assert.Equal(t, Point{10, 10}, p2)
-// 	p3, p4 := calcAntinodes(Point{9, 9}, Point{8, 8})
-// 	assert.Equal(t, Point{10, 10}, p3)
-// 	assert.Equal(t, Point{7, 7}, p4)
+	"github.com/stretchr/testify/assert"
+)
 
-// }
+func TestLoadData(t *testing.T) {
+	blocks := loadData("12345")
+	assert.Equal(t, []Block{{0, 1}, {-1, 2}, {1, 3}, {-1, 4}, {2, 5}}, blocks)
+}
 
-// func TestFindAntinodes(t *testing.T) {
-// 	input := utils.ReadTextFile("./data_.txt")
-// 	data := loadData(input)
-// 	var rr = findAntinodes(Point{0, 0}, Point{1, 2}, data.size, 100000)
+func TestCompact(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected []Block
+	}{
+		{"12345", []Block{{0, 1}, {2, 2}, {1, 3}, {2, 3}}},
+		{"2333133121414131402", []Block{{0, 2}, {9, 2}, {8, 1}, {1, 3}, {8, 3}, {2, 1}, {7, 3}, {3, 3}, {6, 1}, {4, 2}, {6, 1}, {5, 4}, {6, 2}}},
+	}
 
-// 	fmt.Println(slices.Collect(rr))
+	for _, tt := range tests {
+		testname := fmt.Sprintf("input:%s", tt.input)
+		t.Run(testname, func(t *testing.T) {
 
-// 	//r := Puzzle(input, 1000000)
-// 	//fmt.Println(r)
-// 	//assert.Equal(t, "3749", r)
-// }
+			blocks := loadData(tt.input)
+			compacted := compact1(blocks)
+			fmt.Println(compacted)
+			assert.Equal(t, tt.expected, compacted)
+		})
+	}
+}
 
-// func TestPuzzle1(t *testing.T) {
-// 	input := utils.ReadTextFile("./data_.txt")
-// 	// data := loadData(input)
-// 	r := Puzzle1(input)
+func TestPuzzle1(t *testing.T) {
+	input := utils.ReadTextFile("./data_.txt")
+	r := Puzzle1(input)
+	//fmt.Println(r)
+	assert.Equal(t, "1928", r)
+}
 
-// 	fmt.Println(r)
-
-// 	// for y, line := range data.lines {
-// 	// 	for x, char := range line {
-
-// 	// 	}
-
-// 	// }
-
-// 	//assert.Equal(t, "3749", r)
-// }
-
-// func TestPuzzle2(t *testing.T) {
-// 	input := utils.ReadTextFile("./data_.txt")
-// 	r := Puzzle2(input)
-// 	// fmt.Println(r)
-// 	assert.Equal(t, "11387", r)
-
-// }
+func TestPuzzle2(t *testing.T) {
+	input := utils.ReadTextFile("./data_.txt")
+	r := Puzzle2(input)
+	// fmt.Println(r)
+	assert.Equal(t, "2858", r)
+}

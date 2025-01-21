@@ -26,6 +26,10 @@ func If[T any](cond bool, truevalue T, falsevalue T) T {
 	}
 }
 
+func RuneToDigit(r rune) int {
+	return int(r) - '0'
+}
+
 type Tuple2[T1 any, T2 any] struct {
 	Item1 T1
 	Item2 T2
