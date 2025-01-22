@@ -29,7 +29,7 @@ func main() {
 	executePuzzle("aoc2024/day06_routes", day06_routes.Puzzle1, day06_routes.Puzzle2)
 	executePuzzle("aoc2024/day07_equations", day07_equations.Puzzle1, day07_equations.Puzzle2)
 	executePuzzle("aoc2024/day08_antennas", day08_antennas.Puzzle1, day08_antennas.Puzzle2)
-	executePuzzle("aoc2024/day09_compacting", day09_compacting.Puzzle1, day09_compacting.Puzzle2)
+	executePuzzle("aoc2024/day09_compacting", day09_compacting.Puzzle1, day09_compacting.Puzzle2_)
 }
 
 func executePuzzle(puzzlePath string, puzzle1 func(string) string, puzzle2 func(string) string) {
@@ -40,10 +40,10 @@ func executePuzzle(puzzlePath string, puzzle1 func(string) string, puzzle2 func(
 	inputString := string(inputBytes)
 
 	start := time.Now()
-
 	result1 := puzzle1(inputString)
 	fmt.Printf("%s puzzle1: %s (%v) \n", puzzlePath, result1, time.Since(start))
 
+	start = time.Now()
 	result2 := puzzle2(inputString)
 	fmt.Printf("%s puzzle2: %s (%v) \n", puzzlePath, result2, time.Since(start))
 }

@@ -25,8 +25,8 @@ func isOccupied(block Block) bool {
 	return block.id != -1
 }
 
-func lastOccupiedIndex(blocks []Block, index int) int {
-	for i := index; i >= 0; i-- {
+func lastOccupied(blocks []Block, begin, end int) int {
+	for i := end; i >= begin; i-- {
 		if isOccupied(blocks[i]) {
 			return i
 		}
@@ -35,13 +35,13 @@ func lastOccupiedIndex(blocks []Block, index int) int {
 }
 
 func compact1(blocks []Block) []Block {
+	// - 'blocks' parameter is mutated
+	// - index is like a pointer to the item inside collection
+	// modify content of item only via index like "coll[i].foo=1"
+	// local variable like "el:=call[i]; el.foo=1" copies the structure !!
 	res := make([]Block, 0)
 	i := 0
-	j := lastOccupiedIndex(blocks, len(blocks)-1)
-
-	// index is like a pointer to the item inside collection
-	// modify content of item only via index like "coll[i].foo=1"
-	// local variable like "el:=call[i]; el.foo=1" copies the structure
+	j := lastOccupied(blocks, 0, len(blocks)-1)
 
 	for {
 		if i+1 >= j { // stop condition
@@ -89,14 +89,23 @@ func checksum(blocks []Block) int {
 	return sum
 }
 
+func firstFreeBigEnough(blocks []Block, start, end, size int) int {
+	for i := start; i < end; i++ {
+		b := blocks[i]
+		if !isOccupied(b) && b.size >= size {
+			return i
+		}
+	}
+	return -1
+}
+
 func compact2(blocks []Block) []Block {
-	// 'blocks' parameter is mutated
+	// - 'blocks' parameter is mutated
 	moved := make(map[int]struct{})
 	j := len(blocks)
 
 	for {
-		// find next occupied from the right
-		j = lastOccupiedIndex(blocks, j-1)
+		j = lastOccupied(blocks, 0, j-1)
 		if j == -1 { // stop condition
 			return blocks
 		}
@@ -104,32 +113,22 @@ func compact2(blocks []Block) []Block {
 		mb := blocks[j]
 
 		if _, ok := moved[mb.id]; ok {
-			continue // already moved, find next
+			continue // already moved, skip it
 		}
 
-		// find first free space going from the left
-		i := -1
-		for k, b := range blocks {
-			if k >= j {
-				break
-			}
-			if !isOccupied(b) && b.size >= mb.size {
-				i = k
-				break
-			}
-		}
+		i := firstFreeBigEnough(blocks, 0, j, mb.size)
 
 		if i != -1 {
 			diffsize := blocks[i].size - mb.size
 			if diffsize > 0 { // split free space
-				blocks = slices.Insert(blocks, i+1, Block{-1, diffsize}) // insert new free space ...
-				j += 1                                                   // ... increment index
+				blocks = slices.Insert(blocks, i+1, Block{-1, diffsize}) // insert free block in the middle ...
+				j += 1                                                   // ... and increment index afterwards
 			}
 
 			blocks[i].id = mb.id
 			blocks[i].size = mb.size
 			moved[mb.id] = struct{}{}
-			blocks[j].id = -1 // mutate!
+			blocks[j].id = -1 // mutate!, zero block
 		}
 	}
 }
@@ -147,4 +146,73 @@ func Puzzle1(input string) string {
 
 func Puzzle2(input string) string {
 	return Puzzle(input, compact2)
+}
+
+// compact2_ - optimized implementation of compact2 (10ms vs 30 ms)
+// - "inserted := make(map[int][]Block)" - avoiding callings of 'slices.Insert' which inserts items in the middle of slice
+// - "k := 0" - avoiding searching always from the beginning of blocks -> this optimiation makes all of the work :)
+
+func merge(blocks []Block, inserted map[int][]Block) []Block {
+	intertedlen := 0
+	for _, ins := range inserted {
+		intertedlen += len(ins)
+	}
+
+	res := make([]Block, len(blocks)+intertedlen)
+	for i, ib := 0, 0; i < len(res); i, ib = i+1, ib+1 {
+		if ins, ok := inserted[ib]; ok {
+			for k, b := range ins {
+				res[i+k] = b
+			}
+			i += len(ins)
+			res[i] = blocks[ib]
+		} else {
+			res[i] = blocks[ib]
+		}
+	}
+	return res
+}
+
+func compact2_(blocks []Block) []Block {
+	// - 'blocks' parameter is mutated
+	moved := make(map[int]struct{})
+	inserted := make(map[int][]Block)
+	j := len(blocks)
+	k := 0 // index of first free block
+
+	for {
+		j = lastOccupied(blocks, k, j-1)
+		if j == -1 { // stop condition
+			return merge(blocks, inserted)
+		}
+
+		mb := blocks[j]
+
+		if _, ok := moved[mb.id]; ok {
+			continue // already moved, skip it
+		}
+
+		i := firstFreeBigEnough(blocks, k, j, mb.size)
+		if i != -1 {
+			diffsize := blocks[i].size - mb.size
+			if diffsize > 0 { // split free space
+				inserted[i] = append(inserted[i], Block{mb.id, mb.size})
+				blocks[i].size = diffsize
+			} else { // overrides full empty space
+				blocks[i].id = mb.id
+				blocks[i].size = mb.size
+				kk := firstFreeBigEnough(blocks, k, j, 1)
+				if kk != -1 {
+					k = kk
+				}
+			}
+
+			moved[mb.id] = struct{}{}
+			blocks[j].id = -1 // mutate!, zero block
+		}
+	}
+}
+
+func Puzzle2_(input string) string {
+	return Puzzle(input, compact2_)
 }
