@@ -100,7 +100,7 @@ func Puzzle(input, word string, counter func([]Occurrence) int) string {
 	boardSize := len(lines)
 	occurrences := make([]Occurrence, 0)
 
-	for y, line := range lines { //
+	for y, line := range lines {
 		for x, char := range line {
 			if char == wordrunes[0] {
 				dirs := availableDirections(x, y, wordlen, boardSize)

@@ -29,11 +29,11 @@ func loadData(input string) Data {
 
 func Puzzle1(input string) string {
 	data := loadData(input)
-	sum := 0.0
 
 	slices.Sort(data.left)
 	slices.Sort(data.right)
 
+	sum := 0.0
 	for i := range len(data.left) {
 		sum += math.Abs((float64(data.left[i] - data.right[i])))
 	}
@@ -51,13 +51,13 @@ func occurrences[T comparable](items []T) map[T]int {
 
 func Puzzle2(input string) string {
 	data := loadData(input)
-	leftO := occurrences(data.left)
-	rightO := occurrences(data.right)
+	leftoccs := occurrences(data.left)
+	rightoccs := occurrences(data.right)
 	sum := 0
 
-	for key, leftV := range leftO {
-		if rightV, ok := rightO[key]; ok {
-			sum += key * leftV * rightV
+	for key, leftocc := range leftoccs {
+		if rightocc, ok := rightoccs[key]; ok {
+			sum += key * leftocc * rightocc
 		}
 	}
 	return fmt.Sprint(sum)
@@ -66,15 +66,15 @@ func Puzzle2(input string) string {
 func Puzzle2_(input string) string {
 	data := loadData(input)
 	cache := make(map[int]int)
-	rightO := occurrences(data.right)
+	rightoccs := occurrences(data.right)
 	sum := 0
 
 	for _, l := range data.left {
 		v, ok := cache[l]
 
 		if !ok {
-			if rO, ok := rightO[l]; ok {
-				v = l * rO
+			if rightocc, ok := rightoccs[l]; ok {
+				v = l * rightocc
 			}
 			cache[l] = v
 		}

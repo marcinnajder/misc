@@ -26,7 +26,7 @@ func transform(val int) []int {
 	return []int{val * 2024}
 }
 
-func Puzzle(input string, count int) string {
+func Puzzle(input string, blinks int) string {
 	numbers := loadData(input)
 
 	his := make(map[int]int)
@@ -34,19 +34,19 @@ func Puzzle(input string, count int) string {
 		his[n]++
 	}
 
-	for range count {
-		nexthis := make(map[int]int)
+	for range blinks {
+		hisnext := make(map[int]int)
 		for n, o := range his {
-			for _, oo := range transform(n) {
-				nexthis[oo] += o
+			for _, nn := range transform(n) {
+				hisnext[nn] += o
 			}
 		}
-		his = nexthis
+		his = hisnext
 	}
 
 	sum := 0
-	for _, v := range his {
-		sum += v
+	for _, o := range his {
+		sum += o
 	}
 	return fmt.Sprint(sum)
 }
