@@ -11,7 +11,7 @@ import (
 type Dir int
 
 const (
-	DirT Dir = iota // clockwise
+	DirT Dir = iota // clockwise values
 	DirR
 	DirB
 	DirL
@@ -57,7 +57,7 @@ func movePoint(p Point, dir Dir) Point {
 
 func walk(data Data, obstacle Point) (outOrCycle bool, visited map[Point]struct{}) {
 	size := len(data.lines[0])
-	visitedPoints := make(map[Point]struct{}) // setPoint
+	visitedPoints := make(map[Point]struct{}) // set
 	visitedTurns := make(map[Move]struct{})   // set
 	point := data.start
 	dir := DirT
@@ -72,13 +72,12 @@ func walk(data Data, obstacle Point) (outOrCycle bool, visited map[Point]struct{
 
 		if (obstacle.x == nextPoint.x && obstacle.y == nextPoint.y) || data.lines[nextPoint.y][nextPoint.x] == '#' {
 			move := Move{point: nextPoint, dir: dir}
-
 			if _, ok := visitedTurns[move]; ok {
 				return false, visitedPoints // cycle
 			} else {
 				visitedTurns[move] = struct{}{}
 			}
-			dir = Dir((int(dir) + 1) % 4)
+			dir = Dir((int(dir) + 1) % 4) // turn right
 		} else {
 			point = nextPoint
 		}
@@ -87,7 +86,7 @@ func walk(data Data, obstacle Point) (outOrCycle bool, visited map[Point]struct{
 
 func Puzzle1(input string) string {
 	data := loadData(input)
-	_, visited := walk(data, Point{-1, -1})
+	_, visited := walk(data, Point{-1, -1}) // no obstacles
 	return fmt.Sprint(len(visited))
 }
 
@@ -99,7 +98,7 @@ func Puzzle2(input string) string {
 	delete(visited, data.start) // remove starting postion
 
 	sum := 0
-	for obstacle := range visited { // check only visted
+	for obstacle := range visited { // only check for visited
 		outOrCycle, _ := walk(data, obstacle)
 		if !outOrCycle {
 			sum++
@@ -109,8 +108,11 @@ func Puzzle2(input string) string {
 	return fmt.Sprint(sum)
 }
 
-// ***** optimized implementation (puzzle2 ~600ms, puzzle2_ ~30ms or ~80ms depending on the cache of the route)
+// ***** optimized implementation
+// puzzle2  ~600ms
+// puzzle2_ ~30ms or ~80ms (depending on the cache of the route)
 
+// 'walk' function creates always 2 maps, 'walkSeq' function just iterates without additional collections
 func walkSeq(data Data, obstacle Point, prev Move) iter.Seq[Move] {
 	return func(yield func(move Move) bool) {
 		size := len(data.lines[0])
@@ -123,11 +125,11 @@ func walkSeq(data Data, obstacle Point, prev Move) iter.Seq[Move] {
 				return // out of bounds
 			}
 			if (obstacle.x == nextPoint.x && obstacle.y == nextPoint.y) || data.lines[nextPoint.y][nextPoint.x] == '#' {
-				dir = Dir((int(dir) + 1) % 4)
+				dir = Dir((int(dir) + 1) % 4) // turn right
 			} else {
 				point = nextPoint
 				if !yield(Move{point, dir}) {
-					return // stop pulling
+					return
 				}
 			}
 		}
@@ -138,7 +140,7 @@ func walkUntilOutOrCycle(data Data, obstacle Point, prev Move, visitedTurns map[
 	prevMove := prev
 
 	for move := range walkSeq(data, obstacle, prev) {
-		if prevMove.dir != move.dir { // turns are much less than moves, searching in smaller map is much faster
+		if prevMove.dir != move.dir { // turns are much less than moves, searching in smaller map is much faster :)
 			if _, ok := visitedTurns[move]; ok {
 				return false // cycle
 			}
@@ -170,13 +172,17 @@ func Puzzle2_(input string) string {
 	sum := 0
 
 	for move := range walkSeq(data, Point{-1, -1}, prevMove) {
-		if _, ok := visitedPoints[move.point]; ok { // do not check the same point twice
+		if _, ok := visitedPoints[move.point]; ok { // do not check the obstacle at same position twice
 			continue
 		}
 		visitedPoints[move.point] = struct{}{}
 
-		outOrCycle := walkUntilOutOrCycle(data, move.point, prevMove /*clone map !!*/, maps.Clone(visitedTurns)) // ~30 ms for puzzle2_ (walk from currently visited)
-		// outOrCycle := walkUntilOutOrCycle(data, move.point, Move{data.start, DirsT}, make(map[Move]struct{})) // ~80 ms for puzzle2_ (walk from beginning)
+		// ~30 ms for puzzle2_ (walk from the last visited)
+		outOrCycle := walkUntilOutOrCycle(data, move.point, prevMove, maps.Clone(visitedTurns) /*clone map !!*/)
+
+		// ~80 ms for puzzle2_ (walk from the start)
+		// outOrCycle := walkUntilOutOrCycle(data, move.point, Move{data.start, DirsT}, make(map[Move]struct{}))
+
 		if !outOrCycle {
 			sum++
 		}
