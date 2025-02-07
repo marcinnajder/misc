@@ -14,6 +14,7 @@ import (
 	"aoc/aoc2024/day11_blinks"
 	"aoc/aoc2024/day12_regions"
 	"aoc/aoc2024/day13_combinations"
+	"aoc/aoc2024/day14_robots"
 	"fmt"
 	"os"
 	"time"
@@ -38,6 +39,7 @@ func main() {
 	executePuzzle("aoc2024/day11_blinks", day11_blinks.Puzzle1, day11_blinks.Puzzle2)
 	executePuzzle("aoc2024/day12_regions", day12_regions.Puzzle1, day12_regions.Puzzle2)
 	executePuzzle("aoc2024/day13_combinations", day13_combinations.Puzzle1, day13_combinations.Puzzle2)
+	executePuzzle("aoc2024/day14_robots", day14_robots.Puzzle1, day14_robots.Puzzle2)
 }
 
 func executePuzzle(puzzlePath string, puzzle1 func(string) string, puzzle2 func(string) string) {
