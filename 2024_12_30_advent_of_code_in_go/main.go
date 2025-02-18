@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aoc/aoc2021/day15_graph"
 	"aoc/aoc2024/day01_distances"
 	"aoc/aoc2024/day02_reports"
 	"aoc/aoc2024/day03_instructions"
@@ -16,6 +17,8 @@ import (
 	"aoc/aoc2024/day13_combinations"
 	"aoc/aoc2024/day14_robots"
 	"aoc/aoc2024/day15_boxes"
+	"aoc/aoc2024/day16_maze"
+
 	"fmt"
 	"os"
 	"time"
@@ -27,6 +30,7 @@ import (
 // - "alt+shift+enter" - wykonanie komendy 'test function at cursor' ktora uruchamia test w ktorym jestesmy
 
 func main() {
+	executePuzzle("aoc2021/day15_graph", day15_graph.Puzzle1, day15_graph.Puzzle2)
 	executePuzzle("aoc2024/day01_distances", day01_distances.Puzzle1, day01_distances.Puzzle2)
 	executePuzzle("aoc2024/day02_reports", day02_reports.Puzzle1, day02_reports.Puzzle2)
 	executePuzzle("aoc2024/day03_instructions", day03_instructions.Puzzle1, day03_instructions.Puzzle2)
@@ -42,6 +46,7 @@ func main() {
 	executePuzzle("aoc2024/day13_combinations", day13_combinations.Puzzle1, day13_combinations.Puzzle2)
 	executePuzzle("aoc2024/day14_robots", day14_robots.Puzzle1, day14_robots.Puzzle2)
 	executePuzzle("aoc2024/day15_boxes", day15_boxes.Puzzle1, day15_boxes.Puzzle2)
+	executePuzzle("aoc2024/day16_maze", day16_maze.Puzzle1, day16_maze.Puzzle2)
 }
 
 func executePuzzle(puzzlePath string, puzzle1 func(string) string, puzzle2 func(string) string) {

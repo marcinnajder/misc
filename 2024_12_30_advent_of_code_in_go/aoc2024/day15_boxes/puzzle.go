@@ -10,6 +10,7 @@ type Point struct {
 	x int
 	y int
 }
+
 type Data struct {
 	board [][]rune
 	sizex int
@@ -47,10 +48,10 @@ func nextPoint(dirDiff Point, p Point) Point {
 	return Point{p.x + dirDiff.x, p.y + dirDiff.y}
 }
 
-func nextFreePoint(data Data, dirDiff Point, point Point) (pp Point, ok bool) {
-	p := point
+func nextFreePoint(data Data, dirDiff Point, p Point) (pp Point, ok bool) {
+	current := p
 	for {
-		next := nextPoint(dirDiff, p)
+		next := nextPoint(dirDiff, current)
 		nextVal := data.board[next.y][next.x]
 		if nextVal == '#' {
 			return Point{}, false
@@ -58,7 +59,7 @@ func nextFreePoint(data Data, dirDiff Point, point Point) (pp Point, ok bool) {
 		if nextVal == '.' {
 			return next, true
 		}
-		p = next
+		current = next
 	}
 }
 
@@ -131,6 +132,7 @@ func findPointsMovedVertically(data Data, dir Point, point Point) []Point {
 	points := []Point{point}
 	visited := make(map[Point]struct{})
 
+	// add new points at the end of 'points'
 	for i := 0; i < len(points); i++ {
 		next := nextPoint(dir, points[i])
 
@@ -169,6 +171,7 @@ func Puzzle2(input string) string {
 
 	for _, dir := range data.moves {
 		if dir == '^' || dir == 'v' {
+			//points are sorted by 'y' from the farthest to the nearest, move points from the farthest
 			points := findPointsMovedVertically(data, dirDiffMap[dir], current)
 			if points != nil {
 				for i := len(points) - 1; i >= 0; i-- {

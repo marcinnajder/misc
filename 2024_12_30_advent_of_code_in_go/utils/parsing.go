@@ -47,3 +47,13 @@ func ParseLinesOfInts(input string) [][]int {
 	}
 	return linesNumbers
 }
+
+func ParseLinesOfIntsGrid(input string) [][]int {
+	lines := ParseLines(input)
+	linesNumbers := make([][]int, len(lines))
+	for i, line := range lines {
+		numbers := ParseIntsWithSplit(line, "")
+		linesNumbers[i] = numbers
+	}
+	return linesNumbers
+}

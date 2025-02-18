@@ -39,25 +39,25 @@ func compact1(blocks []Block) []Block {
 	// - index is like a pointer to the item inside collection
 	// modify content of item only via index like "coll[i].foo=1"
 	// local variable like "el:=call[i]; el.foo=1" copies the structure !!
-	res := make([]Block, 0)
+	result := make([]Block, 0)
 	i := 0
 	j := lastOccupied(blocks, 0, len(blocks)-1)
 
 	for {
 		if i+1 >= j { // stop condition
-			res = append(res, blocks[j]) // copy block
-			return res
+			result = append(result, blocks[j]) // copy block
+			return result
 		}
 
 		if isOccupied(blocks[i]) { // occupied block, return and move to next
-			res = append(res, blocks[i]) // copy block
+			result = append(result, blocks[i]) // copy block
 			i++
 			continue
 		}
 
 		if blocks[j].size >= blocks[i].size { // enough space
-			res = append(res, Block{blocks[j].id, blocks[i].size}) // new block
-			blocks[j].size = blocks[j].size - blocks[i].size       // mutate!
+			result = append(result, Block{blocks[j].id, blocks[i].size}) // new block
+			blocks[j].size = blocks[j].size - blocks[i].size             // mutate!
 
 			// update indexes at the end, just before next iteration (indexes are used above)
 			i++
@@ -65,8 +65,8 @@ func compact1(blocks []Block) []Block {
 				j -= 2
 			}
 		} else {
-			res = append(res, Block{blocks[j].id, blocks[j].size}) // new block
-			blocks[i].size = blocks[i].size - blocks[j].size       // mutate!
+			result = append(result, Block{blocks[j].id, blocks[j].size}) // new block
+			blocks[i].size = blocks[i].size - blocks[j].size             // mutate!
 
 			// update indexes at the end, just before next iteration (indexes are used above)
 			j -= 2
@@ -128,7 +128,7 @@ func compact2(blocks []Block) []Block {
 			blocks[i].id = mb.id
 			blocks[i].size = mb.size
 			moved[mb.id] = struct{}{}
-			blocks[j].id = -1 // mutate!, zero block
+			blocks[j].id = -1 // mutate!, it zeroes block
 		}
 	}
 }
@@ -153,12 +153,12 @@ func Puzzle2(input string) string {
 // - "k := 0" - avoiding searching always from the beginning of blocks -> this optimiation makes all of the work :)
 
 func merge(blocks []Block, inserted map[int][]Block) []Block {
-	intertedlen := 0
+	insertedLen := 0
 	for _, ins := range inserted {
-		intertedlen += len(ins)
+		insertedLen += len(ins)
 	}
 
-	res := make([]Block, len(blocks)+intertedlen)
+	res := make([]Block, len(blocks)+insertedLen)
 	for i, ib := 0, 0; i < len(res); i, ib = i+1, ib+1 {
 		if ins, ok := inserted[ib]; ok {
 			for k, b := range ins {
@@ -208,7 +208,7 @@ func compact2_(blocks []Block) []Block {
 			}
 
 			moved[mb.id] = struct{}{}
-			blocks[j].id = -1 // mutate!, zero block
+			blocks[j].id = -1 // mutate!, it zeroes block
 		}
 	}
 }
