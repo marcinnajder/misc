@@ -19,7 +19,8 @@ let aocSettings =
       { Name = "Clojure"; Ext = "clj"; Path = "./2022_12_15_advent_of_code_in_clojure/src" }
       { Name = "Kotlin"
         Ext = "kt"
-        Path = "./2023_10_03_advent_of_code_in_kotlin/AdventOfCode/src/main/kotlin" } ]
+        Path = "./2023_10_03_advent_of_code_in_kotlin/AdventOfCode/src/main/kotlin" }
+      { Name = "Go"; Ext = "go"; Path = "./2024_12_30_advent_of_code_in_go" } ]
 
 let langsOrder = aocSettings |> Seq.mapi (fun i lang -> lang.Name, i) |> Map
 
@@ -27,8 +28,15 @@ let join xs ys pred = xs |> Seq.choose (fun x -> ys |> Seq.tryPick (fun y -> if 
 
 let joinStrings (separator: string) (xs: seq<_>) = String.Join(separator, xs)
 
-let findFiles folderPath ext =
-    Directory.GetFiles(folderPath, $"*.{ext}") |> Array.map (fun path -> {| Name = FileInfo(path).Name; Path = path |})
+let findFiles folderPath ext deep =
+    Directory.GetFiles(
+        folderPath,
+        $"*.{ext}",
+        (if deep then SearchOption.AllDirectories else SearchOption.TopDirectoryOnly)
+    )
+    |> Array.map (fun path -> {| Name = FileInfo(path).Name; Path = path |})
+
+
 
 let tryExtractName (fileName: string) =
     let parts = (fileName.Split('.')[0]).Split([| '-'; '_' |])
@@ -41,6 +49,14 @@ let days = [ 1..25 ] |> List.map (fun day -> day.ToString().PadLeft(2, '0'))
 
 type AocPuzzle = { Year: String; Day: string; Lang: FolderSettings; FilePath: string; FileName: string }
 
+let tryExtractNameForAoc (aocPuzzle: AocPuzzle) =
+    let fileName =
+        if aocPuzzle.FileName = "puzzle.go" then
+            DirectoryInfo(Path.GetDirectoryName(aocPuzzle.FilePath)).Name
+        else
+            aocPuzzle.FileName
+    tryExtractName fileName
+
 let findAocPuzzles (lang: FolderSettings) =
     let yearsPaths =
         Directory.GetDirectories(Path.Join(miscFolderPath, lang.Path))
@@ -48,9 +64,8 @@ let findAocPuzzles (lang: FolderSettings) =
     join years yearsPaths (fun year yearPath -> yearPath.Name.Contains(year))
     |> Seq.collect (fun (year, yearPath) ->
         let daysPaths =
-            findFiles yearPath.Path lang.Ext |> Seq.filter (fun file -> not (file.Name.EndsWith("_." + lang.Ext))) // remove commented files
-        join days daysPaths (fun day dayPath -> dayPath.Name.Contains(day))
-
+            findFiles yearPath.Path lang.Ext true |> Seq.filter (fun file -> not (file.Name.EndsWith("_." + lang.Ext))) // remove commented files
+        join days daysPaths (fun day dayPath -> dayPath.Name.Contains(day) || dayPath.Path.Contains("day" + day))
         |> Seq.map (fun (day, dayPath) ->
             { Year = year; Day = day; FilePath = dayPath.Path; Lang = lang; FileName = dayPath.Name }))
 
@@ -74,7 +89,7 @@ let aocPuzzlesByYear =
 
 let formatAocPuzzle year ((day, dayPuzzles): string * AocPuzzle []) =
     let aocUrlFormat = "https://adventofcode.com/{0}/day/{1}"
-    let puzzleName = dayPuzzles |> Seq.tryPick (fun p -> tryExtractName p.FileName) |> Option.defaultValue ""
+    let puzzleName = dayPuzzles |> Seq.tryPick (fun p -> tryExtractNameForAoc p) |> Option.defaultValue ""
     let langs =
         dayPuzzles
         |> Seq.map (fun p -> $"[{p.Lang.Name}]({githubUrl}{p.FilePath.Substring(p.FilePath.IndexOf(p.Lang.Path) + 1)})")
@@ -110,7 +125,7 @@ let tryExtractNumber (fileName: string) =
 type LeetCodePuzzle = { Lang: FolderSettings; FilePath: string; FileName: string; Number: int }
 
 let findLeetCodePuzzles (lang: FolderSettings) =
-    findFiles (Path.Join(miscFolderPath, lang.Path)) lang.Ext
+    findFiles (Path.Join(miscFolderPath, lang.Path)) lang.Ext false
     |> Seq.filter (fun file -> not (file.Name.EndsWith("_." + lang.Ext))) // remove commented files
     |> Seq.choose (fun file -> tryExtractNumber file.Name |> Option.map (fun number -> file, number))
     |> Seq.map (fun (file, number) -> { Lang = lang; FileName = file.Name; FilePath = file.Path; Number = number })
