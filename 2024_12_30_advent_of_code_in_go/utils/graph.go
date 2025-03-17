@@ -2,6 +2,7 @@ package utils
 
 import (
 	"iter"
+	"slices"
 
 	pq "gopkg.in/dnaeon/go-priorityqueue.v1"
 )
@@ -22,7 +23,7 @@ type Visited[T comparable] struct {
 	CameFrom map[T][]T
 }
 
-func DijkstraTraverse[T comparable](graph []Edge[T], start T) iter.Seq[Visited[T]] {
+func DijkstraTraverseSeq[T comparable](graph iter.Seq[Edge[T]], start T) iter.Seq[Visited[T]] {
 	return func(yield func(Visited[T]) bool) {
 		costSoFar := map[T]int{start: 0}
 		queue := pq.New[T, int64](pq.MinHeap)
@@ -30,7 +31,7 @@ func DijkstraTraverse[T comparable](graph []Edge[T], start T) iter.Seq[Visited[T
 		cameFrom := make(map[T][]T)
 
 		neighbors := make(map[T][]Edge[T])
-		for _, e := range graph {
+		for e := range graph {
 			neighbors[e.From] = append(neighbors[e.From], e)
 		}
 
@@ -55,6 +56,10 @@ func DijkstraTraverse[T comparable](graph []Edge[T], start T) iter.Seq[Visited[T
 	}
 }
 
+func DijkstraTraverse[T comparable](graph []Edge[T], start T) iter.Seq[Visited[T]] {
+	return DijkstraTraverseSeq(slices.Values(graph), start)
+}
+
 func DijkstraShortestPath[T comparable](graph []Edge[T], start T, finish T) int {
 	return DijkstraShortestPathFunc(graph, start, func(visited Visited[T]) bool {
 		return visited.Node == finish
@@ -76,27 +81,73 @@ type Point struct {
 
 func BuildGraph(g [][]int, size int) []Edge[Point] {
 	edges := make([]Edge[Point], 0)
-	sizem1 := size - 1
+	for e := range BuildGraphSeq(g, size) {
+		edges = append(edges, e)
+	}
+	return edges
+}
 
-	addEdges := func(x1, y1, x2, y2 int) {
-		edges = append(edges,
-			Edge[Point]{From: Point{x1, y1}, To: Point{x2, y2}, Weight: g[y2][x2]},
-			Edge[Point]{From: Point{x2, y2}, To: Point{x1, y1}, Weight: g[y1][x1]})
+func BuildGraphSeq(g [][]int, size int) iter.Seq[Edge[Point]] {
+	return func(yield func(Edge[Point]) bool) {
+		sizem1 := size - 1
+
+		addEdges := func(x1, y1, x2, y2 int) bool {
+			if !yield(Edge[Point]{From: Point{x1, y1}, To: Point{x2, y2}, Weight: g[y2][x2]}) {
+				return false
+			}
+			if !yield(Edge[Point]{From: Point{x2, y2}, To: Point{x1, y1}, Weight: g[y1][x1]}) {
+				return false
+			}
+			return true
+		}
+
+		// all rows and columns without the last ones
+		for y := 0; y < size-1; y++ {
+			for x := 0; x < size-1; x++ {
+				if !addEdges(x, y, x, y+1) {
+					return
+				}
+				if !addEdges(x, y, x+1, y) {
+					return
+				}
+			}
+		}
+
+		// last column and row
+		for i := range sizem1 {
+			if !addEdges(i, sizem1, i+1, sizem1) { // last row
+				return
+			}
+			if !addEdges(sizem1, i, sizem1, i+1) { // last column
+				return
+			}
+		}
+	}
+}
+
+func GetAllVisited[T comparable](endVisited []Visited[T]) map[T]struct{} {
+	visitedNodes := make(map[T]struct{})
+
+	if len(endVisited) == 0 {
+		return visitedNodes
 	}
 
-	// all rows and columns without the last ones
-	for y := 0; y < size-1; y++ {
-		for x := 0; x < size-1; x++ {
-			addEdges(x, y, x, y+1)
-			addEdges(x, y, x+1, y)
+	cameFrom := endVisited[0].CameFrom
+	pathNodes := make([]T, len(endVisited))
+	for i := range len(endVisited) {
+		pathNodes[i] = endVisited[i].Node
+	}
+
+	for i := 0; i < len(pathNodes); i++ { // 'pathNodes' is mutated during iteration
+		currentNode := pathNodes[i]
+		visitedNodes[currentNode] = struct{}{}
+
+		for _, t := range cameFrom[currentNode] {
+			if _, ok := visitedNodes[t]; !ok {
+				pathNodes = append(pathNodes, t)
+			}
 		}
 	}
 
-	// last column and row
-	for i := range sizem1 {
-		addEdges(i, sizem1, i+1, sizem1) // last row
-		addEdges(sizem1, i, sizem1, i+1) // last column
-	}
-
-	return edges
+	return visitedNodes
 }

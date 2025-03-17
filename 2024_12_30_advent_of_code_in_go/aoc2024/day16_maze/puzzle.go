@@ -116,30 +116,12 @@ func Puzzle2(input string) string {
 			endTiles = append(endTiles, v)
 			return false
 		}
-		return len(endTiles) > 0 // stop when first node after end nodes is visited
+		return len(endTiles) > 0 // stop at first node after end nodes are visited
 	})
 
-	// find all nodes of all shortes paths
-	cameFrom := endTiles[0].CameFrom
+	visitedTiles := utils.GetAllVisited(endTiles)
 
-	pathTiles := make([]Tile, len(endTiles))
-	for i := range len(endTiles) {
-		pathTiles[i] = endTiles[i].Node
-	}
-
-	visitedTiles := make(map[Tile]struct{})
-	for i := 0; i < len(pathTiles); i++ { // 'pathTiles' is mutated during iteration
-		currentTile := pathTiles[i]
-		visitedTiles[currentTile] = struct{}{}
-
-		for _, t := range cameFrom[currentTile] {
-			if _, ok := visitedTiles[t]; !ok {
-				pathTiles = append(pathTiles, t)
-			}
-		}
-	}
-
-	// the same point can be used by many tiles (tile=point+dir)
+	// the same point can be used by many tiles (tile=point+dir), find distinct points
 	visitedPoints := make(map[Point]struct{})
 	for t := range visitedTiles {
 		visitedPoints[t.point] = struct{}{}
