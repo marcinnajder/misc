@@ -2,7 +2,6 @@ package day01_distances
 
 import (
 	"aoc/utils"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -18,17 +17,13 @@ func TestLoadData(t *testing.T) {
 func TestPuzzle1(t *testing.T) {
 	input := utils.ReadTextFile("./data_.txt")
 	result := Puzzle1(input)
-	fmt.Println(result)
-	// assert.Equal(t, "11", result)
+	// fmt.Println(result)
+	assert.Equal(t, "11", result)
 }
 
 func TestOccurrences(t *testing.T) {
 	his := occurrences([]int{1, 5, 1, 10, 5, 5})
-	his2 := map[int]int{1: 2, 5: 3, 10: 1}
-
 	assert.Equal(t, map[int]int{1: 2, 5: 3, 10: 1}, his)
-	fmt.Println(his)
-	fmt.Println(his2)
 }
 
 func TestPuzzle2(t *testing.T) {

@@ -3,13 +3,14 @@ module aoc
 go 1.23.3
 
 require (
+	github.com/marcinnajder/gopowerseq v0.0.2
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8
+	golang.org/x/exp v0.0.0-20250408133849-7e4ce0ab07d0
+	gopkg.in/dnaeon/go-priorityqueue.v1 v1.1.1
 )
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	gopkg.in/dnaeon/go-priorityqueue.v1 v1.1.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

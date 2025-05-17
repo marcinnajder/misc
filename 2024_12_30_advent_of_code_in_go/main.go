@@ -26,9 +26,26 @@ import (
 	"time"
 )
 
+// - run/test app 'with' vs 'without' POWERSEQ
+// -- 2 kinds of solutions in files with first line commented (puzzle_powerseq.go, puzzle_powerseq.go)
+// -- by default app is running 'without' powerseq
+// -- to run/test 'with' powerseq
+// --- configure vs code changing 'settings.json' file in 2 places ("go.testTags",  "gopls")
+// --- to run/test from command line including '-tags powerseq'
+
 // - "go run ." - odpalenie 'main'
-// - "go test ./..." - odpalenie wszystkich unit testow
+// go run .
+// go run -tags powerseq .
+
+//"go test ./..." - odpalenie wszystkich unit testow
+// go test -v ./...
+// go test -tags powerseq -v ./...
+// go test -tags powerseq ./...
+// go test -tags powerseq -v ./aoc2024/day01_distances
+// go test -v ./aoc2024/day01_distances
+
 // - "gore" - odpalenie repl, potem ":import "strings"" aby zaimportowac pakiet
+
 // - "alt+shift+enter" - wykonanie komendy 'test function at cursor' ktora uruchamia test w ktorym jestesmy
 
 func main() {

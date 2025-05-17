@@ -1,11 +1,16 @@
-//go:build !powerseq
+//go:build powerseq
 
 package day11_blinks
 
 import (
 	"aoc/utils"
 	"fmt"
+	"maps"
 	"strconv"
+
+	"github.com/marcinnajder/gopowerseq/seq"
+	"github.com/marcinnajder/gopowerseq/seqs"
+	"github.com/marcinnajder/gopowerseq/sequ"
 )
 
 func loadData(input string) []int {
@@ -31,10 +36,7 @@ func transform(val int) []int {
 func Puzzle(input string, blinks int) string {
 	numbers := loadData(input)
 
-	his := make(map[int]int)
-	for _, n := range numbers {
-		his[n]++
-	}
+	his := seqs.CountBy(numbers, sequ.Identity)
 
 	for range blinks {
 		hisnext := make(map[int]int)
@@ -46,10 +48,8 @@ func Puzzle(input string, blinks int) string {
 		his = hisnext
 	}
 
-	sum := 0
-	for _, o := range his {
-		sum += o
-	}
+	sum := seq.Sum[int]()(maps.Values(his))
+
 	return fmt.Sprint(sum)
 }
 

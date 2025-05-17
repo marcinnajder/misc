@@ -1,10 +1,12 @@
-//go:build !powerseq
+//go:build powerseq
 
 package day04_xmas
 
 import (
 	"aoc/utils"
 	"fmt"
+
+	"github.com/marcinnajder/gopowerseq/seqs"
 )
 
 type Direction int
@@ -134,11 +136,7 @@ func Puzzle(input, word string, counter func([]Occurrence) int) string {
 
 func Puzzle1(input string) string {
 	return Puzzle(input, "XMAS", func(occurrences []Occurrence) int {
-		count := 0
-		for _, o := range occurrences {
-			count += len(o.Directions)
-		}
-		return count
+		return seqs.SumFunc(occurrences, func(o Occurrence) int { return len(o.Directions) })
 	})
 }
 

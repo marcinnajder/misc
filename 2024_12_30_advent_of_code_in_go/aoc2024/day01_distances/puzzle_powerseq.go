@@ -1,4 +1,4 @@
-//go:build !powerseq
+//go:build powerseq
 
 package day01_distances
 
@@ -8,6 +8,9 @@ import (
 	"math"
 	"slices"
 	"strings"
+
+	"github.com/marcinnajder/gopowerseq/seqs"
+	"github.com/marcinnajder/gopowerseq/sequ"
 )
 
 type Data struct {
@@ -16,6 +19,7 @@ type Data struct {
 }
 
 func loadData(input string) Data {
+
 	lines := strings.Split(input, "\n")
 	left := make([]int, len(lines))
 	right := make([]int, len(lines))
@@ -44,11 +48,7 @@ func Puzzle1(input string) string {
 }
 
 func occurrences[T comparable](items []T) map[T]int {
-	result := make(map[T]int)
-	for _, item := range items {
-		result[item] += 1 // nice trick :) map returns default value when there is no key
-	}
-	return result
+	return seqs.CountBy(items, sequ.Identity[T])
 }
 
 func Puzzle2(input string) string {

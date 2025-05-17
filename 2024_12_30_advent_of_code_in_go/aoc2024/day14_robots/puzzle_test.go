@@ -2,7 +2,6 @@ package day14_robots
 
 import (
 	"aoc/utils"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -18,6 +17,7 @@ func TestLoadData(t *testing.T) {
 func TestPuzzle1(t *testing.T) {
 	input := utils.ReadTextFile("./data_.txt")
 	r := puzzle1(11, 7, input)
-	fmt.Println(r)
+	// fmt.Println(r)
+
 	assert.Equal(t, "12", r)
 }

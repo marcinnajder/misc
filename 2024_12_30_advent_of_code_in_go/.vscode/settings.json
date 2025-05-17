@@ -1,3 +1,15 @@
 { 
-    "go.testFlags": ["-v"]    
+    "go.testFlags": [
+        "-v"
+    ],
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
+    },
+    "go.testTags_": "powerseq",
+    "gopls_": {
+        "build.buildFlags": ["-tags=powerseq"]
+    }
 }

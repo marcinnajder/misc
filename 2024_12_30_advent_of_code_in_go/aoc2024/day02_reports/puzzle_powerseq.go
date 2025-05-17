@@ -1,4 +1,4 @@
-//go:build !powerseq
+//go:build powerseq
 
 package day02_reports
 
@@ -6,6 +6,8 @@ import (
 	"aoc/utils"
 	"cmp"
 	"fmt"
+
+	"github.com/marcinnajder/gopowerseq/seqs"
 )
 
 func loadData(input string) [][]int {
@@ -30,12 +32,7 @@ func findBrokenIndex(numbers []int) int {
 
 func Puzzle(input string, isSafe func([]int) bool) string {
 	data := loadData(input)
-	count := 0
-	for _, numbers := range data {
-		if isSafe(numbers) {
-			count++
-		}
-	}
+	count := seqs.CountFunc(data, isSafe)
 	return fmt.Sprint(count)
 }
 

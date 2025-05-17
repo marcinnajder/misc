@@ -1,4 +1,4 @@
-//go:build !powerseq
+//go:build powerseq
 
 package day03_instructions
 
@@ -8,6 +8,9 @@ import (
 	"math"
 	"regexp"
 	"strconv"
+
+	"github.com/marcinnajder/gopowerseq/seq"
+	"github.com/marcinnajder/gopowerseq/seqs"
 )
 
 type OperationType int
@@ -49,22 +52,16 @@ func loadData(input string) []Operation {
 
 func Puzzle(input string, filterToMuls func([]Operation) iter.Seq[Operation]) string {
 	ops := loadData(input)
-	sum := 0
-	for op := range filterToMuls(ops) {
-		sum += op.Numers[0] * op.Numers[1]
-	}
+	sum := seq.Pipe2(
+		ops,
+		filterToMuls,
+		seq.SumFunc(func(op Operation) int { return op.Numers[0] * op.Numers[1] }))
 	return fmt.Sprint(sum)
 }
 
 func Puzzle1(input string) string {
 	return Puzzle(input, func(ops []Operation) iter.Seq[Operation] {
-		return func(yield func(Operation) bool) {
-			for _, op := range ops {
-				if op.Type == OperationTypeMul && !yield(op) {
-					return
-				}
-			}
-		}
+		return seqs.Filter(ops, func(op Operation) bool { return op.Type == OperationTypeMul })
 	})
 }
 

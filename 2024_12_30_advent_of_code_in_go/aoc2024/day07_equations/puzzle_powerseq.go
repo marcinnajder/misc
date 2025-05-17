@@ -1,4 +1,4 @@
-//go:build !powerseq
+//go:build powerseq
 
 package day07_equations
 
@@ -7,6 +7,9 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/marcinnajder/gopowerseq/seqs"
+	"github.com/marcinnajder/gopowerseq/sequ"
 )
 
 type Entry struct {
@@ -65,13 +68,9 @@ func countCombinations(index int, val int, entry Entry, ops []Op, anyOrAll bool)
 
 func Puzzle(input string, ops []Op) string {
 	entries := loadData(input)
-	sum := 0
-	for _, entry := range entries {
-		count := countCombinations(1, entry.numbers[0], entry, ops, true)
-		if count > 0 {
-			sum += entry.result
-		}
-	}
+	sum := seqs.SumFunc(entries, func(entry Entry) int {
+		return sequ.If(countCombinations(1, entry.numbers[0], entry, ops, true) > 0, entry.result, 0)
+	})
 	return fmt.Sprint(sum)
 }
 

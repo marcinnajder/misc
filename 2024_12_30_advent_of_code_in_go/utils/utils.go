@@ -40,3 +40,11 @@ type Tuple3[T1 any, T2 any, T3 any] struct {
 	Item2 T2
 	Item3 T3
 }
+
+func Abs(a, b int) int {
+	if diff := a - b; diff < 0 {
+		return diff * -1
+	} else {
+		return diff
+	}
+}

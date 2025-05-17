@@ -6,8 +6,6 @@ import (
 	"strings"
 )
 
-type Text []rune
-
 type Data struct {
 	towels  []string
 	designs []string
