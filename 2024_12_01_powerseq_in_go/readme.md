@@ -1,15 +1,20 @@
+# Programming with sequences in Go - introduction to iterators
+
+## Pull iterators
+
 [go1.23](https://go.dev/doc/go1.23#iterators) (2024-08-13) introduced [iterators](https://go.dev/blog/range-functions) (`iter.Seq[T]` interface) that can be treated as a lazy sequence known from other programming languages like C#, JS, F#, Clojure, Python,... In most programming languages, iterators are represented as two interfaces.
 
 ```go
 type Iterable[T any] interface {
-	getIterator() Iterator[T]
+	Iterator() Iterator[T]
 }
+
 type Iterator[T any] interface {
-	next() (value T, hasValue bool)
+	Next() (value T, hasValue bool)
 }
 ```
 
-Then, usually all standard collections like arrays, lists, and maps, ... implement an `Iterable` interface. Additionally, programming languages provide a special `foreach` loop for iterating over items in a convenient way. In Go, this type of iteration is called "pull iterators", the "consumer code" pulls values from the "producer code" by calling the `next` function. Interestingly, the default way of representing the sequence in Go is "push iterator". This article explains in detail how both types of iterators work, how to implement them, and convert between them.
+Then, usually all standard collections like arrays, lists, and maps, ... implement an `Iterable` interface. Additionally, programming languages provide a special `foreach` loop for iterating over items in a convenient way. In Go, this type of iteration is called "pull iterators", the "consumer code" pulls values from the "producer code" by calling the `Next` function. Interestingly, the default way of representing the sequence in Go is "push iterator". This article explains in detail how both types of iterators work, how to implement them, and convert between them.
 
 Both interfaces `Iterable` and `Iterator` contain only one method so we can simplify the type definition to just a single function.
 
@@ -24,7 +29,7 @@ func Range(start, count int) SeqPull[int] {
 	return func() func() (value int, hasValue bool) {
 		end := start + count
 		i := start - 1
-		next := func() (value int, hasValue bool) {
+		next := func() (int, bool) {
 			i++
 			if i >= end {
 				return 0, false
@@ -38,13 +43,13 @@ func Range(start, count int) SeqPull[int] {
 func RepeatValue[T any](val T, count int) SeqPull[T] {
 	return func() func() (value T, hasValue bool) {
 		if count < 0 { // infinite
-			return func() (value T, hasValue bool) {
+			return func() (T, bool) {
 				return val, true
 			}
 		}
 
 		i := 0
-		return func() (value T, hasValue bool) {
+		return func() (T, bool) {
 			if i < count {
 				i++
 				return val, true
@@ -66,7 +71,7 @@ type Func[T, R any] func(T) R
 func Filter[T any](s SeqPull[T], f Func[T, bool]) SeqPull[T] {
 	return func() func() (value T, hasValue bool) {
 		snext := s()
-		return func() (value T, hasValue bool) {
+		return func() (T, bool) {
 			for {
 				if value, hasValue := snext(); !hasValue {
 					var zero T
@@ -82,14 +87,12 @@ func Filter[T any](s SeqPull[T], f Func[T, bool]) SeqPull[T] {
 func Map[T, R any](s SeqPull[T], f Func[T, R]) SeqPull[R] {
 	return func() func() (value R, hasValue bool) {
 		snext := s()
-		return func() (value R, hasValue bool) {
-			for {
-				if value, hasValue := snext(); !hasValue {
-					var zero R
-					return zero, false
-				} else {
-					return f(value), true
-				}
+		return func() (R, bool) {
+			if value, hasValue := snext(); !hasValue {
+				var zero R
+				return zero, false
+			} else {
+				return f(value), true
 			}
 		}
 	}
@@ -139,6 +142,8 @@ func ToSlice[T any](s SeqPull[T]) []T {
 ```
 
 There is one interesting detail in the implementation of the `ForEach` function. We pass a function as an argument that will be executed for each of the elements, and that function returns `bool`. From the perspective of the `ForEach` caller, it's not so obvious why we need to return anything at all. Especially if we know other technologies like C#, Java, JavaScript, ... where analogous code would look like this `[1,2,3].forEach(x => console.log(x))`. Here, the anonymous function passed into `forEach` does not return anything. The nice feature of regular loops is that we can always break them in the middle of execution by calling `break`. Our `ForEach` preserves the same behaviour, returning `false` from the anonymous function breaks the iteration.
+
+## Push iterators
 
 At this point we understand what exactly "pull iterators" are and how to work with them. But the default representation of sequence in Go is called "push iterator" and it's defined as type `Seq[T]`.
 
@@ -253,6 +258,8 @@ func Zip[T1, T2 any](s1 iter.Seq[T1], s2 iter.Seq[T2]) iter.Seq2[T1, T2] {
 	}
 }
 ```
+
+## Push to pull
 
 We chose `Seq[T]` instead of `SeqPull[T]` because "push iterators" are the default ones in Go. This is a great example of a scenario where having only "push iterators" would not be enough. In case of `Zip` operator we have to pull the next items from both sequences at the same time, take the first items, then take the second items, and so on. "push iterators" are great if we want to iterate over a single sequence at once but not so useful for many sequences. Fortunately, Go standard library provides a built-in function `iter.Pull(...)` converting "push iterators" into "pull iterators". Once I encountered this function for the first time, I immediately started asking myself how such a function could be implemented. Knowing many other programming languages besides Go, my basic understanding was that converting "pull to push" should be easy, but the opposite direction not necessary. In some sense, I was right, because Go language provides unique features that allow us to implement it in a quite simple way.
 

@@ -7,11 +7,11 @@ import (
 )
 
 type Iterable[T any] interface {
-	getIterator() Iterator[T]
+	Iterator() Iterator[T]
 }
 
 type Iterator[T any] interface {
-	next() (value T, hasValue bool)
+	Next() (value T, hasValue bool)
 }
 
 // **** PULL
@@ -22,7 +22,7 @@ func Range(start, count int) SeqPull[int] {
 	return func() func() (value int, hasValue bool) {
 		end := start + count
 		i := start - 1
-		next := func() (value int, hasValue bool) {
+		next := func() (int, bool) {
 			i++
 			if i >= end {
 				return 0, false
@@ -36,13 +36,13 @@ func Range(start, count int) SeqPull[int] {
 func RepeatValue[T any](val T, count int) SeqPull[T] {
 	return func() func() (value T, hasValue bool) {
 		if count < 0 { // infinite
-			return func() (value T, hasValue bool) {
+			return func() (T, bool) {
 				return val, true
 			}
 		}
 
 		i := 0
-		return func() (value T, hasValue bool) {
+		return func() (T, bool) {
 			if i < count {
 				i++
 				return val, true
@@ -58,7 +58,7 @@ type Func[T, R any] func(T) R
 func Filter[T any](s SeqPull[T], f Func[T, bool]) SeqPull[T] {
 	return func() func() (value T, hasValue bool) {
 		snext := s()
-		return func() (value T, hasValue bool) {
+		return func() (T, bool) {
 			for {
 				if value, hasValue := snext(); !hasValue {
 					var zero T
@@ -74,14 +74,12 @@ func Filter[T any](s SeqPull[T], f Func[T, bool]) SeqPull[T] {
 func Map[T, R any](s SeqPull[T], f Func[T, R]) SeqPull[R] {
 	return func() func() (value R, hasValue bool) {
 		snext := s()
-		return func() (value R, hasValue bool) {
-			for {
-				if value, hasValue := snext(); !hasValue {
-					var zero R
-					return zero, false
-				} else {
-					return f(value), true
-				}
+		return func() (R, bool) {
+			if value, hasValue := snext(); !hasValue {
+				var zero R
+				return zero, false
+			} else {
+				return f(value), true
 			}
 		}
 	}
