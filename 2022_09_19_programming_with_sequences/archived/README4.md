@@ -24,7 +24,7 @@ let root = {
       type: "folder",
       items: [
         { name: "file1", type: "file" },
-        { name: "file1", type: "file" },
+        { name: "file2", type: "file" },
       ],
     },
     {
