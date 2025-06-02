@@ -5,7 +5,7 @@ todo: zmienić adres https://marcinnajder.github.io/2022/11/02/sequences-in-java
 
 ## Introduction
 
-> Lisp is a family of programming languages with a long history and a distinctive, fully parenthesized prefix notation. Originally specified in the late 1950s, it is the second-oldest high-level programming language still in common use, after Fortran.
+> Lisp is a family of programming languages with a long history and a distinctive, fully parenthesized prefix notation. Originally specified in the late 1950s, it is the second-oldest high-level programming language still in common use, afterFortran.
 
 That is an excerpt from wiki page about [Lisp](https://en.wikipedia.org/wiki/Lisp_(programming_language) programming language. Throughout so many years so many programmers felt in love with Lisp again and again. There is some magic in that specified language, it just looks completely different comparing to almost any other language. It's dynamic and functional, considered as a scripting language, favoring immutable data structures and recursion. REPL (read-evaluate-print-loop) support is almost legendary.
 
@@ -34,9 +34,11 @@ var throww = message => { throw new Error(message); };
 ```
 
 In general, functions like `map, filter, reduce` working with collections were introduced by Lisp and there are the part of standard library. We will implement them from scratch, that's way imported functions from powerseq are named with `_` postfix. The standard `throw` keyword in JS a statement (not expression - it's not returning any value), that's way function `throww` was introduced - calling a function is an expression. JavaScript and Lisp are dynamic. It's very easy to pass a function argument with invalid data type and  `wrongArgType` function helps tracking such mistakes. It's 
-a little magical, it always throws an error with message text including the name of function calling our `wrongArgType`.
+a little magical, it always throws an error with message text including the name of function calling our `wrongArgType`. 
 
-## Global variables
+## Syntax, global variables, builtin types
+
+Not many programming languages support something like "global state" or "environment". It's like a map of variables available everywhere in code where we can add, remove, change and access any variables at any time. 
 
 ```scheme
 (def first-name "marcin")
@@ -48,8 +50,11 @@ var firstName = "marcin";
 console.log("my name is:", firstName);
 ```
 
+This is the first code snippet of Lisp. The syntax looks more like human readable text data format (JSON or XML) then a typical programming language. Any piece of Lisp code looks like this `(def first-name "marcin")` , it's a list of items where the first item specifies the type of operation that is performed. In our example, `def` means "define global variable" with a name `first-name` and a value `"marcin"`. In JS we can also define global variable directly inside a script put on a website, as an opposite to variables inside functions which are treated as local variables. JS is dynamic like Lisp, it has data types like `number`, `string`, `boolean` , ... objects and collections. Exactly the same as Lisp. In dynamic languages we don't specify the types explicitly next to variables oraz function parameters, it's like specifying type `object` everywhere in statically typed languages like Java, C# or Go. But the types exists, they define a set of correct values (`1`, `2.2`, ... is a `number`, `"marcin"` is a `string`) and operations that can be performed with them (`+` operator can be used with `number` or `string`, but cannot be used with `boolean`).
 
-#### First-class function
+## First-class functions
+
+JS was created in 1995 and it was one of the first programming languages officially not considered as "functional" supporting "first-class functions". In object oriented programming term "method" is mostly used when we think about "function". Method is a just function defined in context of some type and later executed with combination of some object (concrete instance of type. But we would like to treat a function as a regular type like `number` or `string`. We would like to define a variable of function type, store it as an item inside some collection, and pass into or return from the other function. And all of that without connection to any type or object. Additionally, we would like to have ability to define a anonymous functions (aka "lambda expressions"), just by specifying function signature and body. Both JS and Lisp support that.
 
 ```scheme
 (def add
@@ -67,8 +72,11 @@ add(1, 2);
 ((a, b) => a + b)(1, 2);
 ```
 
+`fn` symbol means that a new function is defined, it takes 2 arguments `a` and `b` and returns sum of them. After definition of `add` function,  we can place `add` as a first symbol in the list representing Lisp code, `(add 1 2)` executes our function passing values `1` and `2`. This is a quite unique feature of Lisp, we can extends "keyword" used in programming language. In some sense, there is no difference between `def`, `fn`, ... and our custom function called `add`. As we said before, the first item in the list represent performed operation, here `((fn [a b] (+ a b)) 10 2)`  is a completely valid code, often called "Immediately Invoked Function Expression" (IIFE).  
 
-#### Function definition, defn macro
+## defn, variadic functions, comments
+
+It's too early to talk about macros in Lisp in details, so let's only say that we can define a function in special way using `defn` symbol. It's just a shortcut, instead of `(def add (fn [a b] (+ a b)))` we can write `(defn add [a b] (+ a b))`. Similarly, from the beginning of JS functions were defined using `function` keyword.
 
 ```scheme
 (defn add [a b]
@@ -83,25 +91,7 @@ function add(a, b) {
 }
 ```
 
-
-#### Macros
-
-```scheme
-(def forms-1 '(/ (+ 10 5) 3))
-
-(let [[op-1 [op-2 a b] c] forms-1]
-  (println "operators:" op-1 op-2) ;; operators: / +
-  (println "values: " a b c) ;; values:  10 5 3
-  `(/ ~a ~b)) ;; => 2
-```
-
-```js
-var a = 10;
-var b = 5;
-eval(`${a} / ${b}`);
-```
-
-#### Variadic functions, comments
+Variadic functions allows to handle variable number of arguments. For instance, instead of passing exactly 2 arguments we can pass 2 or more arguments. 
 
 ```scheme
 (defn add-at-least-2
@@ -119,7 +109,11 @@ function addAtLeast2(a, b, ...restArgs) {
 }
 ```
 
-#### Control flow (if/then/else, variables, code blocks, simple loops)
+This feature is supported not only in JS but in almost all other existing programming languages. `&` symbol means that the following `rest-args` parameter will be a collection type. You can probably guess that calling`(apply + rest-args)` just sums up all items, but it will explained later. Optional function comments are defined just after the name of the function.
+
+## Control flow (if/then/else, variables, code blocks, simple loops)
+
+Now let's talk about a typical control flow constructs like local variable, conditions, loops. 
 
 ```scheme
 (defn func-1 [a b]
@@ -162,50 +156,12 @@ function func1(a, b) {
 }
 ```
 
+It is hard to believe that programmers would like to write the code this way,  all that closing brackets `))))`  at the end. To be honest, I wrote some code in Clojure, with tools like formatters, linters, ... and  vs code editor, and very fast you can get used to.  In most cases, the programmer uses only few "builtin keywords" like `let, if, do, loop`, that's all. Brackets gives us a chance to nest some code structure inside the other code structure. For instance, if/then/else requires 3 parts `(if (> a b) a (+ b 10))`. The crucial details here is that each part of the code like `(... )` is an expression, so in contrast to statement it always returns some value. We can very easy compose smaller expressions in the bigger ones. It's one of the key pillars of functional programming, 
 
-#### 'apply' function
 
-```scheme
-(apply add [1 2]) ;; => 3
-(apply * [2 3]) ;; => 6
-```
+## Built-in functions
 
-```js
-add.apply(null, [1, 2]);
-```
-
-#### 'partial' function
-
-```scheme
-(def increment
-  (partial add 1))
-(increment 10) ;; => 11
-((partial add 1) 10) ;; => 11
-```
-
-```js
-var inc = add.bind(null, 1);
-inc(10); // => 11
-add.bind(null, 1)(10); // => 11
-```
-
-#### 'comp' function (function composition)
-
-```scheme
-(def increment-twice-then-to-string
-  (comp str inc increment))
-
-(increment-twice-then-to-string 10) ;; => "12"
-```
-
-```js
-var comp = (...funcs) => arg => funcs.reduceRight((a, f) => f(a), arg);
-
-var incrementTwiceThenToString = comp(str, inc, inc);
-incrementTwiceThenToString(10); // => "12"
-```
-
-#### Built-in functions
+Next to the small number of "builtin keywords" like  `let, if, do, loop`, there are many small helper functions. In a "typical" programming language like JS, we think in terms of builtin operators like `+, -, >, ==, &&, ||` and existing functions like `parseInt, console.log, JSON.parse, Math.max`. In Lisp there is no difference between keywords, operators or functions, there are used in exactly the same way. Below you can find a list of standard builtin functions also implemented in JS. They could be grouped in categories: predicates like`nil?`or`string?`, arithmetic and logic operators like `+` or `*`, math functions like`inc` or `dec`, functions working with functions like `identity` or `constantly`, ... 
 
 ```scheme
 (nil? nil) ;; => true
@@ -279,13 +235,97 @@ var complement = f => (...args) => !f(...args);
 (2 > 1) && "tata".endsWith("ta") && false; // => false
 (2 > 1) || "tata".endsWith("ta") || false; // => true
 
-// ... in JS "" and 0 are also falshy
+// ... in JS "" and 0 are also falsy
 "" && 0; // => ""
 "" && 0 && false; // => ""
 "" && 0 && null; // => ""
 
 "" || 0; // => 0
 ```
+
+Characters like `?` or `-` can be used as a part of identifiers, for instance variable or function name.  There is also a naming convention for predicates (functions returning `boolean` values) with `?` at the end, like `(nil? ..)` or `(even? ...)`. 
+
+Lisp uses `nil` values which are the same as `null` in many other programming languages. But there is also an additional concept called "falsy and truthy values", which I encountered so far only in JS. Boolean values are mostly used inside conditions for instance in `if` or `while` statements, "falsy and truthy values" mean that an expression representing condition does not have to be of type `boolean`. For instance, in JS values like `false`, `null`, `undefined`, `0`, `""` are treated as a "true" condition, and an expressions of any other type are "false".  That's why very often we can find the code like `var city = (person && person.address && person.address.city) || ""` , meaning "define new variable `city`  with value of `person.address.city` but set empty string `""` if `person` or `person.address` or `person.address.city` don't exists. In Clojure dialect of List "falsy and truthy values" work similar to JS, but not exactly the same. According to [the documentation](https://clojure.org/guides/learn/flow#_truth) : " In Clojure, all values are logically true or false. The only "false" values are `false` and `nil` - all other values are logically true".
+
+The last interesting detail worth mentioning here is that many of the functions above are variadic functions. Calling them is quite convenient, because we can write conditions using expressions like `(and ... (or ... ... ...) ...)`, or arithmetic operations like `(+ 5 10 15)` , `(min 5 10 15)`. We will see further that the same functions can be called not only for fixed number of items but also for collection of items. We can sum all numbers stored in variable call `my-numbers` by calling `(apply + my-numbers)`.
+
+
+## Summary 
+
+At this point you have some basic understanding of Lisp language. I hope you can spot many similarities with JS, despite the syntax of course. Both of them are dynamic, support basic data types and even first-call functions. But they also support not so commonly known features like: global variables or "falsy and truthy values". 
+
+
+
+## Introduction 
+
+We already know how to define functions using basic types like `string`, `boolean` or `nil` in Lisp.  The syntax of the language is very different from the other programming languages but commonly used building block like variables, conditions and loops are the same. One of the main features of functional programming is treating functions as values. We can pass them as arguments or return from the other functions, there are names "heiher-
+
+#### 'apply' function
+
+```scheme
+(apply add [1 2]) ;; => 3
+(apply * [2 3]) ;; => 6
+```
+
+```js
+add.apply(null, [1, 2]);
+```
+
+#### 'partial' function
+
+```scheme
+(def increment
+  (partial add 1))
+(increment 10) ;; => 11
+((partial add 1) 10) ;; => 11
+```
+
+```js
+var inc = add.bind(null, 1);
+inc(10); // => 11
+add.bind(null, 1)(10); // => 11
+```
+
+#### 'comp' function (function composition)
+
+```scheme
+(def increment-twice-then-to-string
+  (comp str inc increment))
+
+(increment-twice-then-to-string 10) ;; => "12"
+```
+
+```js
+var comp = (...funcs) => arg => funcs.reduceRight((a, f) => f(a), arg);
+
+var incrementTwiceThenToString = comp(str, inc, inc);
+incrementTwiceThenToString(10); // => "12"
+```
+
+
+
+
+
+## Macros
+
+```scheme
+(def forms-1 '(/ (+ 10 5) 3))
+
+(let [[op-1 [op-2 a b] c] forms-1]
+  (println "operators:" op-1 op-2) ;; operators: / +
+  (println "values: " a b c) ;; values:  10 5 3
+  `(/ ~a ~b)) ;; => 2
+```
+
+```js
+var a = 10;
+var b = 5;
+eval(`${a} / ${b}`);
+```
+
+
+
+
 
 #### Immutable singly-linked list
 
@@ -835,4 +875,3 @@ function comment() {
     puzzle2(text);
 }
 ```
-
