@@ -50,7 +50,7 @@ import (
 // - "alt+shift+enter" - wykonanie komendy 'test function at cursor' ktora uruchamia test w ktorym jestesmy
 
 func main() {
-	executePuzzle("aoc2021/day01_increases", day01_increases.Puzzle1, day01_increases.Puzzle2)
+	executePuzzle("aoc2021/day01_increases", day01_increases.Puzzle1_, day01_increases.Puzzle2_)
 	executePuzzle("aoc2021/day15_graph", day15_graph.Puzzle1, day15_graph.Puzzle2)
 	executePuzzle("aoc2024/day01_distances", day01_distances.Puzzle1, day01_distances.Puzzle2)
 	executePuzzle("aoc2024/day02_reports", day02_reports.Puzzle1, day02_reports.Puzzle2)

@@ -49,16 +49,24 @@ func Puzzle2(input string) string {
 	return fmt.Sprint(result)
 }
 
-// func Puzzle1_(input string) string {
-// 	offset := 1
-// 	data := loadData(input)
-// 	numbers := seq.Of(data...)
-// 	result := countIncreases(numbers)
+// ** the simplest implementation without summing up numbers
 
-// 	lastIndex := len(data) - 1
+func Puzzle_(input string, offset int) string {
+	numbers := loadData(input)
+	lastIndex := len(numbers) - offset
+	counter := 0
+	for i := 0; i < lastIndex; i++ {
+		if numbers[i] < numbers[i+offset] {
+			counter++
+		}
+	}
+	return fmt.Sprint(counter)
+}
 
-// 	for i := 0; i < lastIndex; i++ {
+func Puzzle1_(input string) string {
+	return Puzzle_(input, 1)
+}
 
-// 	}
-// 	return fmt.Sprint(result)
-// }
+func Puzzle2_(input string) string {
+	return Puzzle_(input, 3)
+}
