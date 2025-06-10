@@ -255,12 +255,13 @@ The last interesting detail worth mentioning here is that many of the functions 
 At this point you have some basic understanding of Lisp language. I hope you can spot many similarities with JS, despite the syntax of course. Both of them are dynamic, support basic data types and even first-call functions. But they also support not so commonly known features like: global variables or "falsy and truthy values". 
 
 
-
 ## Introduction 
 
-We already know how to define functions using basic types like `string`, `boolean` or `nil` in Lisp.  The syntax of the language is very different from the other programming languages but commonly used building block like variables, conditions and loops are the same. One of the main features of functional programming is treating functions as values. We can pass them as arguments or return from the other functions, there are names "heiher-
+We already know how to define functions using basic types like `string`, `boolean` or `nil` in Lisp.  The syntax of the language is very different from the other programming languages but commonly used building block like variables, conditions and loops are the same. One of the main features of functional programming is treating functions as values. We can pass them as arguments to the function or return from the function. Functions doing that are also called "higher order functions". Let's go through some basic 
 
 #### 'apply' function
+
+`apply` function takes two arguments: a function and collection of values. It calls the function passing values as arguments and returns result.
 
 ```scheme
 (apply add [1 2]) ;; => 3
@@ -271,7 +272,11 @@ We already know how to define functions using basic types like `string`, `boolea
 add.apply(null, [1, 2]);
 ```
 
+JavaScript function is a regular object so it can contain some members. One of them is `apply` method, its behavior is almost the same as Clojure `apply` function presented above. The difference is an additional argument `null`. In object oriented style of programming (OOP) method is just a function called in the context of some additional object,  for instance `firstName.substring(1)` is just a function `substring` of builtin type `string`. In functional or procedural programming languages we pass all data as arguments, like `substring(firstName, 1)`. Both JS and Lisp treats functions as values. We can create an variable referencing a method `const substr = firstName.substring` and execute it later. Execution of `substr.apply("JavaScript", [1])`  returns `"avaScrip"`. The first argument of `apply` function represents "this" object, `substring` function was called in context of `"JavaScript"` instead of `firstName` variable.
+
 #### 'partial' function
+
+`partial` is yet another builtin function working with function values. There is a term "partial function application" in functional languages and it means "calling" a function without passing all arguments. In such case the function can not be executed, the new one is created. All passed arguments are bound and the returned function expects only the missing arguments. Let's say we have `add` function adding two number, we can easily create a new function `increment` incrementing by 1 passed argument. 
 
 ```scheme
 (def increment
@@ -285,12 +290,16 @@ var inc = add.bind(null, 1);
 inc(10); // => 11
 add.bind(null, 1)(10); // => 11
 ```
+Again, JavaScript function object contains method `bind` working the same way. Analogously to `apply` function, the first argument is "this" object.
 
 #### 'comp' function (function composition)
 
+The next `comp` function implements a math term "function composition". We will use a simple example showing how it works. Let's say we have `increment` function and also `str` function converting any number into string. Now we would like to create a new function taking a numbers and returning a string where inside the implementation all functions are execute one by one like this `arg => str(increment(increment(arg)))`
+
+
 ```scheme
 (def increment-twice-then-to-string
-  (comp str inc increment))
+  (comp str increment increment))
 
 (increment-twice-then-to-string 10) ;; => "12"
 ```
@@ -298,12 +307,11 @@ add.bind(null, 1)(10); // => 11
 ```js
 var comp = (...funcs) => arg => funcs.reduceRight((a, f) => f(a), arg);
 
-var incrementTwiceThenToString = comp(str, inc, inc);
+var incrementTwiceThenToString = comp(str, increment, increment);
 incrementTwiceThenToString(10); // => "12"
 ```
 
-
-
+This time there is no builtin function in JavaScript, but such a function can be easily implemented using `reduceRight` array method. Many programming languages provide builtin function or operator supporting function composition. For instance, in Haskell language `.` operator is used and that corresponds to [the math dot notation](https://en.wikipedia.org/wiki/Function_composition). Our previous example would look like this `str . increment . increment` in Haskell. The order of functions seams unnatural but it simulates the math notation. 
 
 
 ## Macros
