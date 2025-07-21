@@ -313,29 +313,15 @@ incrementTwiceThenToString(10); // => "12"
 
 This time there is no builtin function in JavaScript, but such a function can be easily implemented using `reduceRight` array method. Many programming languages provide builtin function or operator supporting function composition. For instance, in Haskell language `.` operator is used and that corresponds to [the math dot notation](https://en.wikipedia.org/wiki/Function_composition). Our previous example would look like this `str . increment . increment` in Haskell. The order of functions seams unnatural but it simulates the math notation. 
 
-
-## Macros
-
-```scheme
-(def forms-1 '(/ (+ 10 5) 3))
-
-(let [[op-1 [op-2 a b] c] forms-1]
-  (println "operators:" op-1 op-2) ;; operators: / +
-  (println "values: " a b c) ;; values:  10 5 3
-  `(/ ~a ~b)) ;; => 2
-```
-
-```js
-var a = 10;
-var b = 5;
-eval(`${a} / ${b}`);
-```
-
-
-
-
-
 #### Immutable singly-linked list
+
+So far we have seen only simple data types like `string`, `number` oraz `boolean`, now let's talk about collections. In the realm of functional programming the most important and also representable type of collection is immutable singly-linked list. The list consists of nodes, each node holds two members: a single value of some type stored inside a collection and reference to the next node. The `nil` value presents empty list. The list itself is just a reference to the first node in the list. It is a recursive data structure, meaning it's defined in terms of itself.  Fo instance, the TypeScript type definition could look like this `type List<T> = { readonly head: T; readonly tail: List<T> | null;}`. When we talk about linked list, we very often use terms like "head" (first item) and "tail" (items without first item).
+
+**[wyjasnić persitant data structure na przykładzie lined liest]**
+
+Very important feature of functional data structure is immutability, we can not change a collection after creation. Every time we want to "change" the collection (insert, update, delete items), we just create a new instance without changing an existing once. There are many names describing this behavior: "persistent data structures",  "copy on write", "non-destructive mutations". In case of linked list, some operations (using the first item) are simple and efficient, but the other requires copying of the whole list. Adding a new item at the beginning creates a node node pointing to an existing list, removing first item returns tail of the list. But inserting a new item in the middle requires copying of all items before inserted item. 
+
+The are two ways of creating linked list in Clojure: a helper function `(list 1 2 3)` and a special syntax `(list 1 2 3)`. We can also create list by adding new element at the beginning `(cons 1 (cons 2 '()))`. Of course each item of the list can be of a different data type. Lists like all data types in functional programming languages ares compared "by value", not "by reference". `first` function returns "head", for`(first '(1 2 3))` it would be  `1`. `rest`funtion returns "tail", for `(rest '(1 2 3))` it would be list `'(2 3)`. 
 
 ```scheme
 (def empty-list-1 '())
@@ -774,6 +760,26 @@ pipe(
 
 (sum-numbers-with-tail-loop '(1 2 3))
 ```
+
+
+
+## Macros
+
+```scheme
+(def forms-1 '(/ (+ 10 5) 3))
+
+(let [[op-1 [op-2 a b] c] forms-1]
+  (println "operators:" op-1 op-2) ;; operators: / +
+  (println "values: " a b c) ;; values:  10 5 3
+  `(/ ~a ~b)) ;; => 2
+```
+
+```js
+var a = 10;
+var b = 5;
+eval(`${a} / ${b}`);
+```
+
 
 
 #### Advent Of Code 2022 Day 1 
