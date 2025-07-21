@@ -31,7 +31,7 @@ func TestBuildRouteMap(t *testing.T) {
 func TestPuzzle1(t *testing.T) {
 	input := utils.ReadTextFile("./data__.txt")
 	r := Puzzle1(input)
-	// fmt.Println(r)
+	//fmt.Println(r)
 	_ = r
 	//assert.Equal(t, "6", r)
 }

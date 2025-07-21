@@ -2,6 +2,7 @@ package day20_cheating
 
 import (
 	"aoc/utils"
+	"fmt"
 	"iter"
 	"strings"
 )
@@ -90,7 +91,8 @@ func Puzzle1(input string) string {
 						saved := utils.Abs(steps1, steps2) - 2
 						cheatsByPoints[Point{x, y}] = saved
 						// fmt.Println(Point{x, y}, saved)
-						cheatsHistogram[saved] = cheatsHistogram[saved] + 1
+						//cheatsHistogram[saved] = cheatsHistogram[saved] + 1
+						cheatsHistogram[saved] += 1
 						continue
 					}
 				}
@@ -100,7 +102,10 @@ func Puzzle1(input string) string {
 						saved := utils.Abs(steps1, steps2) - 2
 						cheatsByPoints[Point{x, y}] = saved
 						// fmt.Println(Point{x, y}, saved)
-						cheatsHistogram[saved] = cheatsHistogram[saved] + 1
+						//cheatsHistogram[saved] = cheatsHistogram[saved] + 1
+						cheatsHistogram[saved] += 1
+
+						// cheatsHistogram[saved] += 1 ??
 					}
 				}
 			}
@@ -117,7 +122,7 @@ func Puzzle1(input string) string {
 		}
 	}
 
-	// fmt.Println(sum)
+	fmt.Println(sum)
 
 	// a := cheatsByPoints[Point{8, 1}]  // 12
 	// b := cheatsByPoints[Point{10, 7}] // 20
@@ -143,7 +148,7 @@ func getNeighbours(data Data, point Point) iter.Seq[Point] {
 		for _, m := range allMoves {
 			if (point.x == 0 && m.x == -1) || (point.y == 0 && m.y == -1) ||
 				(point.x == data.size-1 && m.x == 1) || (point.y == data.size-1 && m.y == 1) {
-				continue // move of bounds, skip it
+				continue // move out of bounds, skip it
 			}
 
 			if !yield(movePoint(point, m)) {
