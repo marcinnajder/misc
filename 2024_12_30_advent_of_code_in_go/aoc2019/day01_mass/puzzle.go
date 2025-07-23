@@ -2,49 +2,42 @@ package day01_mass
 
 import (
 	"aoc/utils"
+	"strconv"
 )
 
 func loadData(input string) []int {
 	return utils.ParseIntsWithFields(input)
 }
 
-// func loadDataExpanded(input string) Data {
-// 	grid := utils.ParseLinesOfIntsGrid(input)
-// 	size := len(grid)
+type FuelCounter func(int) int
 
-// 	newSize := 5 * size
-// 	newGrid := make([][]int, newSize)
+func Puzzle(input string, counter FuelCounter) string {
+	numbers := loadData(input)
+	sum := 0
+	for _, n := range numbers {
+		val := counter(n)
+		//fmt.Println(val)
+		sum += val
+	}
+	return strconv.Itoa(sum)
+}
 
-// 	for i := range newSize {
-// 		newGrid[i] = make([]int, newSize)
-// 		for j := range newSize {
-// 			val := (grid[i%size][j%size] + (i / size) + (j / size)) % 9
-// 			newGrid[i][j] = utils.If(val == 0, 9, val)
-// 		}
-// 	}
-
-// 	graph := utils.BuildGraph(newGrid, newSize)
-// 	return Data{graph, newSize}
-// }
+func countOnce(n int) int {
+	return n/3 - 2
+}
 
 func Puzzle1(input string) string {
-	return "input"
+	return Puzzle(input, countOnce)
+}
+
+func countUpToZero(n int) int {
+	val := countOnce(n)
+	if val <= 0 {
+		return 0
+	}
+	return val + countUpToZero(val)
 }
 
 func Puzzle2(input string) string {
-	return "input"
+	return Puzzle(input, countUpToZero)
 }
-
-// func Puzzle2(input string) string {
-// 	return Puzzle(loadDataExpanded(input))
-// }
-
-// // func expandData(data Data) Data {
-
-// // 	newData := make([][])
-// // 	return data
-// // }
-
-// // func Puzzle2(input string) string {
-// // 	return Puzzle(input)
-// // }

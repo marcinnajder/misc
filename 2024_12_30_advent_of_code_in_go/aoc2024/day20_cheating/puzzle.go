@@ -88,7 +88,7 @@ func Puzzle1(input string) string {
 
 				if steps1, ok1 := routeMap[Point{x - 1, y}]; ok1 {
 					if steps2, ok2 := routeMap[Point{x + 1, y}]; ok2 {
-						saved := utils.Abs(steps1, steps2) - 2
+						saved := utils.AbsDiff(steps1, steps2) - 2
 						cheatsByPoints[Point{x, y}] = saved
 						// fmt.Println(Point{x, y}, saved)
 						//cheatsHistogram[saved] = cheatsHistogram[saved] + 1
@@ -99,7 +99,7 @@ func Puzzle1(input string) string {
 
 				if steps1, ok1 := routeMap[Point{x, y + 1}]; ok1 {
 					if steps2, ok2 := routeMap[Point{x, y - 1}]; ok2 {
-						saved := utils.Abs(steps1, steps2) - 2
+						saved := utils.AbsDiff(steps1, steps2) - 2
 						cheatsByPoints[Point{x, y}] = saved
 						// fmt.Println(Point{x, y}, saved)
 						//cheatsHistogram[saved] = cheatsHistogram[saved] + 1
