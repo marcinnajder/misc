@@ -188,3 +188,72 @@ func Puzzle2(input string) string {
 			line2.steps + utils.AbsDiff(line2.r.from, line1.pos)
 	})
 }
+
+// ** alternative implementation
+// - lines of the first snake are still sorted, but we are not searching them from scratch for each next line
+// - we hold "current lines" (each per orientation) and moving them according to the movement of the second snake
+// - performance should be little bit better ;)
+type State struct {
+	lines []Line
+	index int // index of current line
+}
+
+func Puzzle_(input string, valueFunc func(Point, Line, Line) int) string {
+	origin := Point{0, 0} // works for any origin
+	moves1, moves2 := loadData(input)
+
+	lines := map[bool]*State{ // pointer to struct :) to allow modifications without copying
+		false: {nil, -1},
+		true:  {nil, -1},
+	}
+
+	for line := range walk(moves1, origin) {
+		state := lines[line.isHorizontal]
+		state.lines = append(state.lines, line)
+	}
+
+	// sort in place
+	slices.SortFunc(lines[true].lines, compareLineByPos)
+	slices.SortFunc(lines[false].lines, compareLineByPos)
+
+	minValue := math.MaxInt
+	for line2 := range walk(moves2, origin) {
+		state := lines[!line2.isHorizontal]
+		dir := cmp.Compare(line2.r.to, line2.r.from) // 1 - forward, -1 - backward
+		end := utils.If(dir == 1, len(state.lines)-1, 0)
+		start := utils.If(dir == 1, 0, len(state.lines)-1)
+
+		// set the "current line" (line in range), only if not already set
+		if state.index == -1 {
+			for i := start; cmp.Compare(i, end) != dir; /*If(dir == 1, i <= end, i >= end)*/ i += dir {
+				line1 := state.lines[i]
+				if line2.r.contains(line1.pos) {
+					state.index = i
+					break
+				}
+			}
+		}
+
+		if state.index != -1 {
+			for i := state.index; cmp.Compare(i, end) != dir; i += dir {
+				line1 := state.lines[i]
+
+				// scan lines until range is missed
+				if cmp.Compare(line1.pos, line2.r.to) == dir /*If(dir == 1, line1.pos > line2.r.to, line1.pos < line2.r.to)*/ {
+					break
+				}
+
+				state.index = i // set new current index
+
+				if line1.r.contains(line2.pos) && line2.r.contains(line1.pos) { // line crossing
+					value := valueFunc(origin, line1, line2)
+					if value > 0 && value < minValue {
+						minValue = value
+					}
+				}
+			}
+		}
+	}
+
+	return strconv.Itoa(minValue)
+}
