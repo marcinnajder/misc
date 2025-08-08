@@ -63,7 +63,7 @@ func TestPuzzle2(t *testing.T) {
 	}
 }
 
-func TestFindOverlappingLines(t *testing.T) {
+func TestFindCrossingLines(t *testing.T) {
 
 	// vertical lines in 4 columns (0, 5, 10 ,15) with a different heights
 	lines := []Line{
@@ -77,10 +77,10 @@ func TestFindOverlappingLines(t *testing.T) {
 		for i := range 2 {
 			var actual []Line
 			if i == 0 {
-				actual = slices.Collect(findOverlappingLines(lines, line))
+				actual = slices.Collect(findCrossingLines(lines, line))
 			} else {
 				linesSorted := slices.SortedFunc(slices.Values(lines), compareLineByPos)
-				actual = slices.Collect(findOverlappingLinesOrdered(linesSorted, line))
+				actual = slices.Collect(findCrossingLinesOrdered(linesSorted, line))
 			}
 			slices.SortFunc(actual, compareLineByPos)
 			assert.Equal(t, expected, actual)

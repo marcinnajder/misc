@@ -14,3 +14,8 @@ func TestParseInts(t *testing.T) {
 func TestParseIntsLines(t *testing.T) {
 	assert.Equal(t, [][]int{{1, 22}, {333}}, ParseLinesOfInts("  1  22  \n 333  "))
 }
+
+func TestParseDigits(t *testing.T) {
+	assert.Equal(t, []int{1, 2, 3}, ParseDigits("123"))
+	assert.Equal(t, []int{}, ParseDigits(""))
+}

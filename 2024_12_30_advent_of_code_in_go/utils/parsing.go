@@ -17,6 +17,14 @@ func parseInts(fields []string) []int {
 	return numbers
 }
 
+func ParseDigits(text string) []int {
+	result := make([]int, len(text))
+	for i, r := range text {
+		result[i], _ = strconv.Atoi(string(r))
+	}
+	return result
+}
+
 func ParseIntsWithFields(text string) []int {
 	return parseInts(strings.Fields(text))
 }

@@ -54,6 +54,10 @@ func (r Range) contains(pos int) bool {
 	return pos >= r.to && pos <= r.from
 }
 
+func (line1 Line) isCrossing(line2 Line) bool {
+	return line1.r.contains(line2.pos) && line2.r.contains(line1.pos)
+}
+
 func walk(moves []Move, origin Point) iter.Seq[Line] {
 	return func(yield func(Line) bool) {
 		var r Range
@@ -80,10 +84,10 @@ func walk(moves []Move, origin Point) iter.Seq[Line] {
 	}
 }
 
-func findOverlappingLines(lines []Line, line2 Line) iter.Seq[Line] {
+func findCrossingLines(lines []Line, line2 Line) iter.Seq[Line] {
 	return func(yield func(Line) bool) {
 		for _, line1 := range lines { // inefficient scanning of all lines
-			if line2.r.contains(line1.pos) && line1.r.contains(line2.pos) {
+			if line1.isCrossing(line2) {
 				if !yield(line1) {
 					return
 				}
@@ -92,7 +96,7 @@ func findOverlappingLines(lines []Line, line2 Line) iter.Seq[Line] {
 	}
 }
 
-func findOverlappingLinesOrdered(lines1 []Line, line2 Line) iter.Seq[Line] {
+func findCrossingLinesOrdered(lines1 []Line, line2 Line) iter.Seq[Line] {
 	return func(yield func(Line) bool) {
 		// find any line crossing searched line2
 		foundIndex, found := slices.BinarySearchFunc(lines1, line2, func(l1, l2 Line) int {
@@ -136,7 +140,7 @@ func compareLineByPos(line1, line2 Line) int {
 
 var sortLines = true // binary search sorted list instead of full scanning for better performance
 
-type FindOverlappingFunc func(lines []Line, line2 Line) iter.Seq[Line]
+type FindCrossingFunc func(lines []Line, line2 Line) iter.Seq[Line]
 
 func Puzzle(input string, valueFunc func(Point, Line, Line) int) string {
 	origin := Point{0, 0} // works for any origin
@@ -152,19 +156,19 @@ func Puzzle(input string, valueFunc func(Point, Line, Line) int) string {
 		}
 	}
 
-	var findOverlapping FindOverlappingFunc
+	var findCrossing FindCrossingFunc
 	if sortLines { // two alternative implementations
 		// sort in place
 		slices.SortFunc(horizonalLines, compareLineByPos)
 		slices.SortFunc(verticalLines, compareLineByPos)
-		findOverlapping = findOverlappingLinesOrdered
+		findCrossing = findCrossingLinesOrdered
 	} else {
-		findOverlapping = findOverlappingLines
+		findCrossing = findCrossingLines
 	}
 
 	minValue := math.MaxInt
 	for line2 := range walk(moves2, origin) {
-		for line1 := range findOverlapping(utils.If(line2.isHorizontal, verticalLines, horizonalLines), line2) {
+		for line1 := range findCrossing(utils.If(line2.isHorizontal, verticalLines, horizonalLines), line2) {
 			value := valueFunc(origin, line1, line2)
 			if value > 0 && value < minValue {
 				minValue = value
@@ -245,7 +249,7 @@ func Puzzle_(input string, valueFunc func(Point, Line, Line) int) string {
 
 				state.index = i // set new current index
 
-				if line1.r.contains(line2.pos) && line2.r.contains(line1.pos) { // line crossing
+				if line1.isCrossing(line2) {
 					value := valueFunc(origin, line1, line2)
 					if value > 0 && value < minValue {
 						minValue = value
