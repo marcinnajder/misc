@@ -3,24 +3,8 @@ open System.IO
 open System.Text.RegularExpressions
 open System.Xml.Linq
 
-
-// let slnFilePath = "\n\n...... put sln file path here ......\n\n"
-// let slnFilePath = "/Volumes/data/gitlab/mednote2/comarch.mednote.2.0/src/server/src/Comarch.MedNote.sln"
-// let slnFilePath = "/Volumes/data/github/FunPizzaShop/FunPizzaShop.sln"
-// let slnFilePath = "/Volumes/data/github/MyDataBot/MyDataBot.sln"
-//let slnFilePath = "/Volumes/data/github/eShop/eShop.sln" // eshop mikroserwisowy pelny
-// let slnFilePath = "/Volumes/data/github/eShopOnWeb/eShopOnWeb.sln" // eshop web
-// let slnFilePath = "/Volumes/data/github/aspire-samples/samples/AspireShop/AspireShop.sln" // eshop mikroserwisowy jako przyklad aspire
-let slnFilePath = "/Volumes/data/bitbucket/kanban.microservices/Kanban.Microservices.sln"
-// let slnFilePath = "/Volumes/data/Kanban/Kanban.sln"
-
-
-
-
-
-
-// let slnFilePath = "/Volumes/data/bitbucket/kanban.microservices/Kanban.Microservices.sln"
-
+let args = fsi.CommandLineArgs
+let slnFilePath = if args.Length > 1 then args.[1] else "/Volumes/data/github/dotnet9eshop/eShop/eShop.sln"
 
 type Project = { Path: string; ProjectRefs: string []; PackageRefs: string [] }
 
@@ -33,7 +17,7 @@ let joinPath folderPath filePath = Path.GetFullPath(Path.Combine(folderPath, adj
 let parseSolutionLine line =
     Regex.Matches(line, "\"(.+?)\"")
     |> Seq.cast<Match>
-    |> Seq.map (fun m -> m.Value.Trim('"'))
+    |> Seq.map (fun m -> m.Value.Trim("\""[0]))
     |> Seq.tryPick (fun s -> if s.EndsWith(".fsproj") || s.EndsWith(".csproj") then Some s else None)
 
 let parseSolutionFile (solutionFilePath: string) =
@@ -120,3 +104,15 @@ Solution file: {slnFilePath}
 """
 
 printfn "%s" content
+
+
+// let slnFilePath = "\n\n...... put sln file path here ......\n\n"
+// let slnFilePath = "/Volumes/data/gitlab/mednote2/comarch.mednote.2.0/src/server/src/Comarch.MedNote.sln"
+// let slnFilePath = "/Volumes/data/github/FunPizzaShop/FunPizzaShop.sln"
+// let slnFilePath = "/Volumes/data/github/MyDataBot/MyDataBot.sln"
+// let slnFilePath = "/Volumes/data/github/eShop/eShop.sln" // eshop mikroserwisowy pelny
+// let slnFilePath = "/Volumes/data/github/eShopOnWeb/eShopOnWeb.sln" // eshop web
+// let slnFilePath = "/Volumes/data/github/aspire-samples/samples/AspireShop/AspireShop.sln" // eshop mikroserwisowy jako przyklad aspire
+// let slnFilePath = "/Volumes/data/bitbucket/kanban.microservices/Kanban.Microservices.sln"
+// let slnFilePath = "/Volumes/data/Kanban/Kanban.sln"
+// let slnFilePath = "/Volumes/data/bitbucket/kanban.microservices/Kanban.Microservices.sln"
