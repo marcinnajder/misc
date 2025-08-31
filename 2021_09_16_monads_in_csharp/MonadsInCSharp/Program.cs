@@ -1,7 +1,7 @@
 ﻿using MonadsInCSharp;
 using static MonadsInCSharp.Utils;
 
-// Call(() => IOSamples.Test());
+Call(() => IOSamples.Test());
 
 // Call(() => FunctionalConceptsSamples.Currying());
 // Call(() => FunctionalConceptsSamples.PartialFunctionApplication());
@@ -14,9 +14,17 @@ using static MonadsInCSharp.Utils;
 // Call(() => FunctionalConceptsSamples.Lifters());
 
 // Call(() => AsyncMethodBuilderTester.OptionalSpecificTest());
-Call(() => AsyncMethodBuilderTester.OptionalTest());
+// Call(() => AsyncMethodBuilderTester.OptionalDisassembledTest());
+// Call(() => AsyncMethodBuilderTester.OptionalTest());
+// Call(() => AsyncMethodBuilderTester.EnumerableWithTest());
 // Call(() => AsyncMethodBuilderTester.IOlWithAsyncAwaitTest());
 // Call(() => AsyncMethodBuilderTester.TTaskAsyncAwaitTest());
-// Call(() => AsyncMethodBuilderTester.TTaskAsyncAwaitTest());
+// Call(() => AsyncMethodBuilderTester.TaskAsyncAwaitTest());
+
+
+
+
+
+
 
 

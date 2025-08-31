@@ -248,3 +248,167 @@ public class IOMethodBuilder<T>
         }
     }
 }
+// ** IEnumerable **
+public static partial class AwaiterExtensions
+{
+    public static IEnumerableAwaiter<T> GetAwaiter<T>(this IEnumerable<T> monad) => new IEnumerableAwaiter<T>(monad);
+}
+
+internal interface IIEnumerableAwaiter
+{
+    IEnumerable<object> MoveNext(Action moveNext, Func<IEnumerable<object>> getNextMonad);
+}
+
+public class IEnumerableAwaiter<T> : INotifyCompletion, IIEnumerableAwaiter
+{
+    public bool IsCompleted => false;
+    public void OnCompleted(Action continuation) { }
+    protected T result = default!;
+    public T GetResult() => result;
+
+    // ***********************************
+
+    private IEnumerable<T> monad;
+    public IEnumerableAwaiter(IEnumerable<T> monad) => this.monad = monad;
+
+    IEnumerable<object> IIEnumerableAwaiter.MoveNext(Action moveNext, Func<IEnumerable<object>> getNextMonad)
+    {
+        return monad.SelectMany(t =>
+        {
+            result = t;
+            moveNext();
+            return getNextMonad();
+        });
+    }
+}
+
+public class IEnumerableMethodBuilder<T>
+{
+    public void Start<TSM>(ref TSM stateMachine) where TSM : IAsyncStateMachine => stateMachine.MoveNext();
+
+    public void SetStateMachine(IAsyncStateMachine stateMachine) { }
+    public void SetException(Exception exception) { }
+    public void AwaitUnsafeOnCompleted<TA, TSM>(ref TA awaiter, ref TSM stateMachine)
+        where TA : ICriticalNotifyCompletion where TSM : IAsyncStateMachine
+    { }
+
+    // ***********************************
+
+    private bool isFirstCall = true;
+    private IEnumerable<object>? currentTask;
+    public IEnumerable<T>? Task { get; private set; }
+
+    public static IEnumerableMethodBuilder<T> Create() => new IEnumerableMethodBuilder<T>();
+
+    public void AwaitOnCompleted<TA, TSM>(ref TA awaiter, ref TSM stateMachine)
+        where TA : INotifyCompletion where TSM : IAsyncStateMachine
+    {
+        if (awaiter is IIEnumerableAwaiter awaiterE)
+        {
+            var wasFirstCall = isFirstCall;
+            isFirstCall = false;
+
+            currentTask = awaiterE.MoveNext(stateMachine.MoveNext, () => currentTask!);
+
+            if (wasFirstCall)
+            {
+                Task = currentTask.Select(v => (T)v);
+            }
+        }
+    }
+
+    public void SetResult(T result)
+    {
+        if (isFirstCall)
+        {
+            Task = Monad.ReturnE(result);
+        }
+        else
+        {
+            currentTask = Monad.ReturnE<object>(result!);
+        }
+    }
+}
+// ** Task **
+public static partial class AwaiterExtensions
+{
+    public static TaskAwaiter<T> GetAwaiter<T>(this Task<T> monad) => new TaskAwaiter<T>(monad);
+}
+
+internal interface ITaskAwaiter
+{
+    Task<object> MoveNext(Action moveNext, Func<Task<object>> getNextMonad);
+}
+
+public class TaskAwaiter<T> : INotifyCompletion, ITaskAwaiter
+{
+    public bool IsCompleted => false;
+    public void OnCompleted(Action continuation) { }
+    protected T result = default!;
+    public T GetResult() => result;
+
+    // ***********************************
+
+    private Task<T> monad;
+    public TaskAwaiter(Task<T> monad) => this.monad = monad;
+
+    Task<object> ITaskAwaiter.MoveNext(Action moveNext, Func<Task<object>> getNextMonad)
+    {
+        return monad.SelectMany(t =>
+        {
+            result = t;
+            moveNext();
+            return getNextMonad();
+        });
+    }
+}
+
+public class TaskMethodBuilder<T>
+{
+    public void Start<TSM>(ref TSM stateMachine) where TSM : IAsyncStateMachine => stateMachine.MoveNext();
+
+    public void SetStateMachine(IAsyncStateMachine stateMachine) { }
+    public void SetException(Exception exception) { }
+    public void AwaitUnsafeOnCompleted<TA, TSM>(ref TA awaiter, ref TSM stateMachine)
+        where TA : ICriticalNotifyCompletion where TSM : IAsyncStateMachine
+    {
+
+    }
+
+    // ***********************************
+
+    private bool isFirstCall = true;
+    private Task<object>? currentTask;
+    public Task<T>? Task { get; private set; }
+
+    public static TaskMethodBuilder<T> Create() => new TaskMethodBuilder<T>();
+
+    public void AwaitOnCompleted<TA, TSM>(ref TA awaiter, ref TSM stateMachine)
+        where TA : INotifyCompletion where TSM : IAsyncStateMachine
+    {
+        if (awaiter is ITaskAwaiter awaiterT)
+        {
+            var wasFirstCall = isFirstCall;
+            isFirstCall = false;
+
+            currentTask = awaiterT.MoveNext(stateMachine.MoveNext, () => currentTask!);
+
+            if (wasFirstCall)
+            {
+                Task = currentTask.Select(v => (T)v);
+            }
+        }
+    }
+
+    public void SetResult(T result)
+    {
+        if (isFirstCall)
+        {
+            Task = Monad.ReturnT(result);
+        }
+        else
+        {
+            currentTask = Monad.ReturnT<object>(result!);
+        }
+    }
+}

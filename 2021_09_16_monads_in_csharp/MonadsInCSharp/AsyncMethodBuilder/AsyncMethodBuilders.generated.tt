@@ -14,7 +14,7 @@ namespace MonadsInCSharp;
     // - execute T4 tamplate
     // dotnet tool run t4 ./MonadsInCSharp/AsyncMethodBuilder/AsyncMethodBuilders.generated.tt 
 
-    var monadTypes = new [] { ("Optional","O"), ("TTask","TT"), ("IO","IO") };
+    var monadTypes = new [] { ("Optional","O"), ("TTask","TT"), ("IO","IO"), ("IEnumerable","E"), ("Task", "T") };
 
     foreach(var (name, shortcut) in monadTypes)
     {

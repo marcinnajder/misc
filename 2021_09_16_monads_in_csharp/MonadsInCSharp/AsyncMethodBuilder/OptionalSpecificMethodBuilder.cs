@@ -16,6 +16,8 @@ public partial class Optional<T> { }
 //     public OptionalSpecificAwaiter<T> GetAwaiter() => new OptionalSpecificAwaiter<T>(this);
 // }
 
+
+
 /// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- 
 
 internal interface IOptionalSpecificAwaiter
@@ -52,6 +54,7 @@ public class OptionalSpecificMethodBuilder<T>
         }
         else
         {
+
             awaiter.OnCompleted(stateMachine.MoveNext);
         }
     }
@@ -63,22 +66,3 @@ public class OptionalSpecificMethodBuilder<T>
         where TA : ICriticalNotifyCompletion where TSM : IAsyncStateMachine
     { }
 }
-
-
-// https://devblogs.microsoft.com/premier-developer/extending-the-async-methods-in-c/
-
-// - probowalem zaimplementowac 'MethodBuilder' w miare uniwesralnie aby dzialal dla dowolnej monady czyli 
-// aby wykorzystywal metody Select/SelectMany ale nie udalo sie to
-// - problem jest taki ze ze wykonujac Select<T,R>(f) lub SelectMany<T,R>(f) musimy znac 'R` nawet gdy 'f'
-// nigdy nie zostala wywolana. W metodach asynchronicznych z async/await musimy wykonac kod po 'await'
-// aby dodziec sie jaki bedzie rezultat (czyli typ 'R')
-// - ... no nie wiem, moze to sie da jakos zrobic budujac wywolania
-//  m.SelectMany<T,object>(t => MoveNext(t); return PopM().Select(tt => (object) tt)) )
-
-
-// - osobny namespace, aby extension metody 'GetAwaiter' brane byly odpowidnion
-// - ta implementacja jest prosta ale dziala jedynie dla typu Optional<T>, pozostale async method buildery
-// w swojej implementacji korzystaja jedynie z metod moonady (Return,Select,SelectMany) dzieki temu 
-// teoretycznie jest to przepis na wykorzystanie async/await z dowolna monada
-// - nie do konca tak jest ; bo nie dziala monadami gdzie funkcja przekazana do Select/SelectMany
-// bedzie wielokrotnie wolana, czyli IEnumerable<T>, IObservable<T>,.... 

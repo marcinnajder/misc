@@ -1,0 +1,80 @@
+1. implementacja specyficzna
+- probowalem zaimplementowac 'MethodBuilder' w miare uniwesralnie aby dzialal dla dowolnej monady czyli 
+aby wykorzystywal metody Select/SelectMany ale nie udalo sie to
+- problem jest taki ze ze wykonujac Select<T,R>(f) lub SelectMany<T,R>(f) musimy znac 'R` nawet gdy 'f'
+nigdy nie zostala wywolana. W metodach asynchronicznych z async/await musimy wykonac kod po 'await'
+aby dodziec sie jaki bedzie rezultat (czyli typ 'R')
+- <- tego zdania do konca nie rozumiem jak czytam po czasie :/
+- ... no nie wiem, moze to sie da jakos zrobic budujac wywolania
+ m.SelectMany<T,object>(t => MoveNext(t); return PopM().Select(tt => (object) tt)) )
+
+
+2. implementacja dla kazdej monady
+- osobny namespace, aby extension metody 'GetAwaiter' brane byly odpowidnion
+- ta implementacja jest prosta ale dziala jedynie dla typu Optional<T>, pozostale async method buildery
+w swojej implementacji korzystaja jedynie z metod moonady (Return,Select,SelectMany) dzieki temu 
+teoretycznie jest to przepis na wykorzystanie async/await z dowolna monada
+
+
+3. niestety to nie dziala dla kazdej monady :(
+- nie do konca tak jest ; bo nie dziala monadami gdzie funkcja przekazana do Select/SelectMany
+bedzie wielokrotnie wolana, czyli IEnumerable<T>, IObservable<T>,.... 
+- mamy cos takiego "var item = await items" 
+- efekt jest taki ze pierwsze wywolanie metody przekazanej do IEnumerable.SelectMany idzie dalej
+i konczy finalnie  metoda asynchroniczna
+- nagle wykonuje sie drugie wywolanie ktorej powoduje ze metoda asynchroniczna wykonuje sie od nowa
+wiec ponownie wykonuje sie "var item = await items" ...
+- finalnie leci stack overflow :) 
+
+
+4. dla orygonalnego Task<T> tez nie dziala
+- dla tego opakowujacego TTask<T> dziala ok, ale dla oryginalnego Task<T> nie dziala poprawnie
+- generalni szablon t4 generuje wszystko poprawnie dla Task<T>
+- poniewaz Task<T> jest wbudowany w .net, to nie mozemy nad nim umiesci metody
+[AsyncMethodBuilder(typeof(TaskMethodBuilder<>))], tylko musimy nad metoda asynchroniczna
+- dziwne jest to ze jak umiescilem atrybut nad metoda, to stronka https://sharplab.io/ wygenerowala kod maszyny stanow
+ale uzywany byl standardowy AsyncTaskMethodBuilder<> (jakby strnka nie do konca dziala z tym), ale dekompilacja dll
+ILSpy faktycznie korzystala z mojego buildera
+- efekt nie dziala jest nastepujacy
+-- efekt jest taki ze jesli metoda asynchroniczna nie ma zadnego await to nawet to dziala
+-- ale jak jest chodz jeden await to metoda asynchroniczna zwraca od razu "null" zamiast 
+no i potem jak na nim robimy .ContinueWith(...) to leci exception
+- dlaczego sie tak dzieje?
+-- jak debuggowalem to "AwaitOnCompleted" nie jest wykonywane, ale od razu jest wolane property "public TTask<T>? Task"
+faktycznie jest null bo nie zostalo zainicjowane
+-- problem jest taki ze wygenerowany przez kompilator kod C# wykonuje "AwaitSAFEOnCompleted" zamiast "AwaitOnCompleted",
+ktora w moim builderze jest faktycznie pusta i nic nie robi
+-- jak poszuka sie w kodzie kompilatora odpowiedzialnego ze generowania czyli to 
+https://github.com/dotnet/roslyn/blob/d4dab355b96955aca5b4b0ebf6282575fad78ba8/src/Compilers/CSharp/Portable/Lowering/AsyncRewriter/AsyncMethodToStateMachineRewriter.cs
+-- to jesli obiekt awaiter zwrocony przez "monad.GetAwaiter()" zwraca cos co implementuje "ICriticalNotifyCompletion"
+to generowana jest metoda "AwaitSAFEOnCompleted" zamiast "AwaitOnCompleted"
+-- i tutaj jest problem ze klasa Task posiada instancyjna metode .GetAwaiter() ktora zwraca wbudowany "TaskAwaiter"
+i on implementuje faktycznie "ICriticalNotifyCompletion"
+-- "public readonly struct TaskAwaiter : ICriticalNotifyCompletion, INotifyCompletion"
+-- nie bardzo wymusic aby nasza extension metoda .GetAwaiter() byla wolana, w przypadki naszej klasy TTask "TaskAwaiter" nie jest uzywany
+-- teoretycznie mozna dostarczy dedykowana implemenacje "AwaitSAFEOnCompleted" ktora pod spodem jako wykorzystanie
+"AwaitOnCompleted" ale i tak ten kod bedzie musial byc dedykowany do "TaskAwaiter" czy nie bedzie "uniwersalny",
+zaraz dokaldnie ten sam problem wyjdzie z "ValueTask"
+
+
+https://github.com/dotnet/roslyn/blob/d4dab355b96955aca5b4b0ebf6282575fad78ba8/src/Compilers/CSharp/Portable/Lowering/AsyncRewriter/AsyncMethodToStateMachineRewriter.cs
+
+private BoundStatement GenerateAwaitOnCompletedDynamic(LocalSymbol awaiterTemp)
+{
+    //  temp $criticalNotifyCompletedTemp = $awaiterTemp as ICriticalNotifyCompletion
+    //  if ($criticalNotifyCompletedTemp != null) 
+    //  {
+    //    this.builder.AwaitUnsafeOnCompleted<ICriticalNotifyCompletion,TSM>(
+    //      ref $criticalNotifyCompletedTemp, 
+    //      ref this)
+    //  } 
+    //  else 
+    //  {
+    //    temp $notifyCompletionTemp = (INotifyCompletion)$awaiterTemp
+    //    this.builder.AwaitOnCompleted<INotifyCompletion,TSM>(ref $notifyCompletionTemp, ref this)
+    //    free $notifyCompletionTemp
+    //  }
+    //  free $criticalNotifyCompletedTemp
+
+
+

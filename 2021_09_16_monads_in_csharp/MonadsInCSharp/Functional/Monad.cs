@@ -6,14 +6,25 @@ public static class Monad
 {
     // ** Return
 
-    public static Optional<T> ReturnO<T>(this T value) => new Optional<T>(value);
+    public static Optional<T> ReturnO<T>(this T value) => new(value);
     public static Task<T> ReturnT<T>(this T value) => Task.FromResult(value);
     public static T[] ReturnA<T>(this T value) => new[] { value };
     public static IEnumerable<T> ReturnE<T>(this T value) => new[] { value };
     public static IO<T> ReturnIO<T>(this T value) => () => value;
-    public static TTask<T> ReturnTT<T>(this T value) => new TTask<T>(ReturnT(value));
+    public static TTask<T> ReturnTT<T>(this T value) => new(ReturnT(value));
 
     // ** Select, SelectMany, Apply
+
+    public static TTask<R> Select<T, R>(this TTask<T> task, Func<T, R> f)
+        => new(task.Task.Select(f));
+
+    public static TTask<R> SelectMany<T, R>(this TTask<T> task, Func<T, TTask<R>> f)
+        => new(task.Task.SelectMany(x => f(x).Task));
+
+    // public TTask<R> Select<R>(Func<T, R> f) => new(Task.Select(f));
+    // public TTask<R> SelectMany<R>(Func<T, TTask<R>> f) => new(Task.SelectMany(x => f(x).Task));
+
+
 
     // public static IEnumerable<R> Select<T, R>(this IEnumerable<T> enumerable, Func<T, R> f)
     // {
@@ -35,7 +46,10 @@ public static class Monad
     // }
 
     public static Optional<R> Select<T, R>(this Optional<T> optional, Func<T, R> f)
-        => optional.HasValue ? new Optional<R>(f(optional.Value)) : Optional<R>.None;
+        => optional.HasValue ? new(f(optional.Value)) : Optional<R>.None;
+
+    // public static Optional<R> Select2<T, R>(this Optional<T> optional, Func<T, R> f)
+    //     => optional.SelectMany(v => ReturnO(f(v)));
 
     public static Optional<R> SelectMany<T, R>(this Optional<T> optional, Func<T, Optional<R>> f)
         => optional.HasValue ? f(optional.Value) : Optional<R>.None;
@@ -49,7 +63,7 @@ public static class Monad
 
 
     public static Task<R> Select<T, R>(this Task<T> task, Func<T, R> f)
-            => task.ContinueWith(t => f(t.Result));
+        => task.ContinueWith(t => f(t.Result));
 
     public static Task<R> SelectMany<T, R>(this Task<T> task, Func<T, Task<R>> f)
         => task.ContinueWith(t => f(t.Result)).Unwrap();
