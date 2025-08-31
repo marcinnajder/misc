@@ -171,8 +171,9 @@ title: puzzles
 # permalink: /puzzles/
 ---
 
+Below is a list of programming puzzles from [Advent Of Code](https://adventofcode.com/), and [LeetCode](https://leetcode.com/) written in various programming languages (C#, F#, JS, TS, Clojure, Kotlin, Go).
 {aocPuzzlesContent}{eol}{eol}{leetCodePuzzlesContent}"""
 
-let filePath = Path.Join(miscFolderPath, "../marcinnajder.github.io/puzzles.markdown")
+let filePath = Path.Join(miscFolderPath, "../marcinnajder.github.io/puzzles.md")
 File.WriteAllText(filePath, fullContent)
 printfn "nadpisano plik: %s" filePath

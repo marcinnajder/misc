@@ -80,6 +80,7 @@ add.bind(null, 1)(10); // => 11
 // 'comp' function (function composition)
 var comp = (...funcs) => arg => funcs.reduceRight((a, f) => f(a), arg);
 
+var str = (...args) => args.join("");
 var incrementTwiceThenToString = comp(str, inc, inc);
 incrementTwiceThenToString(10); // => "12"
 
@@ -516,3 +517,43 @@ function comment() {
     puzzle1(text);
     puzzle2(text);
 }
+
+
+
+
+function loop(state, body) {
+    return body(state);
+}
+
+function sumNumbersWithTailLoop(numbers) {
+    return loop({ lst: numbers, total: 0 }, function recur({ lst, total }) {
+        return emptyp(lst)
+            ? total
+            : recur({ lst: rest(lst), total: total + first(lst) })
+    });
+}
+
+console.log(sumNumbersWithTailLoop(list(1, 2, 3))); // => 6
+
+
+
+// first(list(1, 2, 3));
+// first(vector(1, 2, 3));
+// first({ name: "marcin" });
+// first(list());
+// [...rest(list(1, 2, 3))];
+// nth(list(1, 2, 3), 1);
+// emptyp(list(1, 2));
+// emptyp(list());
+// emptyp("");
+
+// (defn sum-numbers-with-tail-loop [numbers]
+//   (loop [lst numbers
+//          total 0]
+//     (if
+//      (empty? lst)
+//       total
+//       (let [[head & tail] lst]
+//         (recur tail (+ head total))))))
+
+// (sum-numbers-with-tail-loop '(1 2 3))
