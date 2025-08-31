@@ -1,18 +1,16 @@
-﻿using System.Formats.Asn1;
+﻿using System.ComponentModel.Design;
+using System.Diagnostics.CodeAnalysis;
+using System.Formats.Asn1;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime;
+using System.Security.Cryptography;
 using AlgorithmsAndDataStructures;
 
 
-
-
-
-int[] ints = new int[] { 1, 2, 3, 123312 };
-
-var q = from x in ints where x > 10 select x * 10;
-Console.WriteLine(q);
-
+//Monads.Test();
+// ExpressionTreesPatternMatching.ExpressionTrees();
+ExpressionTreesPatternMatching.VisitorTest();
 
 // class BindingFlags{
 //     public MyStruct a;
