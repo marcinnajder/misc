@@ -13,8 +13,9 @@ var puzzles = new (Func<string, string>, Func<string, string>)[]
     (AdventOfCode.AdventOfCode2016.Day1.Day1.Puzzle1, AdventOfCode.AdventOfCode2016.Day1.Day1.Puzzle2),
     (AdventOfCode.AdventOfCode2016.Day2.Day2.Puzzle1, AdventOfCode.AdventOfCode2016.Day2.Day2.Puzzle2),
     (AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle1, AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle2),
+    (AdventOfCode.AdventOfCode2016.Day4.Day4.Puzzle1, AdventOfCode.AdventOfCode2016.Day4.Day4.Puzzle2),
     //(AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle1, AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle1),
-    
+
     // (AdventOfCode.AdventOfCode2021.Day1.Puzzle1, AdventOfCode.AdventOfCode2021.Day1.Puzzle2),
     // (Day2.Puzzle1,Day2.Puzzle2),
     // (Day4.Puzzle1,Day4.Puzzle2),
