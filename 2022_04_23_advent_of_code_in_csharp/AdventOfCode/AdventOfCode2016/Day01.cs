@@ -2,7 +2,6 @@ using static AdventOfCode.AdventOfCode2016.Day1.TurnDirection;
 using static AdventOfCode.AdventOfCode2016.Day1.CardinalDirection;
 using static System.Math;
 
-
 namespace AdventOfCode.AdventOfCode2016.Day1;
 
 public enum CardinalDirection { North = 0, East = 1, South = 2, West = 3 }
