@@ -15,7 +15,7 @@ public static class Day2
             .Select(line => line.Select(dir => Enum.Parse<Direction>(dir.ToString())));
     }
 
-    public static Point Move2(Point point, Direction dir, char[,] keypad)
+    public static Point Move(Point point, Direction dir, char[,] keypad)
     {
         var maxIndex = keypad.GetLength(0) - 1;
         var newPoint = (dir, point) switch
@@ -35,7 +35,7 @@ public static class Day2
         var lines = LoadData(input);
 
         var digits = lines
-            .Scan(start, (point, line) => line.Aggregate(point, (p, dir) => Move2(p, dir, keypad)))
+            .Scan(start, (point, line) => line.Aggregate(point, (p, dir) => Move(p, dir, keypad)))
             .Skip(1)
             .Select(p => keypad[p.Y, p.X]);
 

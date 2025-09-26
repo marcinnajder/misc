@@ -38,15 +38,15 @@ public class Day02Tests
 
 
         // without any move
-        Assert.AreEqual(new Point(0, 0), Day2.Move2(new Point(0, 0), L, keypad));
-        Assert.AreEqual(new Point(0, 0), Day2.Move2(new Point(0, 0), U, keypad));
-        Assert.AreEqual(new Point(4, 4), Day2.Move2(new Point(4, 4), R, keypad));
-        Assert.AreEqual(new Point(4, 4), Day2.Move2(new Point(4, 4), D, keypad));
+        Assert.AreEqual(new Point(0, 0), Day2.Move(new Point(0, 0), L, keypad));
+        Assert.AreEqual(new Point(0, 0), Day2.Move(new Point(0, 0), U, keypad));
+        Assert.AreEqual(new Point(4, 4), Day2.Move(new Point(4, 4), R, keypad));
+        Assert.AreEqual(new Point(4, 4), Day2.Move(new Point(4, 4), D, keypad));
 
-        Assert.AreEqual(new Point(2, 0), Day2.Move2(new Point(2, 0), U, keypad));
-        Assert.AreEqual(new Point(2, 0), Day2.Move2(new Point(2, 0), L, keypad));
-        Assert.AreEqual(new Point(2, 0), Day2.Move2(new Point(2, 0), R, keypad));
-        Assert.AreEqual(new Point(2, 1), Day2.Move2(new Point(2, 0), D, keypad));
+        Assert.AreEqual(new Point(2, 0), Day2.Move(new Point(2, 0), U, keypad));
+        Assert.AreEqual(new Point(2, 0), Day2.Move(new Point(2, 0), L, keypad));
+        Assert.AreEqual(new Point(2, 0), Day2.Move(new Point(2, 0), R, keypad));
+        Assert.AreEqual(new Point(2, 1), Day2.Move(new Point(2, 0), D, keypad));
     }
 
     [TestMethod]
