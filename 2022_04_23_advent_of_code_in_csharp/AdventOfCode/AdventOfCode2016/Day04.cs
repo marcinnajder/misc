@@ -36,7 +36,7 @@ public static class Day4
 
     public static string Puzzle1(string input)
     {
-        var codes = LoadData(input).ToList();
+        var codes = LoadData(input);
 
         var sum = codes
             .Where(code =>

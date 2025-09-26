@@ -39,7 +39,7 @@ public static class Day2
             .Skip(1)
             .Select(p => keypad[p.Y, p.X]);
 
-        return string.Join("", digits);
+        return string.Concat(digits);
     }
 
     public static string Puzzle1(string input)

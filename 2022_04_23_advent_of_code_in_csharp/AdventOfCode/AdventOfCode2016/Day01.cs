@@ -45,7 +45,7 @@ public static class Day1
     {
         var turns = LoadData(input);
         var postion = Walk(turns).Last();
-        return (Math.Abs(postion.X) + Math.Abs(postion.Y)).ToString();
+        return (Abs(postion.X) + Abs(postion.Y)).ToString();
     }
 
     public static string Puzzle2(string input)
@@ -63,7 +63,7 @@ public static class Day1
             for (var i = 0; i < length; i++)
             {
                 pos = pos with { X = pos.X + xComp, Y = pos.Y + yComp };
-                if (!visited.Add(pos))
+                if (!visited.Add(pos)) // already visited
                 {
                     return (Abs(pos.X) + Abs(pos.Y)).ToString();
                 }
