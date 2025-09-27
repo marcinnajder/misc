@@ -123,6 +123,8 @@ public static class Extensions
 
     public static string JoinToString<T>(this IEnumerable<T> items, string separator = ",") => string.Join(separator, items);
 
+    public static string ConcatToString<T>(this IEnumerable<T> items) => string.Concat(items);
+
     public static R Pipe<T, R>(this T value, Func<T, R> func) => func(value);
 
     public static void Pipe<T>(this T value, Action<T> func) => func(value);
