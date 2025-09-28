@@ -60,18 +60,28 @@ public static class Day7
         var ips = LoadData(input);
         return ips.Count(ip =>
         {
-            foreach (var inside in ip.Inside)
+            foreach (var (a, b, _) in ip.Inside.SelectMany(FindAllAba))
             {
-                foreach (var (a, b, _) in FindAllAba(inside))
+                var search = string.Concat(b, a, b);
+                if (ip.Outside.Any(outside => outside.Contains(search)))
                 {
-                    var search = string.Concat(b, a, b);
-                    if (ip.Outside.Any(outside => outside.Contains(search)))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
         }).ToString();
     }
+
+    public static string Puzzle2_(string input)
+    {
+        var ips = LoadData(input);
+        return ips.Count(ip =>
+            (
+                from inside in ip.Inside
+                from aba in FindAllAba(inside)
+                select string.Concat(aba.Item2, aba.Item1, aba.Item2)
+            ).Any(search => ip.Outside.Any(outside => outside.Contains(search)))
+       ).ToString();
+    }
+
 }
