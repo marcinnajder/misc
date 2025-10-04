@@ -1,9 +1,10 @@
 
 using static AdventOfCode.Extensions;
+using static System.StringSplitOptions;
 
 namespace AdventOfCode.AdventOfCode2016.Day3;
 
-public record Triangle(int A, int B, int C)
+public record class Triangle(int A, int B, int C)
 {
     public static Triangle From(IEnumerable<int> abc, bool sort = true)
         => (sort ? abc.OrderBy(Identity) : abc).ToList() switch
@@ -18,9 +19,9 @@ public static class Day3
     public static IEnumerable<Triangle> LoadData(string input, bool sort = true)
     {
         return input
-            .Split(Environment.NewLine, StringSplitOptions.TrimEntries)
+            .Split(Environment.NewLine, TrimEntries)
             .Select(line => line
-                .Split(" ", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+                .Split(" ", TrimEntries | RemoveEmptyEntries)
                 .Select(int.Parse)
                 .Pipe(abc => Triangle.From(abc, sort)));
     }

@@ -1,7 +1,9 @@
 
 using static AdventOfCode.AdventOfCode2016.Day2.Direction;
+using static System.StringSplitOptions;
 
 namespace AdventOfCode.AdventOfCode2016.Day2;
+
 
 public record Point(int X, int Y);
 public enum Direction { L, R, U, D };
@@ -11,7 +13,7 @@ public static class Day2
     public static IEnumerable<IEnumerable<Direction>> LoadData(string input)
     {
         return input
-            .Split(Environment.NewLine, StringSplitOptions.TrimEntries)
+            .Split(Environment.NewLine, TrimEntries)
             .Select(line => line.Select(dir => Enum.Parse<Direction>(dir.ToString())));
     }
 

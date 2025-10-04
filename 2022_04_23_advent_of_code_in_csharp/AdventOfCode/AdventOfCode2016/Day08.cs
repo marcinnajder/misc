@@ -1,21 +1,13 @@
 
-using System.Collections;
-using System.Data;
-using System.Diagnostics;
-using System.Net;
-using System.Reflection.Metadata;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.InteropServices;
 using static System.StringSplitOptions;
-
 
 namespace AdventOfCode.AdventOfCode2016.Day8;
 
 public interface IOp;
+
 public record Rect(int X, int Y) : IOp;
 public record RotateRow(int Index, int By) : IOp;
 public record RotateColumn(int Index, int By) : IOp;
-
 
 public static class Day8
 {
@@ -36,7 +28,7 @@ public static class Day8
         }
     }
 
-    public static void SetBordValues(char[,] board, int ySize, int xSize, char value)
+    public static void SetBoardValues(char[,] board, int ySize, int xSize, char value)
     {
         for (int y = 0; y < ySize; y++)
         {
@@ -55,14 +47,14 @@ public static class Day8
 
         var ops = LoadData(input);
 
-        SetBordValues(board, ySize, xSize, '.');
+        SetBoardValues(board, ySize, xSize, '.');
 
         foreach (var o in ops)
         {
             switch (o)
             {
                 case Rect op:
-                    SetBordValues(board, op.Y, op.X, '#');
+                    SetBoardValues(board, op.Y, op.X, '#');
                     break;
 
                 case RotateColumn op:

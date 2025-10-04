@@ -6,7 +6,7 @@ namespace AdventOfCode.AdventOfCode2016.Day4;
 
 public record Code(string[] Names, int SectorID, string Checksum)
 {
-    public string NamesCombined { get; } = string.Join("", Names);
+    public string NamesCombined { get; } = string.Concat(Names);
 }
 
 public static class Day4
