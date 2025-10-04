@@ -33,6 +33,7 @@ public static class Day9
     public static long Decompress(IEnumerator<char> e, bool recursive)
     {
         long count = 0;
+
         while (e.MoveNext())
         {
             if (char.IsWhiteSpace(e.Current)) // skip whitespace
@@ -59,7 +60,7 @@ public static class Day9
                 }
                 else
                 {
-                    for (int i = 0; i < marker.Length; i++)  // consume chars
+                    for (int i = 0; i < marker.Length; i++)  // just consume chars
                     {
                         e.MoveNext();
                     }

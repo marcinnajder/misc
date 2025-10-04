@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using AdventOfCode;
 using AdventOfCode.AdventOfCode2016;
@@ -14,6 +15,7 @@ var puzzles = new (Func<string, string>, Func<string, string>)[]
     (AdventOfCode.AdventOfCode2016.Day2.Day2.Puzzle1, AdventOfCode.AdventOfCode2016.Day2.Day2.Puzzle2),
     (AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle1, AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle2),
     (AdventOfCode.AdventOfCode2016.Day4.Day4.Puzzle1, AdventOfCode.AdventOfCode2016.Day4.Day4.Puzzle2),
+    (AdventOfCode.AdventOfCode2016.Day5.Day5.Puzzle1, AdventOfCode.AdventOfCode2016.Day5.Day5.Puzzle2),
     (AdventOfCode.AdventOfCode2016.Day6.Day6.Puzzle1, AdventOfCode.AdventOfCode2016.Day6.Day6.Puzzle2),
     (AdventOfCode.AdventOfCode2016.Day7.Day7.Puzzle1, AdventOfCode.AdventOfCode2016.Day7.Day7.Puzzle2),
     (AdventOfCode.AdventOfCode2016.Day8.Day8.Puzzle1, AdventOfCode.AdventOfCode2016.Day8.Day8.Puzzle2),
@@ -40,6 +42,8 @@ foreach (var (puzzle1, puzzle2) in puzzles)
     var dayStr = $"{(dayNumber < 10 ? "0" : "")}{dayNumber}";
     var yearStr = declaringType.Namespace!.Split(".")[1][^4..];
     var input = Path.Combine(Common.ProjectFolderPath, $"AdventOfCode{yearStr}/Day{dayStr}.txt").Pipe(File.ReadAllText);
-    Console.WriteLine($"{yearStr}/Day{dayStr}/Puzzle01:  {puzzle1(input)}");
-    Console.WriteLine($"{yearStr}/Day{dayStr}/Puzzle02:  {puzzle2(input)}");
+    var sw1 = Stopwatch.StartNew();
+    Console.WriteLine($"{yearStr}/Day{dayStr}/Puzzle01: {puzzle1(input)} ({sw1.ElapsedMilliseconds}ms)");
+    var sw2 = Stopwatch.StartNew();
+    Console.WriteLine($"{yearStr}/Day{dayStr}/Puzzle02: {puzzle2(input)} ({sw2.ElapsedMilliseconds}ms)");
 }
