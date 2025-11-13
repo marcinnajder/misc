@@ -8,9 +8,12 @@ using System.Security.Cryptography;
 using AlgorithmsAndDataStructures;
 
 
+Cre1.Run();
+Cre2.Run();
+
 //Monads.Test();
 // ExpressionTreesPatternMatching.ExpressionTrees();
-ExpressionTreesPatternMatching.VisitorTest();
+// ExpressionTreesPatternMatching.VisitorTest();
 
 // class BindingFlags{
 //     public MyStruct a;
