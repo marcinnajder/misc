@@ -25,7 +25,7 @@ class Cre2
         // remove last level packages from dependencies
         nextPackages = nextPackages.ConvertAll(p => p with { Deps = p.Deps.Except(lastLevel) });
 
-        return lastLevel.Count == 0 ? [] : Enumerable.Prepend(GetLevels(nextPackages), lastLevel);
+        return lastLevel.Count == 0 ? [] : [lastLevel, .. GetLevels(nextPackages)];
     }
 
     public static void Run()
@@ -50,3 +50,17 @@ class Cre2
         }
     }
 }
+
+
+#region yield
+// if (lastLevel.Count > 0)
+// {
+//     yield return lastLevel;
+
+//     nextPackages = nextPackages.ConvertAll(p => p with { Deps = p.Deps.Except(lastLevel) });
+//     foreach (var level in GetLevels(nextPackages))
+//     {
+//         yield return level;
+//     }
+// }
+#endregion
