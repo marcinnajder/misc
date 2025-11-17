@@ -2,7 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AdventOfCode.AdventOfCode2016.Day2;
 using static AdventOfCode.AdventOfCode2016.Day2.Direction;
 
-namespace AdventOfCode.AdventOfCode2015.Tests;
+namespace AdventOfCode.Tests;
 
 [TestClass]
 public class Day02Tests

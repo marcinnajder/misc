@@ -1,8 +1,7 @@
-using System.Linq;
 using AdventOfCode.AdventOfCode2016.Day1;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace AdventOfCode.AdventOfCode2015.Tests;
+namespace AdventOfCode.Tests;
 
 [TestClass]
 public class Day01Tests
