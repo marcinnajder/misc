@@ -6,7 +6,19 @@ using AdventOfCode;
 using AdventOfCode.AdventOfCode2016;
 using AdventOfCode.AdventOfCode2021;
 using AdventOfCode.AdventOfCode2022;
+using System.Collections.Immutable;
+using System.Collections.Generic;
+using System.Numerics;
 
+// for (int i = 0; i < 100; i++)
+// {
+
+//     Console.WriteLine(new { i, Bits = Convert.ToString(i, 2), PopCount = BitOperations.PopCount((uint)i) });
+
+//     //Convert.ToString()
+//     //var aa = BitOperations.PopCount(1);
+
+// }
 
 // dotnet watch test  -l "console;verbosity=detailed"
 
@@ -24,6 +36,7 @@ var puzzles = new (Func<string, string>, Func<string, string>)[]
     (AdventOfCode.AdventOfCode2016.Day9.Day9.Puzzle1, AdventOfCode.AdventOfCode2016.Day9.Day9.Puzzle2),
     (AdventOfCode.AdventOfCode2016.Day10.Day10.Puzzle1, AdventOfCode.AdventOfCode2016.Day10.Day10.Puzzle2),
     (AdventOfCode.AdventOfCode2016.Day12.Day12.Puzzle1, AdventOfCode.AdventOfCode2016.Day12.Day12.Puzzle2),
+    (AdventOfCode.AdventOfCode2016.Day13.Day13.Puzzle1, AdventOfCode.AdventOfCode2016.Day13.Day13.Puzzle2),
 
     //(AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle1, AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle1),
 

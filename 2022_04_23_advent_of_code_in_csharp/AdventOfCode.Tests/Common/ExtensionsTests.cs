@@ -7,7 +7,7 @@ namespace AdventOfCode.AdventOfCode2021.Tests;
 
 
 [TestClass]
-public class ExtensionsTests
+public class GraphTests
 {
     [TestMethod]
     public void JoinToString()
