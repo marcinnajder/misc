@@ -22,10 +22,19 @@ class Cre2
             }
         }
 
+        if (lastLevel.Count == 0)
+        {
+            return [];
+        }
+        if (nextPackages.Count == 0)
+        {
+            return [lastLevel];
+        }
+
         // remove last level packages from dependencies
         nextPackages = nextPackages.ConvertAll(p => p with { Deps = p.Deps.Except(lastLevel) });
 
-        return lastLevel.Count == 0 ? [] : [lastLevel, .. GetLevels(nextPackages)];
+        return [lastLevel, .. GetLevels(nextPackages)];
     }
 
     public static void Run()

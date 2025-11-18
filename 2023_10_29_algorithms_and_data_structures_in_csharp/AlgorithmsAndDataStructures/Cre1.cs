@@ -1,5 +1,6 @@
 ﻿namespace AlgorithmsAndDataStructures;
 
+// this is exactly the same problem as https://marcinnajder.github.io/2023/08/16/dotnet-project-overview.html
 class Cre1
 {
     record Package(int Id, List<int> Deps);
