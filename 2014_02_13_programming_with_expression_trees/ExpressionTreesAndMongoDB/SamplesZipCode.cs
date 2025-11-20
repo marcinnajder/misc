@@ -5,6 +5,8 @@ using MongoDB.Driver;
 namespace ExpressionTreesAndMongoDB;
 
 /// https://www.mongodb.com/docs/manual/tutorial/aggregation-zip-code-data-set/
+/// https://www.mongodb.com/docs/v4.4/tutorial/aggregation-zip-code-data-set/ - legacy documentation 
+
 public class ZipCode
 {
     public string Id { get; set; }
