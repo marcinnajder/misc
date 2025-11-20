@@ -8,8 +8,12 @@ using System.Security.Cryptography;
 using AlgorithmsAndDataStructures;
 
 
-Cre1.Run();
-Cre2.Run();
+EnumerableExtensions.Run();
+PipeExtensions.Run();
+OtherExtension.Run();
+
+// Cre1.Run();
+// Cre2.Run();
 
 //Monads.Test();
 // ExpressionTreesPatternMatching.ExpressionTrees();
