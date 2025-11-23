@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using AdventOfCode;
@@ -9,6 +8,7 @@ using AdventOfCode.AdventOfCode2022;
 using System.Collections.Immutable;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Formats.Asn1;
 
 // for (int i = 0; i < 100; i++)
 // {
@@ -24,7 +24,6 @@ using System.Numerics;
 
 var puzzles = new (Func<string, string>, Func<string, string>)[]
 {
-
     (AdventOfCode.AdventOfCode2016.Day1.Day1.Puzzle1, AdventOfCode.AdventOfCode2016.Day1.Day1.Puzzle2),
     (AdventOfCode.AdventOfCode2016.Day2.Day2.Puzzle1, AdventOfCode.AdventOfCode2016.Day2.Day2.Puzzle2),
     (AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle1, AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle2),
@@ -37,6 +36,7 @@ var puzzles = new (Func<string, string>, Func<string, string>)[]
     (AdventOfCode.AdventOfCode2016.Day10.Day10.Puzzle1, AdventOfCode.AdventOfCode2016.Day10.Day10.Puzzle2),
     (AdventOfCode.AdventOfCode2016.Day12.Day12.Puzzle1, AdventOfCode.AdventOfCode2016.Day12.Day12.Puzzle2),
     (AdventOfCode.AdventOfCode2016.Day13.Day13.Puzzle1, AdventOfCode.AdventOfCode2016.Day13.Day13.Puzzle2),
+    (AdventOfCode.AdventOfCode2016.Day14.Day14.Puzzle1, AdventOfCode.AdventOfCode2016.Day14.Day14.Puzzle2),
 
     //(AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle1, AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle1),
 
@@ -50,7 +50,6 @@ var puzzles = new (Func<string, string>, Func<string, string>)[]
     // (AdventOfCode.AdventOfCode2022.Day1.Puzzle1, AdventOfCode.AdventOfCode2022.Day1.Puzzle2),
     // (AdventOfCode.AdventOfCode2022.Day5.Puzzle1, AdventOfCode.AdventOfCode2022.Day5.Puzzle2),
 };
-
 
 
 foreach (var (puzzle1, puzzle2) in puzzles)

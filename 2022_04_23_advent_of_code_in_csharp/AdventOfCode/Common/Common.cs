@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Reflection;
 
 namespace AdventOfCode;
@@ -19,7 +18,8 @@ static class Common
         return arg => cache.GetOrAdd(arg, func);
     }
 
-    public static TValue GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, Func<TKey, TValue> valueFactory)
+    public static TValue GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key,
+        Func<TKey, TValue> valueFactory)
         where TKey : notnull
     {
         if (!dict.TryGetValue(key, out var value))
@@ -27,11 +27,14 @@ static class Common
             value = valueFactory(key);
             dict.Add(key, value);
         }
+
         return value;
     }
 }
 
 public class NonExhaustivePatternMatchingException : Exception
 {
-    public NonExhaustivePatternMatchingException() : base("Non-exhaustive pattern matching") { }
+    public NonExhaustivePatternMatchingException() : base("Non-exhaustive pattern matching")
+    {
+    }
 }

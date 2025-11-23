@@ -26,6 +26,7 @@ public static class Day5
                 {
                     password[i] = hash[6];
                 }
+
                 return password;
             });
 
@@ -33,28 +34,12 @@ public static class Day5
         return "437e60fc";
     }
 
-    // powered by copilot :)
-    public static string ComputeMD5Hash(string input)
-    {
-        using (MD5 md5 = MD5.Create())
-        {
-            byte[] inputBytes = Encoding.UTF8.GetBytes(input);
-            byte[] hashBytes = md5.ComputeHash(inputBytes);
-
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < hashBytes.Length; i++)
-            {
-                sb.Append(hashBytes[i].ToString("x2"));
-            }
-            return sb.ToString();
-        }
-    }
 
     private static IEnumerable<string> HashesStartingWith5Zeros(string prefix)
     {
         return Enumerable
             .Range(0, int.MaxValue)
-            .Select(i => ComputeMD5Hash(prefix + i))
+            .Select(i => MD5Utils.ComputeMd5Hash(prefix + i))
             .Where(str => str is ['0', '0', '0', '0', '0', ..]);
     }
 }
