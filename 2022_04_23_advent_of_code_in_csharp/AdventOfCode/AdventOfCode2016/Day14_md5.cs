@@ -2,9 +2,10 @@ namespace AdventOfCode.AdventOfCode2016.Day14;
 
 public static class Day14
 {
-    //private static Action<object> WriteLine = Console.WriteLine;
-    private static Action<object> WriteLine = delegate { };
-    private static bool skipRun = true;
+    private static Action<object> WriteLine = Console.WriteLine;
+
+    // private static Action<object> WriteLine = delegate { };
+    private static bool skipRun = false;
 
     public static string LoadData(string input) => input;
 
@@ -71,7 +72,7 @@ public static class Day14
         const int nthKey = 64;
         var salt = LoadData(input);
         var keyCount = 0;
-        var indexesOfSeries5 = new Dictionary<char, int>();
+        var indexesOfSeries5 = new Dictionary<char, (bool Found, int Index)>();
 
         for (int i = 0;; i++)
         {
@@ -80,28 +81,29 @@ public static class Day14
             {
                 var seriesOf5Found = false;
 
-                if (indexesOfSeries5.TryGetValue(seriesChar, out var indexOfSeries5) &&
-                    indexOfSeries5 > i) // series of 5 already found
+                var indexOfSeries5Visited = indexesOfSeries5.TryGetValue(seriesChar, out var indexOfSeries5);
+                if (indexOfSeries5Visited && indexOfSeries5.Found &&
+                    indexOfSeries5.Index > i) // series of 5 already found
                 {
                     seriesOf5Found = true;
                 }
                 else
                 {
-                    var j = indexOfSeries5 < 0 ? -indexOfSeries5 : i + 1;
+                    var j = indexOfSeries5Visited && !indexOfSeries5.Found ? indexOfSeries5.Index : i + 1;
                     for (; j < i + 1 + 1000; j++) // search the whole range or only part
                     {
                         var hash2 = generateMd5Hash(salt, j);
                         if (FindOrCheckSeries(hash2, 5, seriesChar) is not null) // series of 5 found
                         {
                             seriesOf5Found = true;
-                            indexesOfSeries5[seriesChar] = j;
+                            indexesOfSeries5[seriesChar] = (Found: true, Index: j);
                             break; // stop the j-loop
                         }
                     }
 
                     if (!seriesOf5Found)
                     {
-                        indexesOfSeries5[seriesChar] = -j; // set the last checked index as negative number
+                        indexesOfSeries5[seriesChar] = (Found: false, Index: j); // save last index visited
                     }
                 }
 
@@ -137,9 +139,10 @@ public static class Day14
             return "22696";
         }
 
+
         const int parallelPageSize = 1000;
         var allHashes = new List<string>(parallelPageSize);
-        var pageHashed = new string[parallelPageSize];
+        var pageHashes = new string[parallelPageSize];
 
         return Puzzle_(input, GenerateMd5);
 
@@ -154,8 +157,8 @@ public static class Day14
             if (index == allHashes.Count) // start next page
             {
                 Parallel.For(0, parallelPageSize,
-                    i => { pageHashed[i] = ComputeMd5Hash(salt + (allHashes.Count + i)); });
-                allHashes.AddRange(pageHashed);
+                    i => { pageHashes[i] = ComputeMd5Hash(salt + (allHashes.Count + i)); });
+                allHashes.AddRange(pageHashes);
             }
 
             return allHashes[index];
