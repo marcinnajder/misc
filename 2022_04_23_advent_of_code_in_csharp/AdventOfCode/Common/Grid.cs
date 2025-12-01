@@ -10,11 +10,15 @@ public class Grid
         if (column < columnCount) yield return (row, column + 1);
     }
 
-    public static int[][] LoadGridFromData(string input)
+    public static int[][] LoadGridOfIntsFromData(string input)
     {
-        var lines = input.Split(new[] { Environment.NewLine }, StringSplitOptions.TrimEntries);
-        return lines
-            .Select(l => l.ToCharArray().Select(ch => (int)char.GetNumericValue(ch)).ToArray())
-            .ToArray();
+        var lines = input.Split([Environment.NewLine], StringSplitOptions.TrimEntries);
+        return Array.ConvertAll(lines, l => l.ToCharArray().Select(ch => (int)char.GetNumericValue(ch)).ToArray());
+    }
+
+    public static char[][] LoadGridOfCharsFromData(string input)
+    {
+        var lines = input.Split([Environment.NewLine], StringSplitOptions.TrimEntries);
+        return Array.ConvertAll(lines, l => l.ToCharArray());
     }
 }

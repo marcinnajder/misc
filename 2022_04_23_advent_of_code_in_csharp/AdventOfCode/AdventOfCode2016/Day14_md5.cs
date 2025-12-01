@@ -2,10 +2,9 @@ namespace AdventOfCode.AdventOfCode2016.Day14;
 
 public static class Day14
 {
-    private static Action<object> WriteLine = Console.WriteLine;
-
-    // private static Action<object> WriteLine = delegate { };
-    private static bool skipRun = false;
+    //private static Action<object> WriteLine = Console.WriteLine;
+    private static Action<object> WriteLine = delegate { };
+    private static bool skipRun = true;
 
     public static string LoadData(string input) => input;
 
@@ -89,7 +88,9 @@ public static class Day14
                 }
                 else
                 {
-                    var j = indexOfSeries5Visited && !indexOfSeries5.Found ? indexOfSeries5.Index : i + 1;
+                    var j = indexOfSeries5Visited && !indexOfSeries5.Found
+                        ? Math.Max(indexOfSeries5.Index, i + 1)
+                        : i + 1;
                     for (; j < i + 1 + 1000; j++) // search the whole range or only part
                     {
                         var hash2 = generateMd5Hash(salt, j);

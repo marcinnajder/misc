@@ -2,8 +2,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AdventOfCode.AdventOfCode2021.Tests;
 
-
-
 // let input =
 //     """1163751742
 // 1381373672
@@ -32,19 +30,19 @@ public class ExtensionsTests
     {
         // https://adventofcode.com/2021/day/15
         var input = """
-1163751742
-1381373672
-2136511328
-3694931569
-7463417111
-1319128137
-1359912421
-3125421639
-1293138521
-2311944581
-""";
+                    1163751742
+                    1381373672
+                    2136511328
+                    3694931569
+                    7463417111
+                    1319128137
+                    1359912421
+                    3125421639
+                    1293138521
+                    2311944581
+                    """;
 
-        var edges = input.Pipe(Grid.LoadGridFromData).Pipe(Graph.LoadGraphFromGrid).ToArray();
+        var edges = input.Pipe(Grid.LoadGridOfIntsFromData).Pipe(Graph.LoadGraphFromGrid).ToArray();
         var shortestPath = Graph.DijkstraShortestPath((0, 0), (9, 9), edges);
         Assert.AreEqual(40, shortestPath);
 
@@ -53,5 +51,4 @@ public class ExtensionsTests
         // var shortestPath = Graph.DijkstraShortestPath((0, 0), (99, 99), edges);
         // Assert.AreEqual(540, shortestPath);
     }
-
 }
