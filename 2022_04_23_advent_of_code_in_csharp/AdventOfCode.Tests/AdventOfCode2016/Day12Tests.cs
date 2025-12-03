@@ -3,7 +3,7 @@ using AdventOfCode.AdventOfCode2016.Day12;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static AdventOfCode.AdventOfCode2016.Day12.Registry;
 
-namespace AdventOfCode.Tests;
+namespace AdventOfCode.Tests.AdventOfCode2016;
 
 [TestClass]
 public class Day12Tests

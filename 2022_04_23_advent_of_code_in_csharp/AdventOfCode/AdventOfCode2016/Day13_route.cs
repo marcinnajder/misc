@@ -29,9 +29,9 @@ public static class Day13
         return point =>
         {
             return Grid.GetNeighbours(point.Row, point.Column, int.MaxValue, int.MaxValue)
-              .Where(p => isOpenSpaceMemoized((p, favoriteNumber)))
-              .Select(p => new Link<Point>(p, 1))
-              .ToArray();
+                .Where(p => isOpenSpaceMemoized((p, favoriteNumber)))
+                .Select(p => new Link<Point>(p, 1))
+                .ToArray();
         };
     }
 
@@ -49,7 +49,7 @@ public static class Day13
     }
 
 
-    // this methods takes only arguments to be easily memoized
+    // this methods takes only one argument to be easily memoized
 
     public static bool IsOpenSpace((Point Point, int FavoriteNumber) args)
     {

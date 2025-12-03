@@ -1,4 +1,5 @@
 using static System.Math;
+using static AdventOfCode.AdventOfCode2025.Day1.RotationDirection;
 
 namespace AdventOfCode.AdventOfCode2025.Day1;
 
@@ -8,7 +9,7 @@ public enum RotationDirection
     Right
 }
 
-public record Rotation(RotationDirection Dir, int Value);
+public record Rotation(RotationDirection Direction, int Value);
 
 public static class Day1
 {
@@ -16,7 +17,7 @@ public static class Day1
     {
         return input
             .Split(Environment.NewLine, StringSplitOptions.TrimEntries)
-            .Select(t => new Rotation(t[0] == 'R' ? RotationDirection.Right : RotationDirection.Left,
+            .Select(t => new Rotation(t[0] == 'R' ? Right : Left,
                 int.Parse(t.Substring(1))));
     }
 
@@ -24,7 +25,7 @@ public static class Day1
     {
         var rotations = LoadData(input);
         var zeros = rotations
-            .Scan(50, (value, rotation) => rotation.Dir == RotationDirection.Right
+            .Scan(50, (value, rotation) => rotation.Direction == Right
                 ? (value + rotation.Value) % 100
                 : (value - rotation.Value).Pipe(v => v >= 0 ? v : (100 + v) % 100))
             .Count(value => value == 0);
@@ -38,7 +39,7 @@ public static class Day1
         var zerosCount = rotations
             .Scan((Clicks: 0, Value: 50), (state, rotation) =>
             {
-                return rotation.Dir == RotationDirection.Right
+                return rotation.Direction == Right
                     ? (state.Value + rotation.Value).Pipe(v => DivRem(v, 100))
                     : (state.Value - rotation.Value).Pipe(v =>
                     {

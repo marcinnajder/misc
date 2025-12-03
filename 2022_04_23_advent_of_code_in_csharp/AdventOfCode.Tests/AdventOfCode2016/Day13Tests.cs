@@ -1,7 +1,7 @@
 using AdventOfCode.AdventOfCode2016.Day13;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace AdventOfCode.Tests;
+namespace AdventOfCode.Tests.AdventOfCode2016;
 
 [TestClass]
 public class Day13Tests
