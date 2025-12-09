@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Formats.Asn1;
 
+
 // for (int i = 0; i < 100; i++)
 // {
 
@@ -43,6 +44,9 @@ var puzzles = new (Func<string, string>, Func<string, string>)[]
     //(AdventOfCode.AdventOfCode2025.Day3.Day3.Puzzle1, AdventOfCode.AdventOfCode2025.Day3.Day3.Puzzle2),
     //(AdventOfCode.AdventOfCode2025.Day4.Day4.Puzzle1, AdventOfCode.AdventOfCode2025.Day4.Day4.Puzzle2),
     (AdventOfCode.AdventOfCode2025.Day5.Day5.Puzzle1, AdventOfCode.AdventOfCode2025.Day5.Day5.Puzzle2),
+    (AdventOfCode.AdventOfCode2025.Day6.Day6.Puzzle1, AdventOfCode.AdventOfCode2025.Day6.Day6.Puzzle2),
+    (AdventOfCode.AdventOfCode2025.Day7.Day7.Puzzle1, AdventOfCode.AdventOfCode2025.Day7.Day7.Puzzle2),
+
 
     //(AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle1, AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle1),
 

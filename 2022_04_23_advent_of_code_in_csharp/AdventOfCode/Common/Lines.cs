@@ -7,7 +7,7 @@ using System;
 
 //using Line<T> = (T From, T To);
 
-public static class RangeList
+public static class Lines
 {
 // let rec mergeLines lines line =
 //     match lines, line with
@@ -22,18 +22,18 @@ public static class RangeList
         where T : INumber<T> =>
         (lines, line) switch
         {
-            (null, _) => new LList<(T From, T To)>(line, null),
-            ({ Head: (var fromH, var toH) head, Tail: var tail }, var (fromL, toL)) =>
+            (null, _) => new(line, null),
+            (((var fromH, var toH) head, var tail), var (fromL, toL)) =>
                 true switch
                 {
                     // head is completely before line -> keep head and continue merging into tail
-                    _ when toH + T.One < fromL => new LList<(T From, T To)>(head, MergeLines(tail, line)),
+                    _ when toH + T.One < fromL => new(head, MergeLines(tail, line)),
 
                     // line is completely before head -> prepend line to the whole list
-                    _ when toL + T.One < fromH => new LList<(T From, T To)>(line, lines),
+                    _ when toL + T.One < fromH => new(line, lines),
 
                     // overlap/adjacent -> merge and continue with tail
-                    _ => MergeLines<T>(tail, (T.Min(fromH, fromL), T.Max(toH, toL)))
+                    _ => MergeLines(tail, (T.Min(fromH, fromL), T.Max(toH, toL)))
                 }
         };
 
@@ -55,4 +55,16 @@ public static class RangeList
 //         { Head: (var fromH3, var toH3), Tail: var tail3 }
 //             => MergeLines(tail3, (Math.Min(fromH3, line.From), Math.Max(toH3, line.To))),
 //     };
+
+
+    // Creates comparer of two lines, where one of the lines represents a point ('To' property has special 'marker' value)
+    public static IComparer<(T From, T To)> CreateLineToPointComparer<T>(T pointMarker)
+        where T : INumber<T>
+    {
+        return Comparer<(T From, T To)>.Create((l1, l2) =>
+        {
+            var (point, line, sign) = l1.To == pointMarker ? (l1.From, l2, -1) : (l2.From, l1, 1);
+            return point < line.From ? sign : (point > line.To ? -sign : 0);
+        });
+    }
 }

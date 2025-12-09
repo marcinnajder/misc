@@ -2,8 +2,6 @@ using static System.Linq.Enumerable;
 
 namespace AdventOfCode.AdventOfCode2025.Day3;
 
-record Digit(int Index, char Value);
-
 public static class Day3
 {
     public static IEnumerable<string> LoadData(string input)

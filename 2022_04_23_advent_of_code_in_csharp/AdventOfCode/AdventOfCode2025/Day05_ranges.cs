@@ -33,7 +33,7 @@ public static class Day5
     {
         var empty = LListM.LListFrom<Line>();
         var mergedAndSortedLines = ranges
-            .Aggregate(empty, (list, r) => RangeList.MergeLines(list, (r.From, r.To)))
+            .Aggregate(empty, (list, r) => Lines.MergeLines(list, (r.From, r.To)))
             .ToEnumerable()
             .ToList();
         return mergedAndSortedLines;
@@ -45,14 +45,10 @@ public static class Day5
         var mergedAndSortedLines = MapToMergedAndSortedLines(data.Ranges);
 
         // compare two lines where one represents the point instead of line
-        const long marker = -1;
-        var comparer = Comparer<Line>.Create((l1, l2) =>
-        {
-            var (point, line, sign) = l1.To == marker ? (l1.From, l2, -1) : (l2.From, l1, 1);
-            return point < line.From ? sign : (point > line.To ? -sign : 0);
-        });
+        const long pointMarker = -1;
+        var comparer = Lines.CreateLineToPointComparer(pointMarker);
 
-        var result = data.Ids.Count(id => mergedAndSortedLines.BinarySearch((id, marker), comparer) >= 0);
+        var result = data.Ids.Count(id => mergedAndSortedLines.BinarySearch((id, pointMarker), comparer) >= 0);
 
         return result.ToString();
     }
