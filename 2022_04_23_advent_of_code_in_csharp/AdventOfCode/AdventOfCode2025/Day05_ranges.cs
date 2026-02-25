@@ -46,7 +46,7 @@ public static class Day5
 
         // compare two lines where one represents the point instead of line
         const long pointMarker = -1;
-        var comparer = Lines.CreateLineToPointComparer(pointMarker);
+        IComparer<(long From, long To)> comparer = Lines.CreateLineToPointComparer(pointMarker);
 
         var result = data.Ids.Count(id => mergedAndSortedLines.BinarySearch((id, pointMarker), comparer) >= 0);
 

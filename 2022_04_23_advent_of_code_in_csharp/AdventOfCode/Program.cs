@@ -43,10 +43,11 @@ var puzzles = new (Func<string, string>, Func<string, string>)[]
     // (AdventOfCode.AdventOfCode2025.Day2.Day2.Puzzle1, AdventOfCode.AdventOfCode2025.Day2.Day2.Puzzle2),
     //(AdventOfCode.AdventOfCode2025.Day3.Day3.Puzzle1, AdventOfCode.AdventOfCode2025.Day3.Day3.Puzzle2),
     //(AdventOfCode.AdventOfCode2025.Day4.Day4.Puzzle1, AdventOfCode.AdventOfCode2025.Day4.Day4.Puzzle2),
-    (AdventOfCode.AdventOfCode2025.Day5.Day5.Puzzle1, AdventOfCode.AdventOfCode2025.Day5.Day5.Puzzle2),
-    (AdventOfCode.AdventOfCode2025.Day6.Day6.Puzzle1, AdventOfCode.AdventOfCode2025.Day6.Day6.Puzzle2),
-    (AdventOfCode.AdventOfCode2025.Day7.Day7.Puzzle1, AdventOfCode.AdventOfCode2025.Day7.Day7.Puzzle2),
-
+    // (AdventOfCode.AdventOfCode2025.Day5.Day5.Puzzle1, AdventOfCode.AdventOfCode2025.Day5.Day5.Puzzle2),
+    // (AdventOfCode.AdventOfCode2025.Day6.Day6.Puzzle1, AdventOfCode.AdventOfCode2025.Day6.Day6.Puzzle2),
+    // (AdventOfCode.AdventOfCode2025.Day7.Day7.Puzzle1, AdventOfCode.AdventOfCode2025.Day7.Day7.Puzzle2),
+    // (AdventOfCode.AdventOfCode2025.Day8.Day8.Puzzle1, AdventOfCode.AdventOfCode2025.Day8.Day8.Puzzle2),
+    (AdventOfCode.AdventOfCode2025.Day9.Day9.Puzzle1, AdventOfCode.AdventOfCode2025.Day9.Day9.Puzzle2),
 
     //(AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle1, AdventOfCode.AdventOfCode2016.Day3.Day3.Puzzle1),
 
